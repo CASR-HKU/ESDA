@@ -1,0 +1,3 @@
+data/*
+prj/*
+!prj/*.tcl
