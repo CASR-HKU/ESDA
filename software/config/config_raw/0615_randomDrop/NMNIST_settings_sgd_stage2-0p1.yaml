@@ -1,0 +1,47 @@
+transform:
+  height: 34
+  width: 34
+#  denoise:
+#    {filter_time: 0.1}
+  sample:
+    {window: 256}
+  shift:
+    {"max_shift": 5}
+  flip:
+    {"p": 0.5}
+  toImage:
+    {type: 'histogram'}
+
+dataset:
+  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
+  name: 'NMNIST'
+  dataset_path: "/home/user/Documents/event_dataset_preprocessed/NMNIST"
+  object_classes: 'all'
+
+
+dir:
+  log: 'test/'
+model:
+  # ['fb_sparse_vgg', 'dense_vgg', 'fb_sparse_object_det', 'dense_object_det', 'fb_sparse_mobilenetv2']
+  model_name: 'mink_mobilenetv2'
+  width_mult: 1.0
+  drop_config : {2: 0.1}
+optim:
+  optimizer: 'sgd'
+  batch_size: 256
+  init_lr: 0.1
+  # Set to "steps: ~" if no scheduler is needed
+  steps_lr: 50
+  factor_lr: 0.1
+checkpoint:
+  resume_training: True
+  resume_file: ''
+  # Networks trained for classification can be reused as starting point for object detection networks on trained
+  # the same dataset
+  use_pretrained: False
+  pretrained_dense_vgg: ''
+  pretrained_sparse_vgg: ''
+hardware:
+  # num_cpu_workers: {-1: auto, 0: main thread, >0: ...}
+  num_cpu_workers: 4
+  gpu_device: 0  # [0 or 'cpu']

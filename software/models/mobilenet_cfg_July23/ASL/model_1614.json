@@ -1,0 +1,522 @@
+{
+    "name": "MobileNetV2",
+    "dataset": "ASLDVS",
+    "input_shape": [
+        180,
+        240
+    ],
+    "input_sparsity": 0.0114,
+    "settings": [
+        [
+            2,
+            24,
+            1,
+            2,
+            0
+        ],
+        [
+            1,
+            32,
+            3,
+            2,
+            0
+        ],
+        [
+            2,
+            48,
+            3,
+            2,
+            0
+        ],
+        [
+            8,
+            64,
+            1,
+            2,
+            0
+        ],
+        [
+            2,
+            72,
+            3,
+            1,
+            0
+        ],
+        [
+            2,
+            128,
+            1,
+            1,
+            0
+        ]
+    ],
+    "param": 212648,
+    "layers": [
+        {
+            "name": "conv1",
+            "type": "conv",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                1,
+                2
+            ],
+            "channels": [
+                2,
+                32
+            ],
+            "sparsity": 0.0347,
+            "kernel_sparsity": [
+                0.4133,
+                0.2148,
+                0.1481,
+                0.098,
+                0.0631,
+                0.0367,
+                0.0171,
+                0.0069,
+                0.0019
+            ]
+        },
+        {
+            "name": "block.0",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                2,
+                4,
+                4
+            ],
+            "channels": [
+                32,
+                64,
+                24
+            ],
+            "sparsity": [
+                0.0347,
+                0.0847,
+                0.0847
+            ],
+            "kernel_sparsity": [
+                0.4133,
+                0.2148,
+                0.1481,
+                0.098,
+                0.0631,
+                0.0367,
+                0.0171,
+                0.0069,
+                0.0019
+            ]
+        },
+        {
+            "name": "block.1",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                4,
+                8,
+                8
+            ],
+            "channels": [
+                24,
+                24,
+                32
+            ],
+            "sparsity": [
+                0.0847,
+                0.1699,
+                0.1699
+            ],
+            "kernel_sparsity": [
+                0.2968,
+                0.1568,
+                0.1425,
+                0.1225,
+                0.1071,
+                0.0846,
+                0.0518,
+                0.0276,
+                0.0104
+            ]
+        },
+        {
+            "name": "block.2",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                8,
+                8,
+                8
+            ],
+            "channels": [
+                32,
+                32,
+                32
+            ],
+            "sparsity": [
+                0.1699,
+                0.1699,
+                0.1699
+            ],
+            "kernel_sparsity": [
+                0.26,
+                0.1204,
+                0.1053,
+                0.092,
+                0.0972,
+                0.1041,
+                0.0912,
+                0.0794,
+                0.0504
+            ]
+        },
+        {
+            "name": "block.3",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                8,
+                8,
+                8
+            ],
+            "channels": [
+                32,
+                32,
+                32
+            ],
+            "sparsity": [
+                0.1699,
+                0.1699,
+                0.1699
+            ],
+            "kernel_sparsity": [
+                0.26,
+                0.1204,
+                0.1053,
+                0.092,
+                0.0972,
+                0.1041,
+                0.0912,
+                0.0794,
+                0.0504
+            ]
+        },
+        {
+            "name": "block.4",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                8,
+                16,
+                16
+            ],
+            "channels": [
+                32,
+                64,
+                48
+            ],
+            "sparsity": [
+                0.1699,
+                0.2942,
+                0.2942
+            ],
+            "kernel_sparsity": [
+                0.26,
+                0.1204,
+                0.1053,
+                0.092,
+                0.0972,
+                0.1041,
+                0.0912,
+                0.0794,
+                0.0504
+            ]
+        },
+        {
+            "name": "block.5",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                48,
+                96,
+                48
+            ],
+            "sparsity": [
+                0.2942,
+                0.2942,
+                0.2942
+            ],
+            "kernel_sparsity": [
+                0.1962,
+                0.1311,
+                0.1154,
+                0.0895,
+                0.0852,
+                0.0958,
+                0.0788,
+                0.0912,
+                0.1169
+            ]
+        },
+        {
+            "name": "block.6",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                48,
+                96,
+                48
+            ],
+            "sparsity": [
+                0.2942,
+                0.2942,
+                0.2942
+            ],
+            "kernel_sparsity": [
+                0.1962,
+                0.1311,
+                0.1154,
+                0.0895,
+                0.0852,
+                0.0958,
+                0.0788,
+                0.0912,
+                0.1169
+            ]
+        },
+        {
+            "name": "block.7",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                16,
+                32,
+                32
+            ],
+            "channels": [
+                48,
+                384,
+                64
+            ],
+            "sparsity": [
+                0.2942,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.1962,
+                0.1311,
+                0.1154,
+                0.0895,
+                0.0852,
+                0.0958,
+                0.0788,
+                0.0912,
+                0.1169
+            ]
+        },
+        {
+            "name": "block.8",
+            "type": "block",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                64,
+                128,
+                72
+            ],
+            "sparsity": [
+                0.4953,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        },
+        {
+            "name": "block.9",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                72,
+                144,
+                72
+            ],
+            "sparsity": [
+                0.4953,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        },
+        {
+            "name": "block.10",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                72,
+                144,
+                72
+            ],
+            "sparsity": [
+                0.4953,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        },
+        {
+            "name": "block.11",
+            "type": "block",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                72,
+                144,
+                128
+            ],
+            "sparsity": [
+                0.4953,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        },
+        {
+            "name": "conv8",
+            "type": "conv",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32
+            ],
+            "channels": [
+                128,
+                160
+            ],
+            "sparsity": [
+                0.4953,
+                0.4953,
+                0.4953
+            ],
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        },
+        {
+            "name": "fc",
+            "type": "linear",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                0,
+                0
+            ],
+            "channels": [
+                160,
+                25
+            ],
+            "sparsity": 0.4953,
+            "kernel_sparsity": [
+                0.0551,
+                0.0791,
+                0.1049,
+                0.1136,
+                0.1223,
+                0.1527,
+                0.123,
+                0.127,
+                0.1223
+            ]
+        }
+    ]
+}
