@@ -31,6 +31,11 @@ It will generate the accuracy result:
 
 
 
+
+Generate 
+
+
+
 Train the model
 
 1. Training float32 model using the following commands
@@ -61,5 +66,11 @@ python main.py --settings_file=config/config_AE/int8/NCal_2751.yaml --epochs 100
 python main.py --settings_file=config/config_AE/int8/NCal_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_w0p5 --load exp_float32/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32
 
 
+Software model searching
 
+You can generate the model configurations by running the following commands:
+
+python search_sw.py -n 100
+
+It will generate 100 model configurations in terminal
 
