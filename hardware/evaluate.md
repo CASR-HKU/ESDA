@@ -1,7 +1,7 @@
 
-After logging in zcu102, go to the directory '/home/xilinx/jupyter_notebooks/ESDA/' by 
+After logging in zcu102, go to the directory '/home/xilinx/jupyter_notebooks/ESDA_2024_FPGA/' by 
 
-cd /home/xilinx/jupyter_notebooks/ESDA/
+cd /home/xilinx/jupyter_notebooks/ESDA_2024_FPGA/
 
 Then run the following commands to generate the results.
 
@@ -21,17 +21,6 @@ The results will be stored in the folder `results/` respectively.
 
 
 2. End-to-end evaluation
-
-(1) Software end-to-end evaluation
-
-python sw_e2e.py 
-
-
-(2) Input conversion
-
-
-
-(3) Hardware end-to-end evaluation
 
 python hw_e2e.py 1 -d ASL_2929
 python hw_e2e.py 1 -d ASL_w0p5
