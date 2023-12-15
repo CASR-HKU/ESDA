@@ -23,7 +23,7 @@ python main.py --bias_bit 16 --settings_file=weights/ASL_2929/settings.yaml --lo
 
 python main.py --bias_bit 16 --settings_file=weights/DVS_1890/settings.yaml --load weights/DVS_1890/ckpt.best.pth.tar --shift_bit 16 -e
 
-python main.py --bias_bit 16 --settings_file=weights/DVS_w0p25/settings.yaml --load weights/DVS_w0p25/ckpt.best.pth.tar --shift_bit 16 -e
+python main.py --bias_bit 16 --settings_file=weights/DVS_w0p5/settings.yaml --load weights/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 
 python main.py --bias_bit 16 --settings_file=weights/NMNIST/settings.yaml --load weights/NMNIST/ckpt.best.pth.tar --shift_bit 16 -e 
 
