@@ -1,0 +1,1004 @@
+{
+    "name": "MobileNetV2",
+    "dataset": "NCAL",
+    "input_shape": [
+        180,
+        240
+    ],
+    "input_sparsity": 0.079,
+    "settings": [
+        [
+            1,
+            16,
+            1,
+            1,
+            0
+        ],
+        [
+            6,
+            24,
+            2,
+            2,
+            0
+        ],
+        [
+            6,
+            32,
+            3,
+            2,
+            0
+        ],
+        [
+            6,
+            64,
+            4,
+            2,
+            0
+        ],
+        [
+            6,
+            96,
+            3,
+            1,
+            0
+        ],
+        [
+            6,
+            160,
+            3,
+            2,
+            0
+        ],
+        [
+            6,
+            320,
+            1,
+            1,
+            0
+        ]
+    ],
+    "param": 628464,
+    "obj": 41348.9559314954,
+    "lat_max": 40324,
+    "total_dsp": 1160,
+    "total_bram": 904,
+    "model_path": "/vol/datastore/baoheng/eventModel/bit_bias16/NCal_w0p5_shift32_2",
+    "CFG_SW": 16,
+    "CFG_BW": 16,
+    "CFG_EXP": 16,
+    "layers": [
+        {
+            "name": "conv1",
+            "type": "conv",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                1,
+                2
+            ],
+            "channels": [
+                2,
+                16
+            ],
+            "sparsity": 0.1789,
+            "kernel_sparsity": [
+                0.2465,
+                0.1561,
+                0.1391,
+                0.1167,
+                0.1034,
+                0.094,
+                0.0686,
+                0.0472,
+                0.0284
+            ],
+            "input_shape": [
+                180,
+                240
+            ],
+            "parallelism": [
+                2,
+                2
+            ],
+            "lat": [
+                86400
+            ],
+            "dsp": 20,
+            "bram": 5
+        },
+        {
+            "name": "block_0",
+            "type": "block",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                2,
+                2,
+                2
+            ],
+            "channels": [
+                16,
+                16,
+                8
+            ],
+            "sparsity": [
+                0.1789,
+                0.1789,
+                0.1789
+            ],
+            "kernel_sparsity": [
+                0.2465,
+                0.1561,
+                0.1391,
+                0.1167,
+                0.1034,
+                0.094,
+                0.0686,
+                0.0472,
+                0.0284
+            ],
+            "input_shape": [
+                90,
+                120
+            ],
+            "parallelism": [
+                2,
+                8,
+                2
+            ],
+            "lat": [
+                172800,
+                21600,
+                86400
+            ],
+            "dsp": 42,
+            "bram": 34
+        },
+        {
+            "name": "block_1",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                2,
+                4,
+                4
+            ],
+            "channels": [
+                8,
+                48,
+                12
+            ],
+            "sparsity": [
+                0.1789,
+                0.3457,
+                0.3457
+            ],
+            "kernel_sparsity": [
+                0.2465,
+                0.1561,
+                0.1391,
+                0.1167,
+                0.1034,
+                0.094,
+                0.0686,
+                0.0472,
+                0.0284
+            ],
+            "input_shape": [
+                90,
+                120
+            ],
+            "parallelism": [
+                2,
+                6,
+                4
+            ],
+            "lat": [
+                86400,
+                21600,
+                64800
+            ],
+            "dsp": 40,
+            "bram": 35
+        },
+        {
+            "name": "block_2",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                4,
+                4,
+                4
+            ],
+            "channels": [
+                12,
+                72,
+                12
+            ],
+            "sparsity": [
+                0.3457,
+                0.3457,
+                0.3457
+            ],
+            "kernel_sparsity": [
+                0.1257,
+                0.1044,
+                0.1018,
+                0.0942,
+                0.0966,
+                0.1099,
+                0.1113,
+                0.1183,
+                0.1378
+            ],
+            "input_shape": [
+                45,
+                60
+            ],
+            "parallelism": [
+                4,
+                12,
+                2
+            ],
+            "lat": [
+                48600,
+                16200,
+                97200
+            ],
+            "dsp": 76,
+            "bram": 58
+        },
+        {
+            "name": "block_3",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                4,
+                8,
+                8
+            ],
+            "channels": [
+                12,
+                72,
+                16
+            ],
+            "sparsity": [
+                0.3457,
+                0.5491,
+                0.5491
+            ],
+            "kernel_sparsity": [
+                0.1257,
+                0.1044,
+                0.1018,
+                0.0942,
+                0.0966,
+                0.1099,
+                0.1113,
+                0.1183,
+                0.1378
+            ],
+            "input_shape": [
+                45,
+                60
+            ],
+            "parallelism": [
+                2,
+                4,
+                4
+            ],
+            "lat": [
+                71280,
+                11880,
+                47520
+            ],
+            "dsp": 28,
+            "bram": 24
+        },
+        {
+            "name": "block_4",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                8,
+                8,
+                8
+            ],
+            "channels": [
+                16,
+                96,
+                16
+            ],
+            "sparsity": [
+                0.5491,
+                0.5491,
+                0.5491
+            ],
+            "kernel_sparsity": [
+                0.0334,
+                0.0418,
+                0.0583,
+                0.0577,
+                0.0705,
+                0.0949,
+                0.1079,
+                0.1542,
+                0.3813
+            ],
+            "input_shape": [
+                23,
+                30
+            ],
+            "parallelism": [
+                4,
+                8,
+                2
+            ],
+            "lat": [
+                33120,
+                8280,
+                66240
+            ],
+            "dsp": 52,
+            "bram": 40
+        },
+        {
+            "name": "block_5",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                8,
+                8,
+                8
+            ],
+            "channels": [
+                16,
+                96,
+                16
+            ],
+            "sparsity": [
+                0.5491,
+                0.5491,
+                0.5491
+            ],
+            "kernel_sparsity": [
+                0.0334,
+                0.0418,
+                0.0583,
+                0.0577,
+                0.0705,
+                0.0949,
+                0.1079,
+                0.1542,
+                0.3813
+            ],
+            "input_shape": [
+                23,
+                30
+            ],
+            "parallelism": [
+                2,
+                8,
+                2
+            ],
+            "lat": [
+                66240,
+                8280,
+                66240
+            ],
+            "dsp": 44,
+            "bram": 34
+        },
+        {
+            "name": "block_6",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                8,
+                16,
+                16
+            ],
+            "channels": [
+                16,
+                96,
+                32
+            ],
+            "sparsity": [
+                0.5491,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0334,
+                0.0418,
+                0.0583,
+                0.0577,
+                0.0705,
+                0.0949,
+                0.1079,
+                0.1542,
+                0.3813
+            ],
+            "input_shape": [
+                23,
+                30
+            ],
+            "parallelism": [
+                2,
+                4,
+                4
+            ],
+            "lat": [
+                31680,
+                3960,
+                31680
+            ],
+            "dsp": 28,
+            "bram": 22
+        },
+        {
+            "name": "block_7",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                32,
+                192,
+                32
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                4,
+                6,
+                4
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 50,
+            "bram": 37
+        },
+        {
+            "name": "block_8",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                32,
+                192,
+                32
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                4,
+                6,
+                4
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 50,
+            "bram": 37
+        },
+        {
+            "name": "block_9",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                32,
+                192,
+                32
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                4,
+                6,
+                4
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 50,
+            "bram": 37
+        },
+        {
+            "name": "block_10",
+            "type": "block",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                32,
+                192,
+                48
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                4,
+                6,
+                6
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 54,
+            "bram": 40
+        },
+        {
+            "name": "block_11",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                48,
+                288,
+                48
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                6,
+                8,
+                6
+            ],
+            "lat": [
+                51840,
+                6480,
+                51840
+            ],
+            "dsp": 84,
+            "bram": 58
+        },
+        {
+            "name": "block_12",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                48,
+                288,
+                48
+            ],
+            "sparsity": [
+                0.7075,
+                0.7075,
+                0.7075
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                6,
+                8,
+                6
+            ],
+            "lat": [
+                51840,
+                6480,
+                51840
+            ],
+            "dsp": 84,
+            "bram": 58
+        },
+        {
+            "name": "block_13",
+            "type": "block",
+            "residual": false,
+            "stride": 2,
+            "tensor_stride": [
+                16,
+                32,
+                32
+            ],
+            "channels": [
+                48,
+                288,
+                80
+            ],
+            "sparsity": [
+                0.7075,
+                0.8334,
+                0.8334
+            ],
+            "kernel_sparsity": [
+                0.0092,
+                0.0165,
+                0.0509,
+                0.0156,
+                0.0262,
+                0.0747,
+                0.0425,
+                0.1,
+                0.6643
+            ],
+            "input_shape": [
+                12,
+                15
+            ],
+            "parallelism": [
+                6,
+                2,
+                10
+            ],
+            "lat": [
+                48384,
+                6048,
+                48384
+            ],
+            "dsp": 32,
+            "bram": 42
+        },
+        {
+            "name": "block_14",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                80,
+                480,
+                80
+            ],
+            "sparsity": [
+                0.8334,
+                0.8334,
+                0.8334
+            ],
+            "kernel_sparsity": [
+                0.0017,
+                0.0034,
+                0.0719,
+                0.0033,
+                0.0074,
+                0.1171,
+                0.0071,
+                0.019,
+                0.769
+            ],
+            "input_shape": [
+                6,
+                8
+            ],
+            "parallelism": [
+                10,
+                4,
+                10
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 72,
+            "bram": 68
+        },
+        {
+            "name": "block_15",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                80,
+                480,
+                80
+            ],
+            "sparsity": [
+                0.8334,
+                0.8334,
+                0.8334
+            ],
+            "kernel_sparsity": [
+                0.0017,
+                0.0034,
+                0.0719,
+                0.0033,
+                0.0074,
+                0.1171,
+                0.0071,
+                0.019,
+                0.769
+            ],
+            "input_shape": [
+                6,
+                8
+            ],
+            "parallelism": [
+                10,
+                4,
+                10
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 72,
+            "bram": 68
+        },
+        {
+            "name": "block_16",
+            "type": "block",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32,
+                32
+            ],
+            "channels": [
+                80,
+                480,
+                160
+            ],
+            "sparsity": [
+                0.8334,
+                0.8334,
+                0.8334
+            ],
+            "kernel_sparsity": [
+                0.0017,
+                0.0034,
+                0.0719,
+                0.0033,
+                0.0074,
+                0.1171,
+                0.0071,
+                0.019,
+                0.769
+            ],
+            "input_shape": [
+                6,
+                8
+            ],
+            "parallelism": [
+                10,
+                4,
+                20
+            ],
+            "lat": [
+                46080,
+                5760,
+                46080
+            ],
+            "dsp": 92,
+            "bram": 88
+        },
+        {
+            "name": "conv8",
+            "type": "conv",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                32,
+                32
+            ],
+            "channels": [
+                160,
+                640
+            ],
+            "sparsity": 0.8334,
+            "kernel_sparsity": [
+                0.0017,
+                0.0034,
+                0.0719,
+                0.0033,
+                0.0074,
+                0.1171,
+                0.0071,
+                0.019,
+                0.769
+            ],
+            "input_shape": [
+                6,
+                8
+            ],
+            "parallelism": [
+                20,
+                10
+            ],
+            "lat": [
+                24576
+            ],
+            "dsp": 110,
+            "bram": 70
+        },
+        {
+            "name": "fc",
+            "type": "linear",
+            "residual": false,
+            "stride": 1,
+            "tensor_stride": [
+                0,
+                0
+            ],
+            "channels": [
+                640,
+                128
+            ],
+            "sparsity": 0,
+            "kernel_sparsity": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            "input_shape": [
+                6,
+                8
+            ],
+            "parallelism": [
+                10,
+                8
+            ],
+            "lat": [
+                1024
+            ],
+            "dsp": 80,
+            "bram": 49
+        }
+    ]
+}

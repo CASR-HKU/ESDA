@@ -1,21 +1,21 @@
-Installations
+1. Installations
 
 Python
 Minkowski Engine
 Pytorch
 
 
-Evaluate trained model
+2. Evaluate trained model
 
-1. Download the dataset from 
+(1) Download the dataset from 
 
 Follow the dataset preparation steps from ....
 You can skip the step while evaluating in a1
 
-2. Download pretrained model from and put them to weights folder
+(2) Download pretrained model from and put them to weights folder
 You can skip the step while evaluating in a1
 
-3. Run the following command to evaluate the model
+(3) Run the following command to evaluate the model
 
 python main.py --bias_bit 16 --settings_file=weights/ASL_w0p5/settings.yaml --load weights/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 python main.py --bias_bit 16 --settings_file=weights/ASL_2929/settings.yaml --load weights/ASL_2929/ckpt.best.pth.tar --shift_bit 16 -e
@@ -32,13 +32,11 @@ It will generate the accuracy result:
 
 
 
-Generate 
 
 
+3. Train the model
 
-Train the model
-
-1. Training float32 model using the following commands
+(1) Training float32 model using the following commands
 
 python main.py --settings_file=config/config_AE/float32/ASL_2929.yaml -s exp_float32/ASL_2929
 python main.py --settings_file=config/config_AE/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5
@@ -52,7 +50,7 @@ python main.py --settings_file=config/config_AE/float32/NCal_w0p5.yaml -s exp_fl
 The training results will be stored in the -s folder respectively.
 
 
-2. Training int8 model
+(2) Training int8 model
 
 After obtaining the float32 model, we can train the int8 model using the following commands.
 
@@ -66,11 +64,22 @@ python main.py --settings_file=config/config_AE/int8/NCal_2751.yaml --epochs 100
 python main.py --settings_file=config/config_AE/int8/NCal_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_w0p5 --load exp_float32/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32
 
 
-Software model searching
+4. Software model searching
 
 You can generate the model configurations by running the following commands:
 
 python search_sw.py -n 100
 
-It will generate 100 model configurations in terminal
+It will generate 100 model configurations in terminal.
 
+
+5. Int8 model inference end-to-end
+
+python sw_e2e.py -d assets/hw/DVS_1890/ --shift_bit 16
+python sw_e2e.py -d assets/hw/DVS_w0p5/ --shift_bit 16
+python sw_e2e.py -d assets/hw/ASL_2929/ --shift_bit 16
+python sw_e2e.py -d assets/hw/ASL_w0p5/ --shift_bit 16
+python sw_e2e.py -d assets/hw/NMNIST/ --shift_bit 16
+python sw_e2e.py -d assets/hw/Roshambo/ --shift_bit 16
+python sw_e2e.py -d assets/hw/NCal_2751/ --shift_bit 32
+python sw_e2e.py -d assets/hw/NCal_w0p5/ --shift_bit 32
