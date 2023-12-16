@@ -731,7 +731,7 @@ def main():
     parser.add_argument("--work_dir", "-d", type=str, default=".")
     parser.add_argument("--data_dir", type=str, default="")
     parser.add_argument("--save_dir", '-s', type=str, default="")
-    parser.add_argument("--shift_bit", type=int, default=32)
+    # parser.add_argument("--shift_bit", type=int, default=32)
     parser.add_argument("--out_dir", "-o", type=str, default="")
 
     args = parser.parse_args()
@@ -765,7 +765,8 @@ def main():
         shutil.copy(raw_json, dest_json)
 
     # parse cfg
-    shift_n = args.shift_bit
+    dataset = cfg["dataset"]
+    shift_n = 32 if dataset == "NCAL" else 16
     input_h, input_w = cfg["input_shape"]
     # for each layer
     for layer_i, layer in enumerate(cfg["layers"]):
