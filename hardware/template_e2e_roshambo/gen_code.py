@@ -48,7 +48,7 @@ def variable_code_block(name, t, width, depth):
 def fifo_code_block(name, cfg="POC"):
     fifo_list = []
     if name == dflt_top_name:
-        fifo_list += single_fifo_code_block(afifo_of(name), f"ap_int<CFG_AW>", 2)
+        fifo_list += single_fifo_code_block(afifo_of(name), f"ap_uint<CFG_AW>", 2)
     else:
         fifo_list += single_fifo_code_block(
             afifo_of(name), f"BundleT<{cfg_of(name, cfg)}, ap_int<CFG_AW>>", 2
