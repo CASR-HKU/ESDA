@@ -9,7 +9,7 @@ import warnings
 from common import *
 
 dflt_top_name = "top"
-valid_dataset_list = ["ASL", "DVS", "NCAL", "NMNIST", "Roshambo"]
+valid_dataset_list = ["ASLDVS", "DVS", "NCal", "NMNIST", "Roshambo"]
 
 
 def single_fifo_code_block(fifo_name, dtype, depth):
@@ -128,11 +128,18 @@ def append_perlayer_code(codes, layer, prev_name, first_layer=False, last_layer=
         def_k_list = [cfg_of(name, k) for k in ["PIC", "POC", "IC", "OC", "H", "W"]]
         def_v_list = layer["parallelism"] + layer["channels"] + layer["input_shape"]
         def_k_list += [cfg_of(name, f"{k}W") for k in ["P", "S", "B"]]
-        def_v_list += [
-            f"(CFG_AW + CFG_WW + {math.ceil(math.log2(layer['channels'][0]))})",
-            "CFG_SW",
-            "CFG_BW",
-        ]
+        if layer["name"] == "conv1":
+            def_v_list += [
+                f"(CFG_AW + CFG_WW + {math.ceil(math.log2(layer['channels'][0] * 9))})",
+                "CFG_SW",
+                "CFG_BW",
+            ]
+        else:
+            def_v_list += [
+                f"(CFG_AW + CFG_WW + {math.ceil(math.log2(layer['channels'][0]))})",
+                "CFG_SW",
+                "CFG_BW",
+            ]
         if layer["name"] == "conv1":
             assert first_layer
             # add additional comp layer
