@@ -132,7 +132,7 @@ class tb_module_1x1(nn.Module):
         out_dir="int",
         prefix="",
         relu=True,
-        bias_bits=32,
+        bias_bits=16,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -264,7 +264,7 @@ class tb_module_1x1_residual(nn.Module):
         kernel_size=1,
         out_dir="int",
         prefix="",
-        bias_bits=32,
+        bias_bits=16,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -389,7 +389,7 @@ class tb_module_3x3(nn.Module):
         stride=1,
         out_dir="int",
         prefix="",
-        bias_bits=32,
+        bias_bits=16,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -504,7 +504,7 @@ class tb_module_3x3_dw(nn.Module):
         stride=1,
         out_dir="int",
         prefix="",
-        bias_bits=32,
+        bias_bits=16,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -731,7 +731,7 @@ def main():
     parser.add_argument("--work_dir", "-d", type=str, default=".")
     parser.add_argument("--data_dir", type=str, default="")
     parser.add_argument("--save_dir", '-s', type=str, default="")
-    parser.add_argument("--shift_bit", type=int, default=32)
+    parser.add_argument("--shift_bit", type=int, default=16)
     parser.add_argument("--out_dir", "-o", type=str, default="")
 
     args = parser.parse_args()
