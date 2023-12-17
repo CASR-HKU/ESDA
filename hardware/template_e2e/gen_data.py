@@ -87,17 +87,17 @@ def pack_1x1_weights(weights, PI, precision=8):
     return output_array
 
 
-def pack_scale_bias(scale, bias, bias_bits=16, scale_bits=32):
+def pack_scale_bias(scale, bias, W):
     if scale.shape != bias.shape:
         raise ValueError("Arrays must have the same shape.")
-    # bias_bits = 32
+
     output_array = np.zeros(scale.shape, dtype=object)
     scale = scale.astype(np.int64)
     bias = bias.astype(np.int64)
     for i in range(scale.shape[0]):
-        output_array[i] = (bias[i] & (2**bias_bits - 1)) + ((scale[i] & (2**scale_bits - 1)) << bias_bits)
-        if output_array[i] >= 1 << ((bias_bits + scale_bits) - 1):
-            output_array[i] -= 1 << (bias_bits + scale_bits)
+        output_array[i] = (bias[i] & (2**W - 1)) + ((scale[i] & (2**W - 1)) << W)
+        if output_array[i] >= (1 << (2 * W - 1)):
+            output_array[i] -= 1 << (2 * W)
         # print(i, " scale:", scale[i], " bias:", bias[i], output_array[i])
     return output_array
 
@@ -132,7 +132,7 @@ class tb_module_1x1(nn.Module):
         out_dir="int",
         prefix="",
         relu=True,
-        bias_bits=16
+        bias_bits=32,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -264,7 +264,7 @@ class tb_module_1x1_residual(nn.Module):
         kernel_size=1,
         out_dir="int",
         prefix="",
-        bias_bits=16,
+        bias_bits=32,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -389,7 +389,7 @@ class tb_module_3x3(nn.Module):
         stride=1,
         out_dir="int",
         prefix="",
-        bias_bits=16,
+        bias_bits=32,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -504,7 +504,7 @@ class tb_module_3x3_dw(nn.Module):
         stride=1,
         out_dir="int",
         prefix="",
-        bias_bits=16,
+        bias_bits=32,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -731,7 +731,7 @@ def main():
     parser.add_argument("--work_dir", "-d", type=str, default=".")
     parser.add_argument("--data_dir", type=str, default="")
     parser.add_argument("--save_dir", '-s', type=str, default="")
-    # parser.add_argument("--shift_bit", type=int, default=32)
+    parser.add_argument("--shift_bit", type=int, default=32)
     parser.add_argument("--out_dir", "-o", type=str, default="")
 
     args = parser.parse_args()
@@ -765,8 +765,8 @@ def main():
         shutil.copy(raw_json, dest_json)
 
     # parse cfg
-    dataset = cfg["dataset"]
-    shift_n = 32 if dataset == "NCAL" else 16
+    # dataset = cfg["dataset"]
+    shift_n = 32 if cfg["dataset"] == "NCAL" else 16
     input_h, input_w = cfg["input_shape"]
     # for each layer
     for layer_i, layer in enumerate(cfg["layers"]):
