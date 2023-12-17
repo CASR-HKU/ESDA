@@ -622,6 +622,7 @@ class tb_1x1_3x3dw_1x1_block(nn.Module):
         PI_0,
         PI_1,
         PI_2,
+        bias_bit,
     ):
         super().__init__()
         self.out_dir = out_dir
@@ -639,6 +640,7 @@ class tb_1x1_3x3dw_1x1_block(nn.Module):
             out_dir=self.out_dir,
             prefix=f"{name}_0",
             shift_n=self.shift_n,
+            bias_bits=bias_bit,
         )
         self.module_3x3_dw = tb_module_3x3_dw(
             weight_1,
@@ -649,6 +651,7 @@ class tb_1x1_3x3dw_1x1_block(nn.Module):
             prefix=f"{name}_1",
             stride=self.stride,
             shift_n=self.shift_n,
+            bias_bits=bias_bit,
         )
         if self.use_residual:
             self.module_1x1_2 = tb_module_1x1_residual(
@@ -660,6 +663,7 @@ class tb_1x1_3x3dw_1x1_block(nn.Module):
                 out_dir=self.out_dir,
                 prefix=f"{name}_2",
                 shift_n=self.shift_n,
+                bias_bits=bias_bit,
             )
         else:
             self.module_1x1_2 = tb_module_1x1(
@@ -671,6 +675,7 @@ class tb_1x1_3x3dw_1x1_block(nn.Module):
                 prefix=f"{name}_2",
                 shift_n=self.shift_n,
                 relu=False,
+                bias_bits=bias_bit,
             )
 
     def dump_weights(self):
@@ -766,7 +771,13 @@ def main():
 
     # parse cfg
     # dataset = cfg["dataset"]
-    shift_n = 32 if cfg["dataset"] == "NCAL" else 16
+    if cfg["dataset"] == "NCAL":
+        shift_n = 32
+        bias_bit = 32
+    else:
+        shift_n = 16
+        bias_bit = 16
+
     input_h, input_w = cfg["input_shape"]
     # for each layer
     for layer_i, layer in enumerate(cfg["layers"]):
@@ -814,7 +825,7 @@ def main():
             module_kwargs["prefix"] = name
             if layer["name"] == "conv8":
                 module_kwargs["relu"] = True
-            # module_kwargs["bias_bits"] = 32
+            module_kwargs["bias_bits"] = bias_bit
             if layer["name"] == "conv1":
                 test_module = tb_module_3x3(**module_kwargs)
             elif layer["name"] == "conv8":
@@ -857,6 +868,7 @@ def main():
             module_kwargs["PI_0"] = parallelism[0]
             module_kwargs["PI_1"] = parallelism[1]
             module_kwargs["PI_2"] = parallelism[2]
+            module_kwargs["bias_bit"] = bias_bit
             # build module
             test_module = tb_1x1_3x3dw_1x1_block(**module_kwargs)
         elif layer["type"] == "linear":
