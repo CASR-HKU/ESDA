@@ -35,6 +35,8 @@ if {[info exists CFLAG_SRC] && ${CFLAG_SRC} != ""} {
 add_files -tb ${HLS_SRC_DIR}/tb.cpp -cflags "-Wno-unknown-pragmas"
 add_files -tb ${HLS_SRC_DIR}/data/tb_input_feature.txt
 add_files -tb ${HLS_SRC_DIR}/data/tb_spatial_mask.txt
+add_files -tb ${HLS_SRC_DIR}/data/tb_output.txt
+
 
 open_solution "solution1" -flow_target vivado
 set_part {xczu9eg-ffvb1156-2-e}

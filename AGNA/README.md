@@ -7,7 +7,7 @@ This branch contains modified AGNA code for ESDA.
 The installation of SCIPOPT suite can be complicated. Please directly use the SCIPOPT suite installed on `americano02` for now. To set up the environment, run the following command or add it to your `~/.bashrc` file.
 
 ```bash
-export SCIPOPTDIR=/media/ssd512g4/scipoptsuite-8.0.3
+export SCIPOPTDIR=/tools/scip/SCIPOptSuite-8.0.0-Linux
 ```
 
 Then build environment by running:
