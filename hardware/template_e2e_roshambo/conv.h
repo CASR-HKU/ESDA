@@ -98,17 +98,15 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
 #pragma HLS UNROLL
                 ap_int<PSUMW> psum = psum_pack.data[p];
                 ap_int<SCALEW + BIASW> scale_bias = scale_buffer[c * PI + p];
-                ap_int<SCALEW> scale =
-                    (ap_int<SCALEW>)scale_bias.range(SCALEW + BIASW - 1, BIASW);
+                ap_uint<SCALEW> scale =
+                    (ap_uint<SCALEW>)scale_bias.range(SCALEW + BIASW - 1, BIASW);
                 ap_int<BIASW> bias =
                     (ap_int<BIASW>)scale_bias.range(BIASW - 1, 0);
 
                 ap_int<PSUMW + SCALEW + 1> psum_mul =
                     (psum + bias) * scale + round_shift;
 
-                // cout<<"psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<"
-                // psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<"
-                // exp:"<<EXP;
+                cout<<"psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<" psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<" exp:"<<EXP;
 
                 psum_mul = psum_mul >> EXP;
 
@@ -122,7 +120,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 } else {
                     act_pack.data[p] = quantized_act;
                 }
-                // cout<<" output:"<<act_pack.data[p]<<endl;
+                cout<<" output:"<<act_pack.data[p]<<endl;
             }
             act_out.write(act_pack);
         }
@@ -463,7 +461,7 @@ void conv_3x3_dw_kernel_serial(
 template <int PI, int PO, int OC, int HEIGHT, int WIDTH, int AW, int WW,
           int PSUMW>
 void conv_3x3_kernel_dsp_first_layer(
-    hls::stream<BundleT<9, ap_int<AW>>> &act_in,
+    hls::stream<BundleT<9, ap_uint<AW>>> &act_in,
     hls::stream<BundleT<PO, ap_int<PSUMW>>> &psum_out,
     hls::stream<T_K> &token_in, hls::stream<T_K> &token_out,
     const ap_int<WW> w_buffer[9][OC]) {
@@ -480,13 +478,13 @@ void conv_3x3_kernel_dsp_first_layer(
     BundleT<PO * 9, ap_int<WW>> weight_pack;
 #pragma HLS ARRAY_PARTITION variable = weight_pack.data complete dim = 0
 
-    BundleT<9, ap_int<AW>> act_in_pack;
+    BundleT<9, ap_uint<AW>> act_in_pack;
 #pragma HLS ARRAY_PARTITION variable = act_in_pack.data complete dim = 0
 
     ap_int<PSUMW> psum_buffer[OC];
 #pragma HLS ARRAY_PARTITION variable = psum_buffer complete dim = 0
 
-    typedef ap_int<AW> T_ACT;
+    typedef ap_uint<AW> T_ACT;
     typedef ap_int<WW> T_WEIGHT;
     typedef ap_int<PSUMW> T_PSUM;
     typedef ap_uint<C_W> T_C;
@@ -520,19 +518,17 @@ void conv_3x3_kernel_dsp_first_layer(
             }
 
             for (T_C po = 0; po < PO / 2; po++) {
-                // T_PSUM psum_0 = psum_buffer[oc * PO + po * 2];
-                // T_PSUM psum_1 = psum_buffer[oc * PO + po * 2 + 1];
                 T_PSUM psum_0 = 0;
                 T_PSUM psum_1 = 0;
                 for (ap_uint<4> k = 0; k < 9; k++) {
                     T_ACT activation = act_in_pack.data[k];
-                    // cout<<" act:"<<activation;
+                    cout<<" act:"<<activation;
                     ap_int<18> in_expend = (ap_int<18>)activation;
 
                     T_WEIGHT w_0 = weight_pack.data[po * 18 + k];
                     T_WEIGHT w_1 = weight_pack.data[po * 18 + 9 + k];
 
-                    // cout<<" w_0:"<<w_0<<" w_1:"<<w_1;
+                    cout<<" w_0:"<<w_0<<" w_1:"<<w_1;
 
                     ap_int<27> w_1_shift = 0;
                     ap_int<27> w_0_expend = (ap_int<27>)w_0;
@@ -548,20 +544,23 @@ void conv_3x3_kernel_dsp_first_layer(
                         mul_temp.range(AW + WW - 1, AW + WW - 1);
                     psum_0 += low;
                     psum_1 += high;
+                    cout<<" low:"<<low<<" high:"<<high<<endl;
+                    cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
                 }
-                psum_buffer[oc * PO + po * 2] += psum_0;
-                psum_buffer[oc * PO + po * 2 + 1] += psum_1;
-                // cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
-            }
-        }
-        for (T_C oc = 0; oc < OC / PO; oc++) {
-#pragma HLS PIPELINE
-            for (T_C po = 0; po < PO; po++) {
-                psum_pack.data[po] = psum_buffer[oc * PO + po];
-                psum_buffer[oc * PO + po] = 0;
+                psum_pack.data[po * 2] = psum_0;
+                psum_pack.data[po * 2 + 1] = psum_1;
+                cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
             }
             psum_out.write(psum_pack);
         }
+//         for (T_C oc = 0; oc < OC / PO; oc++) {
+// #pragma HLS PIPELINE
+//             for (T_C po = 0; po < PO; po++) {
+//                 psum_pack.data[po] = psum_buffer[oc * PO + po];
+//                 psum_buffer[oc * PO + po] = 0;
+//             }
+//             psum_out.write(psum_pack);
+//         }
     }
 }
 
@@ -624,14 +623,22 @@ void global_avgpool_linear(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
                 // ap_int<OUT_W> logit = out_buffer[oc * PO + po];
                 ap_int<OUT_W> logit = 0;
                 for (ap_uint<IC_W> pi = 0; pi < PI; pi++) {
-                    ap_int<SUM_W> s = (ap_int<SUM_W>)sum[ic].range(
-                        SUM_W * (pi + 1) - 1, SUM_W * pi);
-                    ap_int<WW> w = weight[oc * PO + po][ic].range(
-                        WW * (pi + 1) - 1, WW * pi);
+                    ap_int<SUM_W> s = (ap_int<SUM_W>)sum[ic].range( SUM_W * (pi + 1) - 1, SUM_W * pi);
+                    cout << "s:" << s << endl;
+                    cout << "pi:" << pi << endl;
+                    cout << "ic:" << ic << endl;
+                    cout << "oc:" << oc << endl;
+                    ap_int<WW> w = weight[oc * PO + po][ic].range( WW * (pi + 1) - 1, WW * pi);
+                    cout << "w:" << w << endl;
                     out_buffer[oc * PO + po] += s * w;
+                    cout << "out_buffer:" << out_buffer[oc * PO + po] << endl;
                 }
             }
         }
+    }
+
+    for (int i = 0; i < N_CLASS; i++) {
+        cout << "out_buffer:" << out_buffer[i] << endl;
     }
 
     for (int i = 0; i < N_CLASS; i++) {

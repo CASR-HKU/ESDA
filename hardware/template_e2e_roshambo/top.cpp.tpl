@@ -1,6 +1,6 @@
 #include "top.h"
 
-void wrapper(ap_int<CFG_AW * CFG_TOP_PIC> *act_in,
+void wrapper(ap_uint<CFG_AW * CFG_TOP_PIC> *act_in,
              ap_int<32> *act_out, ap_int<CFG_MW> *mask,
              int num_nz) {
 #pragma HLS DATAFLOW
@@ -13,7 +13,7 @@ void wrapper(ap_int<CFG_AW * CFG_TOP_PIC> *act_in,
     /*gen_code-store*/
 }
 
-void top(ap_int<CFG_AW * CFG_TOP_PIC> *act_in, ap_int<32> *act_out,
+void top(ap_uint<CFG_AW * CFG_TOP_PIC> *act_in, ap_int<32> *act_out,
          ap_int<CFG_MW> *mask, int num_nz) {
 #pragma HLS INTERFACE m_axi port = act_in offset = slave bundle = \
     gmem0 depth = 65536

@@ -1,12 +1,10 @@
 #include "top.h"
-#include <iostream>
-#include <fstream>
-#include <vector>
+//
 #include "tb_func.h"
 
 int main() {
     // declare buffer
-    static ap_int<CFG_AW * CFG_TOP_PIC> act_in_buffer[65536];
+    static ap_uint<CFG_AW * CFG_TOP_PIC> act_in_buffer[65536];
     static ap_int<32> act_out_buffer[65536];
     static ap_int<CFG_MW> mask_buffer[65536];
 
@@ -34,14 +32,9 @@ int main() {
 
     top(act_in_buffer, act_out_buffer, mask_buffer, num_nz);
 
-    int count = 0;
-    int err_cnt = 0;
-
-
-    cout << "-------------start reading tb output--------------" << endl;
-
-
     std::ifstream inputFile("tb_output.txt");
+
+    int err_cnt = 0;
 
     std::vector<int> intArray;
     std::string line;
@@ -58,7 +51,6 @@ int main() {
                 err_cnt++;
         }
     }
-
     for (int i = 0; i < CFG_TOP_OC; i++) {
         ap_int<32> rd = act_out_buffer[i];
         cout << i << ":" << rd << endl;

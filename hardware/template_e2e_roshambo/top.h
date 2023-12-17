@@ -38,6 +38,6 @@ using namespace std;
 #include "conv_pack.h"
 #include "weight.h"
 
-void top(ap_int<CFG_AW * CFG_TOP_PIC> *act_in,
+void top(ap_uint<CFG_AW * CFG_TOP_PIC> *act_in,
          ap_int<32> *act_out, ap_int<CFG_MW> *mask,
          int num_nz);
