@@ -56,6 +56,8 @@ Please refer to [dataset preparation](doc/dataset.md) for the details.
 
 ### 2. Software model training
 
+All the training progress are done in the **software** folder. 
+
 (1) Training float32 model
 
 ```bash
@@ -116,7 +118,7 @@ After obtaining the int8 model, the next step is to optimize the hardware config
 ```bash
 # Assuming you are in the root directory
 cd optimization
-python 
+python eventnet.py --model_path <path-of-models-root-folder> --eventNet_path <path-of-hw-config-folder> --model_name  <name-of-the-target-folder> --eventNet_name <name-of-the-target-hw-config> --results_path <path-of-stored-result>
 ```
 
 For example, assuming you have generate the corresponding model structures and input data using the commands above.
@@ -146,14 +148,14 @@ EDSA
 You can conduct hardware configuration optimization by the following commands
 ```bash
 # Make sure you are in the root directory
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_0p5_shift16 --eventNet_name zcu102_60res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NMNIST_shift16 --eventNet_name zcu102_60res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_0p5_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_2929_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name Roshambo_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_2751_shift32 --eventNet_name zcu102_80res --results_path eventNet/DSE
-python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_w0p5_shift32_2 --eventNet_name zcu102_50res --results_path eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_0p5_shift16 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NMNIST_shift16 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_0p5_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_2929_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name Roshambo_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_2751_shift32 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_w0p5_shift32_2 --eventNet_name zcu102_50res --results_path ../eventNet/DSE
 ```
 
 The result
@@ -164,6 +166,10 @@ The result
 ```bash
 # Make sure you are in the root directory
 cd hardware
+# For roshambo
+python gen_prj.py gen_full --cfg_name <cfg-name> --cfg_path <path-to-DES-folder> --tpl_dir template_e2e_roshambo --dst_path <path-to-destination>
+# For other datasets
+python gen_prj.py gen_full --cfg_name <cfg-name> --cfg_path <path-to-DES-folder> --tpl_dir template_e2e --dst_path <path-to-destination>
 ```
 
 For example, assuming you generate the DSE result using the commands above, you will generate the config files in the eventNet/DSE file
@@ -176,19 +182,203 @@ EDSA
 ├── eventNet
 │   ├── model
 │   ├── DSE
-│   │   ├── ASL_2929_shift16
-│   │   ├── model.json
-│   │   ├── input_Features.npy
-│   │   ├── input_Coordinates.npy
-│   │   ├── output_logit.npy
+│   │   ├── ASL_0p5_shift16-zcu102_80res
+│   │   │   ├── en-config.json
+│   │   │   ├── en-gpkit.model
+│   │   │   ├── en-gpkit.sol
+│   │   │   ├── en-result.json
+│   │   │   ├── en-scip.cip
+│   │   │   ├── en-scip.log
+│   │   │   ├── en-scip.sol
+│   │   │   ├── main.log
+│   │   ├── ASL_2929_shift16-zcu102_80res
+│   │   ├── NMNIST_shift16-zcu102_60res
+│   │   ├── Roshambo_shift16-zcu102_80res
+│   │   ├── DVS_1890_shift16-zcu102_80res
+│   │   ├── DVS_0p5_shift16-zcu102_60res
+│   │   ├── NCal_w0p5_shift32-zcu102_50res
+│   │   ├── NCal_2751_shift32-zcu102_80res
 ```
 
 Then you can generate the corresponding hardware project by:
 
-
-
+```bash
+# Make sure you are in the root directory
+cd hardware
+python gen_prj.py gen_full --cfg_name ASL_0p5_shift16-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name ASL_2929_shift16-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name NMNIST_shift16-zcu102_60res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name Roshambo_shift16-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e_roshambo --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name DVS_1890_shift16-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name DVS_0p5_shift16-zcu102_60res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name NCal_w0p5_shift32-zcu102_50res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name NCal_2751_shift32-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+```
+The hardware project will be saved in the **eventNet/HW/** folder.
 
 
 
 ## Hardware generation and evaluation
 
+The complete hardware generation and evaluation process can be divided into 4 steps 
+1. Generating samples
+2. Run vitis and generate ip
+3. Run vivado and extract hardware
+4. Evaluation in the board
+
+
+### 1. Generating samples
+
+After generating the hardware projects, the first step generate the integer samples. You enter the generated project folder and use the following commands:
+
+```bash
+cd <Path-to-the-generated-project-folder>
+make gen
+```
+
+For example, assuming you generated the hardware project above, you will see the following file structure.
+
+```
+EDSA
+├── software
+├── hardware
+├── optimization
+├── eventNet
+│   ├── model
+│   ├── DSE
+│   ├── HW
+│   │   ├── ASL_0p5_shift16-zcu102_80res
+│   │   │   ├── full
+│   │   │   │   ├── prj
+│   │   │   │   │   ├── hls.tcl
+│   │   │   │   │   ├── vivado.tcl
+│   │   │   │   │   ├── ...... (Other files)
+│   │   │   │   ├── cfg.json
+│   │   │   │   ├── gen_data.py
+│   │   │   │   ├── gen_code.py
+│   │   │   │   ├── linebuffer.h
+│   │   │   │   ├── ...... (Other files)
+│   │   │   ├── Makefile
+│   │   ├── ASL_2929_shift16-zcu102_80res
+│   │   ├── NMNIST_shift16-zcu102_60res
+│   │   ├── Roshambo_shift16-zcu102_80res
+│   │   ├── DVS_1890_shift16-zcu102_80res
+│   │   ├── DVS_0p5_shift16-zcu102_60res
+│   │   ├── NCal_w0p5_shift32-zcu102_50res
+│   │   ├── NCal_2751_shift32-zcu102_80res
+```
+
+Then you can enter each project and generate the integer samples by:
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/ASL_0p5_shift16-zcu102_80res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/ASL_2929_shift16-zcu102_80res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/NMNIST_shift16-zcu102_60res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/Roshambo_shift16-zcu102_80res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_0p5_shift16-zcu102_60res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/NCal_w0p5_shift32-zcu102_50res/full
+make gen
+```
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/NCal_2751_shift32-zcu102_80res/full
+make gen
+```
+
+The data txt will be generated in the **data** folder inside the project root.
+
+To simplify, we will only demonstrate the project **DVS_1890_shift16-zcu102_80res** as the exmaple for introduction.
+
+
+### 2. Run vitis and generate ip
+
+The next step is to run vitis and generate ip. To achieve it, entering the project folder and run make ip_all by:
+
+```bash
+cd <Path-to-the-generated-project-folder>
+make ip_all
+```
+
+The results and logs will be stored in the **prj** folder inside the hardware project root. For example, to extract the ip of **DVS_1890** model, you should:
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+make ip_all
+```
+
+You can check the results inside the **eventNet/HW/DVS_1890_shift16-zcu102_80res/full/prj** folder.
+
+
+### 3. Run vivado and extract hardware
+
+After extracting ip, you can use the following commands to generate the hardware:
+
+```bash
+cd <Path-to-the-generated-project-folder>
+make hw_all
+```
+
+The hardware results will be stored in the **hw** folder. For example, to generate the ip of **DVS_1890** model, you should:
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+make hw_all
+```
+You can check the results inside the **eventNet/HW/DVS_1890_shift16-zcu102_80res/full/hw** folder.
+
+
+
+### 4. Evaluation in the board
+
+Finally 
+
+#### (1) Evaluate latency and power
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
+```
+
+#### (2) End-to-end evaluation
+
+```bash
+# Make sure you are in the root directory
+cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+make e2e_inference
+```

@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'IniRoshambo'
-  dataset_path: "data//Roshambo/dataset_nullhop/lmdb_train"
+  dataset_path: "data/Roshambo/dataset_nullhop/lmdb_train"
   object_classes: 'all'
 
 

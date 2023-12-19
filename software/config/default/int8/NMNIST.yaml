@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'NMNISTProcessed'
-  dataset_path: "data/ASLDVS"
+  dataset_path: "data/NMNIST"
   object_classes: 'all'
 
 
