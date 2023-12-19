@@ -103,6 +103,9 @@ cd /vol/datastore/EDSA/AE_test/eventHW/NCal_w0p5_shift32-zcu102_50res
 make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
 ```
 
+The latency will be displayed in the terminal respectively, while the power consumption will be saved in the csv file "".
+
+
 #### 2. End-to-end evaluation
 
 To evaluate the end-to-end inference results, run the following commands.

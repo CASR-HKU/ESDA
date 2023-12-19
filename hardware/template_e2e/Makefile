@@ -123,6 +123,18 @@ evaluate_hw_feat:
 	@echo "HW evaluated and results saved to hw/evaluate.log"
 
 
+e2e_inference:
+	@python gen_input.py
+	@ssh ${HW_HOST} "mkdir -p ${HW_DIR}"
+	@scp ${SCPFLAGS} hw/top.hwh ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} hw/top.bit ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} tb_input_feature.npy ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} tb_spatial_mask.npy ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} cfg.json ${HW_HOST}:${HW_DIR}/
+	@echo "Running HW on ${HW_HOST}..."
+	@ssh root@${HW_HOST} "cd ${HW_DIR}; make -f ../evaluate.mk e2e_feat ${EVAL_TARGET}"
+	@echo "Hardware end-to-end result displayed"
+
 clean:
 	@echo "Not implemented yet" && exit 1
 
