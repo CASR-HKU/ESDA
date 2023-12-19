@@ -5,7 +5,8 @@ This is the code for the paper "xxx"
 The whole pipeline contains three parts
 1. Software model training and evaluation
 2. Hardware configuration optimization
-3. Hardware generation and evaluation
+3. Hardware extraction
+4. Hardware performance evaluation
 
 
 ## Installation
@@ -363,16 +364,23 @@ You can check the results inside the **eventNet/HW/DVS_1890_shift16-zcu102_80res
 
 
 
-### 4. Evaluation in the board
+## Hardware performance evaluation
 
 Finally 
 
-#### (1) Evaluate latency and power
+#### 1. Evaluate latency and power
 
 ```bash
 # Make sure you are in the root directory
 cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
+```
+
+(Or let them directly run on the board?)
+```bash
+# Make sure you are in the root directory
+cd $ESDA_HOME/hardware/board
+python3 evaluate.py -1 -d hw/DVS_1890/
 ```
 
 #### (2) End-to-end evaluation
@@ -381,4 +389,11 @@ make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 # Make sure you are in the root directory
 cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
 make e2e_inference
+```
+
+(Or let them directly run on the board?)
+```bash
+# Make sure you are in the root directory
+cd $ESDA_HOME/hardware/board
+python3 hw_e2e.py 1 -d hw/DVS_1890/
 ```
