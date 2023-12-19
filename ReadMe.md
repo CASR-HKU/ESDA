@@ -127,7 +127,7 @@ EDSA
 ├── software
 ├── hardware
 ├── optimization
-├── hw/model
+├── eventNet/model
 │   ├── ASL_2929_shift16
 │   │   ├── model.json
 │   │   ├── input_Features.npy
@@ -146,14 +146,14 @@ EDSA
 You can conduct hardware configuration optimization by the following commands
 ```bash
 # Make sure you are in the root directory
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name DVS_1890_shift16 --hw_name zcu102_80res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name DVS_0p5_shift16 --hw_name zcu102_60res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NMNIST_shift16 --hw_name zcu102_60res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name ASL_0p5_shift16 --hw_name zcu102_80res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name ASL_2929_shift16 --hw_name zcu102_80res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name Roshambo_shift16 --hw_name zcu102_80res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NCal_2751_shift32 --hw_name zcu102_80res --results_path hw/DSE
-python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NCal_w0p5_shift32_2 --hw_name zcu102_50res --results_path hw/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_0p5_shift16 --eventNet_name zcu102_60res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NMNIST_shift16 --eventNet_name zcu102_60res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_0p5_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_2929_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name Roshambo_shift16 --eventNet_name zcu102_80res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_2751_shift32 --eventNet_name zcu102_80res --results_path eventNet/DSE
+python optimization/eventnet.py --model_path eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_w0p5_shift32_2 --eventNet_name zcu102_50res --results_path eventNet/DSE
 ```
 
 The result
@@ -166,14 +166,14 @@ The result
 cd hardware
 ```
 
-For example, assuming you generate the DSE result using the commands above, you will generate the config files in the hw/DSE file
+For example, assuming you generate the DSE result using the commands above, you will generate the config files in the eventNet/DSE file
 
 ```
 EDSA
 ├── software
 ├── hardware
 ├── optimization
-├── hw
+├── eventNet
 │   ├── model
 │   ├── DSE
 │   │   ├── ASL_2929_shift16
