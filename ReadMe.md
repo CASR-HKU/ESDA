@@ -17,12 +17,15 @@ The whole pipeline contains three parts
 
 ### Python
 
-Assuming you have download the anaconda. You can create a new environment by:
+Assuming you have download the [anaconda](https://www.anaconda.com/download). You can create a new environment by:
 
 ```bash
 conda create -n esda python
 conda activate esda
 ```
+
+Or you can directly download [python 3.8](https://www.python.org/downloads/release/python-380/)
+
 
 Then install the required packages by:
 
@@ -33,7 +36,7 @@ pip3 install torch==1.8.2 torchvision==0.9.2 torchaudio==0.8.2 --extra-index-url
 pip3 install -r requirements.txt
 pip3 install gpkit pyscipopt
 ```
-Finally you need to install the Minkowski Engine by:
+Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/MinkowskiEngine):
 
 
 ```bash
