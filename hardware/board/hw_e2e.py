@@ -57,7 +57,7 @@ class inverted_residual_block:
             shape=(self.Height * self.Width * self.IC), dtype=np.int8
         )
         self.output_feature_buffer = allocate(
-            shape=16, dtype=np.int32
+            shape=128, dtype=np.int32
             # shape=(self.Height * self.Width * self.OC), dtype=np.int32
         )
         self.mask_buffer = allocate(
