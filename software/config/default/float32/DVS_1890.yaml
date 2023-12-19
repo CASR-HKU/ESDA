@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'DVSGesture_processed'
-  dataset_path: "/home/baoheng/Documents/event_dataset_preprocessed/dvs_gesture_clip"
+  dataset_path: "data/dvs_gesture_clip"
   object_classes: 'all'
 
 

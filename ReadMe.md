@@ -52,13 +52,13 @@ Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/Min
 
 ### 1. Dataset preparation
 
-Download the dataset from the following link and put them in the folder `data/` respectively.
+Please refer to [dataset preparation](doc/dataset.md) for the details.
 
 
 
 ### 2. Software model training
 
-(1) Training float32 model using the following commands
+(1) Training float32 model
 
 ```bash
 python main.py --settings_file=<path-to-float32-config-file> -s <path-to-result-folder>
@@ -69,17 +69,17 @@ And the model will be saved in your <path to result folder>
 For example, after downloading the dataset, you can conduct training using the following commands
 
 ```bash
-python main.py --settings_file=config/config_AE/float32/ASL_2929.yaml -s exp_float32/ASL_2929
-python main.py --settings_file=config/config_AE/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5
-python main.py --settings_file=config/config_AE/float32/DVS_1890.yaml -s exp_float32/DVS_1890
-python main.py --settings_file=config/config_AE/float32/DVS_w0p5.yaml -s exp_float32/DVS_w0p5
-python main.py --settings_file=config/config_AE/float32/NMNIST.yaml -s exp_float32/NMNIST
-python main.py --settings_file=config/config_AE/float32/Roshambo.yaml -s exp_float32/Roshambo
-python main.py --settings_file=config/config_AE/float32/NCal_2751.yaml -s exp_float32/NCal_2751
-python main.py --settings_file=config/config_AE/float32/NCal_w0p5.yaml -s exp_float32/NCal_w0p5
+python main.py --settings_file=config/default/float32/ASL_2929.yaml -s exp_float32/ASL_2929
+python main.py --settings_file=config/default/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5
+python main.py --settings_file=config/default/float32/DVS_1890.yaml -s exp_float32/DVS_1890
+python main.py --settings_file=config/default/float32/DVS_w0p5.yaml -s exp_float32/DVS_w0p5
+python main.py --settings_file=config/default/float32/NMNIST.yaml -s exp_float32/NMNIST
+python main.py --settings_file=config/default/float32/Roshambo.yaml -s exp_float32/Roshambo
+python main.py --settings_file=config/default/float32/NCal_2751.yaml -s exp_float32/NCal_2751
+python main.py --settings_file=config/default/float32/NCal_w0p5.yaml -s exp_float32/NCal_w0p5
 ```
 
-(2) Training int8 model using the following commands
+(2) Training int8 model
 
 After training with float32 model, you can train the int8 model using the following commands.
 ```bash
@@ -90,14 +90,14 @@ And the model will be saved in your <path to result folder>.
 For example, assuming you have trained the float32 model above, you can train the int8 model using the following commands:
 
 ```bash
-python main.py --settings_file=config/config_AE/int8/ASL_2929.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_2929 --load exp_float32/ASL_2929/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/ASL_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_w0p5 --load exp_float32/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/DVS_1890.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_1890 --load exp_float32/DVS_1890/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/DVS_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_w0p5 --load exp_float32/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/NMNIST.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NMNIST --load exp_float32/NMNIST/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/Roshambo.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/Roshambo --load exp_float32/Roshambo/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/config_AE/int8/NCal_2751.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_2751 --load exp_float32/NCal_2751/ckpt.best.pth.tar --shift_bit 32
-python main.py --settings_file=config/config_AE/int8/NCal_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_w0p5 --load exp_float32/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32
+python main.py --settings_file=config/default/int8/ASL_2929.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_2929 --load exp_float32/ASL_2929/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/ASL_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_w0p5 --load exp_float32/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/DVS_1890.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_1890 --load exp_float32/DVS_1890/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/DVS_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_w0p5 --load exp_float32/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/NMNIST.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NMNIST --load exp_float32/NMNIST/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/Roshambo.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/Roshambo --load exp_float32/Roshambo/ckpt.best.pth.tar --shift_bit 16
+python main.py --settings_file=config/default/int8/NCal_2751.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_2751 --load exp_float32/NCal_2751/ckpt.best.pth.tar --shift_bit 32
+python main.py --settings_file=config/default/int8/NCal_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_w0p5 --load exp_float32/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32
 ```
 
 

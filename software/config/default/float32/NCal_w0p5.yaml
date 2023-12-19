@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'NCaltech101Processed'
-  dataset_path: "/home/baoheng/Documents/event_dataset_preprocessed/preprocess_h5/NCal_window0p1_overlap0p5"
+  dataset_path: "data/NCal"
   object_classes: 'all'
 
 

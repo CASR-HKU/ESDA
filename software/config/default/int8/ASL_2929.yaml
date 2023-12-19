@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'ASLDVS'
-  dataset_path: "/home/baoheng/Documents/event_dataset_preprocessed/ASLDVS"
+  dataset_path: "data/ASLDVS"
   object_classes: 'all'
 
 
