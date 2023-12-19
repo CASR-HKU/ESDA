@@ -58,42 +58,42 @@ There are 8 folders in the directory, each folder contains one hardware implemen
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/ASL_0p5_shift16-zcu102_80res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/ASL_2929_shift16-zcu102_80res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/DVS_1890_shift16-zcu102_80res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/NMNIST_shift16-zcu102_60res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/Roshambo_shift16-zcu102_60res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/NCal_2751_shift32-zcu102_80res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
-make evalaute_hw EVAL_TARGET="e2e ARG_NUM_RUN=-1" --enable_pm
+make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 The latency will be displayed in the terminal respectively, while the power consumption will be saved in the csv file "".
