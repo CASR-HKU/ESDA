@@ -46,8 +46,6 @@ Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/Min
 
 
 
-
-
 ## Software model training and evaluation
 
 ### 1. Dataset preparation
@@ -107,14 +105,90 @@ python main.py --settings_file=config/default/int8/NCal_w0p5.yaml --epochs 100 -
 
 
 
+
 ## Hardware configuration optimization
+
+### 1. Hardware searching
 
 After obtaining the int8 model, the next step is to optimize the hardware configuration based on your model architecture and the dataset.
 
 
 ```bash
+# Assuming you are in the root directory
 cd optimization
-
+python 
 ```
 
-Assuming you have generate 
+For example, assuming you have generate the corresponding model structures and input data using the commands above.
+You will obtain a folder of model structure and feature files
+
+```
+EDSA
+├── software
+├── hardware
+├── optimization
+├── hw/model
+│   ├── ASL_2929_shift16
+│   │   ├── model.json
+│   │   ├── input_Features.npy
+│   │   ├── input_Coordinates.npy
+│   │   ├── output_logit.npy
+│   │   ...
+│   ├── ASL_w0p5_shift16
+│   ├── DVS_1890_shift16
+│   ├── DVS_w0p5_shift16
+│   ├── NCal_2751_shift32
+│   ├── NCal_w0p5_shift32
+│   ├── NMNIST_shift16
+│   ├── Roshambo_shift16
+```
+
+You can conduct hardware configuration optimization by the following commands
+```bash
+# Make sure you are in the root directory
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name DVS_1890_shift16 --hw_name zcu102_80res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name DVS_0p5_shift16 --hw_name zcu102_60res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NMNIST_shift16 --hw_name zcu102_60res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name ASL_0p5_shift16 --hw_name zcu102_80res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name ASL_2929_shift16 --hw_name zcu102_80res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name Roshambo_shift16 --hw_name zcu102_80res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NCal_2751_shift32 --hw_name zcu102_80res --results_path hw/DSE
+python optimization/eventnet.py --model_path hw/model --hw_path /vol/datastore/EDSA/eventNetHWConfig --model_name NCal_w0p5_shift32_2 --hw_name zcu102_50res --results_path hw/DSE
+```
+
+The result
+
+### 2. Project generation
+
+
+```bash
+# Make sure you are in the root directory
+cd hardware
+```
+
+For example, assuming you generate the DSE result using the commands above, you will generate the config files in the hw/DSE file
+
+```
+EDSA
+├── software
+├── hardware
+├── optimization
+├── hw
+│   ├── model
+│   ├── DSE
+│   │   ├── ASL_2929_shift16
+│   │   ├── model.json
+│   │   ├── input_Features.npy
+│   │   ├── input_Coordinates.npy
+│   │   ├── output_logit.npy
+```
+
+Then you can generate the corresponding hardware project by:
+
+
+
+
+
+
+## Hardware generation and evaluation
+
