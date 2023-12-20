@@ -169,6 +169,7 @@ cp -r /vol/datastore/EDSA/AE_test/eventHW_tpl/ .
 
 The project structure will be generated like this:
 
+```
 ├── resysthesis
 │   ├── DVS_1890_shift16-zcu102_80res
 │   │   ├── full
@@ -180,9 +181,9 @@ The project structure will be generated like this:
 │   ├── NCal_w0p5_shift32-zcu102_50res
 │   ├── NMNIST_shift16-zcu102_60res
 │   ├── Roshambo_shift16-zcu102_80res
+```
 
-
-Then you can 
+Then you can enter one of the folder to conduct overall systhesis.
 
 For example, if you want to resysthesis the group DVS_1890_shift16-zcu102_80res, 
 
