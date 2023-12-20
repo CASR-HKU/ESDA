@@ -2,14 +2,14 @@
 
 ## Introduction
 
-Here is the script for artifact evaluation.....
+Here is the documents for the artifact evaluation.
 
 
 ## Procedures 
 
 ### 1. Software evaluation
 
-After logging in a1, go to the directory '/vol/datastore/EDSA/ESDA/software/' by 
+After logging in our server, go to the directory '/vol/datastore/EDSA/ESDA/software/' by 
 
 ```bash
 cd /vol/datastore/EDSA/ESDA/software/
@@ -39,7 +39,14 @@ The results will be displayed in the terminal respectively.
 
 ### 2. Hardware evaluation
 
-After logging in a1, go to the directory '/vol/datastore/EDSA/AE_test/eventHW/' by 
+
+We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **/vol/datastore/EDSA/AE_test/eventHW/** to run the [commands](#bitstreams-evaluation).
+ There are 8 folders in the directory, each folder contains one hardware implementation. 
+
+If you want to resynthesis the designs, please refer to [resynthesis](#resysthesis)
+
+
+#### Bitstreams evaluation
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/
@@ -52,9 +59,7 @@ conda activate esda
 ```
 
 
-There are 8 folders in the directory, each folder contains one hardware implementation. 
-
-#### 1. Latency and power consumption evaluation
+1. Latency and power consumption evaluation
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/ASL_0p5_shift16-zcu102_80res/full/
@@ -99,10 +104,11 @@ make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 The latency will be displayed in the terminal respectively, while the power consumption will be saved in the csv file "".
 
 
-#### 2. End-to-end evaluation
+
+2. End-to-end evaluation
 
 To evaluate the end-to-end inference results, run the following commands.
-The **python** script will generate the software end-to-end inference results, while the **make** hardware end-to-end inference results respectively.
+The **python sw_e2e.py** script will generate the software end-to-end inference results, while the **make e2e_inference** hardware end-to-end inference results respectively.
 
 ```bash
 cd /vol/datastore/EDSA/AE_test/eventHW/ASL_0p5_shift16-zcu102_80res/full/
@@ -150,4 +156,43 @@ make e2e_inference
 cd /vol/datastore/EDSA/AE_test/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
 python sw_e2e.py
 make e2e_inference
+```
+
+
+#### Resysthesis
+if you want to resysthesis the whole project, we have prepare the template for each implementation in **/vol/datastore/EDSA/AE_test/eventHW_tpl**.
+
+```bash
+mkdir resysthesis && cd resysthesis
+cp -r /vol/datastore/EDSA/AE_test/eventHW_tpl/ .
+```
+
+The project structure will be generated like this:
+
+├── resysthesis
+│   ├── DVS_1890_shift16-zcu102_80res
+│   │   ├── full
+│   │   ├── Makefile
+│   ├── DVS_0p5_shift16-zcu102_60res
+│   ├── ASL_0p5_shift16-zcu102_80res
+│   ├── ASL_2929_shift16-zcu102_80res
+│   ├── NCal_2751_shift32-zcu102_80res
+│   ├── NCal_w0p5_shift32-zcu102_50res
+│   ├── NMNIST_shift16-zcu102_60res
+│   ├── Roshambo_shift16-zcu102_80res
+
+
+Then you can 
+
+For example, if you want to resysthesis the group DVS_1890_shift16-zcu102_80res, 
+
+```bash
+# Assuming you are in the folder 'resysthesis'
+cd DVS_1890_shift16-zcu102_80res/full
+make gen  # Generate sample
+make ip_all  # Vitis systhesis
+make hw_all  # Vivado systhesis
+make make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'" # Evaluate the latency and power consumption
+make e2e_inference  # Conduct e2e inference on board
+python sw_e2e.py 
 ```

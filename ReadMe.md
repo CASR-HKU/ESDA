@@ -9,6 +9,9 @@ The whole pipeline contains three parts
 4. Hardware performance evaluation
 
 
+If you are going to conduct **Artifact evaluation**, Please refer to [evaluate](evaluate.md)
+
+
 ## Installation
 
 
