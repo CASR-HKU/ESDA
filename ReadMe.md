@@ -51,7 +51,8 @@ pip3 install torch==1.8.2 torchvision==0.9.2 torchaudio==0.8.2 --extra-index-url
 Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/MinkowskiEngine):
 
 ```bash
-cd software
+# Assuming you are in the software folder
+conda install -c conda-forge cudatoolkit-dev
 python setup.py install
 ```
 

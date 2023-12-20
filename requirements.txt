@@ -1,0 +1,9 @@
+opencv-python
+tqdm
+PyYAML
+matplotlib
+scipy
+h5py
+lmdb
+protobuf==3.11.3 
+tonic
