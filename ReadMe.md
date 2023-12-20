@@ -24,7 +24,7 @@ If you are going to conduct **Artifact evaluation**, Please refer to [evaluate](
 Assuming you have download the [anaconda](https://www.anaconda.com/download). You can create a new environment by:
 
 ```bash
-conda create -n ESDA python
+conda create -n ESDA python=3.8
 conda activate ESDA
 ```
 
@@ -51,7 +51,7 @@ pip3 install torch==1.8.2 torchvision==0.9.2 torchaudio==0.8.2 --extra-index-url
 Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/MinkowskiEngine):
 
 ```bash
-# Assuming you are in the software folder
+cd software
 conda install -c conda-forge cudatoolkit-dev
 python setup.py install
 ```
