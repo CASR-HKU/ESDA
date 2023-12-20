@@ -12,16 +12,17 @@ Here is the documents for the artifact evaluation.
 After logging in our server, go to the directory '/vol/datastore/EDSA/ESDA/software/' by 
 
 ```bash
-cd /vol/datastore/EDSA/ESDA/software/
+cd /vol/datastore/aeguest/ESDA/
 ```
 
-Then activate the environment by
+For convenience, we has create a conda environment for the AE. 
+You can activate the environment by
 
 ```bash
 conda activate esda
 ```
 
-Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can directly run the following commands to generate the accuracy results for each dataset in Table 1.
+Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
 
 ```bash
 python main.py --bias_bit 16 --settings_file=weights/ASL_w0p5/settings.yaml --load weights/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
@@ -51,64 +52,61 @@ where the Prec@1 is the accuracy result shown in the **Acc%** column in the tabl
 ### 2. Hardware evaluation
 
 
-We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **/vol/datastore/EDSA/AE_test/eventHW/** to run the [commands](#bitstreams-evaluation).
+We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **/vol/datastore/ESDA/aeguest/eventHW/** to run the [commands](#bitstreams-evaluation).
  There are 8 folders in the directory, each folder contains one hardware implementation. 
 
 If you want to resynthesis the designs, please refer to [resynthesis](#resysthesis)
 
-
-#### Bitstreams evaluation
-
-```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/
-```
-
-Then activate the environment by
+To begin with, make sure you are using the **esda** environment.
 
 ```bash
 conda activate esda
 ```
 
+#### Bitstreams evaluation
+
+All the generated hardware are prepared in **/vol/datastore/ESDA/aeguest/eventHW/**. You can directly conduct evalution using the following commands.
+
 
 1. Latency and power consumption evaluation
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/ASL_0p5_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/ASL_0p5_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/ASL_2929_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/ASL_2929_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/DVS_1890_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/DVS_1890_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NMNIST_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NMNIST_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/Roshambo_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/Roshambo_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NCal_2751_shift32-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NCal_2751_shift32-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
@@ -122,60 +120,60 @@ To evaluate the end-to-end inference results, run the following commands.
 The **python sw_e2e.py** script will generate the software end-to-end inference results, while the **make e2e_inference** hardware end-to-end inference results respectively.
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/ASL_0p5_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/ASL_0p5_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/ASL_2929_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/ASL_2929_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/DVS_1890_shift16-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/DVS_1890_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash 
-cd /vol/datastore/EDSA/AE_test/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NMNIST_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NMNIST_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/Roshambo_shift16-zcu102_60res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/Roshambo_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NCal_2751_shift32-zcu102_80res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NCal_2751_shift32-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/EDSA/AE_test/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
+cd /vol/datastore/ESDA/aeguest/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 
 #### Resysthesis
-if you want to resysthesis the whole project, we have prepare the template for each implementation in **/vol/datastore/EDSA/AE_test/eventHW_tpl**.
+if you want to resysthesis the whole project, we have prepare the template for each implementation in **/vol/datastore/ESDA/aeguest/eventHW_tpl**.
 
 ```bash
 mkdir resysthesis && cd resysthesis
-cp -r /vol/datastore/EDSA/AE_test/eventHW_tpl/ .
+cp -r /vol/datastore/ESDA/aeguest/eventHW_tpl/ .
 ```
 
 The project structure will be generated like this:
