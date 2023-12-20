@@ -5,7 +5,7 @@ This is the code for the paper "xxx"
 The whole pipeline contains three parts
 1. Software model training and evaluation
 2. Hardware configuration optimization
-3. Hardware extraction
+3. Hardware systhesis
 4. Hardware performance evaluation
 
 
@@ -41,8 +41,9 @@ Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/Min
 
 
 ```bash
+cd software
+python setup.py install
 ```
-
 
 
 
@@ -64,21 +65,21 @@ All the training progress are done in the **software** folder.
 ```bash
 python main.py --settings_file=<path-to-float32-config-file> -s <path-to-result-folder>
 ```
-And the model will be saved in your <path to result folder>
+And the model will be saved in your <path-to-result-folder>
 
 
-For example, after downloading the dataset, you can conduct training using the following commands
+For example, after downloading the dataset, you can conduct training float32 model using the following commands
 
 ```bash
-python main.py --settings_file=config/default/float32/ASL_2929.yaml -s exp_float32/ASL_2929
-python main.py --settings_file=config/default/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5
-python main.py --settings_file=config/default/float32/DVS_1890.yaml -s exp_float32/DVS_1890
-python main.py --settings_file=config/default/float32/DVS_w0p5.yaml -s exp_float32/DVS_w0p5
-python main.py --settings_file=config/default/float32/NMNIST.yaml -s exp_float32/NMNIST
-python main.py --settings_file=config/default/float32/Roshambo.yaml -s exp_float32/Roshambo
-python main.py --settings_file=config/default/float32/NCal_2751.yaml -s exp_float32/NCal_2751
-python main.py --settings_file=config/default/float32/NCal_w0p5.yaml -s exp_float32/NCal_w0p5
+python main.py --settings_file=config/default/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5  # For ASL-DVS
+python main.py --settings_file=config/default/float32/DVS_w0p5.yaml -s exp_float32/DVS_1890  # For DvsGesture
+python main.py --settings_file=config/default/float32/NMNIST.yaml -s exp_float32/NMNIST   # For N-MNIST
+python main.py --settings_file=config/default/float32/Roshambo.yaml -s exp_float32/Roshambo  # For RoShamBo17
+python main.py --settings_file=config/default/float32/NCal_w0p5.yaml -s exp_float32/NCal_w0p5   # For N-Caltech101
 ```
+
+To simplify, we will only demonstrate the project **DVS_1890** as the exmaple for introduction.
+
 
 (2) Training int8 model
 
@@ -91,14 +92,7 @@ And the model will be saved in your <path to result folder>.
 For example, assuming you have trained the float32 model above, you can train the int8 model using the following commands:
 
 ```bash
-python main.py --settings_file=config/default/int8/ASL_2929.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_2929 --load exp_float32/ASL_2929/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/default/int8/ASL_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/ASL_w0p5 --load exp_float32/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16
 python main.py --settings_file=config/default/int8/DVS_1890.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_1890 --load exp_float32/DVS_1890/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/default/int8/DVS_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/DVS_w0p5 --load exp_float32/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/default/int8/NMNIST.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NMNIST --load exp_float32/NMNIST/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/default/int8/Roshambo.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/Roshambo --load exp_float32/Roshambo/ckpt.best.pth.tar --shift_bit 16
-python main.py --settings_file=config/default/int8/NCal_2751.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_2751 --load exp_float32/NCal_2751/ckpt.best.pth.tar --shift_bit 32
-python main.py --settings_file=config/default/int8/NCal_w0p5.yaml --epochs 100 --fixBN_ratio 0.3 -s exp_int8/NCal_w0p5 --load exp_float32/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32
 ```
 
 
@@ -131,35 +125,19 @@ EDSA
 ├── hardware
 ├── optimization
 ├── eventNet/model
-│   ├── ASL_2929_shift16
+│   ├── DVS_1890_shift16
 │   │   ├── model.json
 │   │   ├── input_Features.npy
 │   │   ├── input_Coordinates.npy
 │   │   ├── output_logit.npy
-│   │   ...
-│   ├── ASL_w0p5_shift16
-│   ├── DVS_1890_shift16
-│   ├── DVS_w0p5_shift16
-│   ├── NCal_2751_shift32
-│   ├── NCal_w0p5_shift32
-│   ├── NMNIST_shift16
-│   ├── Roshambo_shift16
 ```
 
 You can conduct hardware configuration optimization by the following commands
 ```bash
 # Make sure you are in the root directory
 python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_0p5_shift16 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NMNIST_shift16 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_0p5_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name ASL_2929_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name Roshambo_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_2751_shift32 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name NCal_w0p5_shift32_2 --eventNet_name zcu102_50res --results_path ../eventNet/DSE
 ```
 
-The result
 
 ### 2. Project generation
 
@@ -219,7 +197,7 @@ The hardware project will be saved in the **eventNet/HW/** folder.
 
 
 
-## Hardware generation and evaluation
+## Hardware systhesis
 
 The complete hardware generation and evaluation process can be divided into 4 steps 
 1. Generating samples
@@ -248,7 +226,7 @@ EDSA
 │   ├── model
 │   ├── DSE
 │   ├── HW
-│   │   ├── ASL_0p5_shift16-zcu102_80res
+│   │   ├── DVS_1890_shift16-zcu102_80res
 │   │   │   ├── full
 │   │   │   │   ├── prj
 │   │   │   │   │   ├── hls.tcl
@@ -260,40 +238,9 @@ EDSA
 │   │   │   │   ├── linebuffer.h
 │   │   │   │   ├── ...... (Other files)
 │   │   │   ├── Makefile
-│   │   ├── ASL_2929_shift16-zcu102_80res
-│   │   ├── NMNIST_shift16-zcu102_60res
-│   │   ├── Roshambo_shift16-zcu102_80res
-│   │   ├── DVS_1890_shift16-zcu102_80res
-│   │   ├── DVS_0p5_shift16-zcu102_60res
-│   │   ├── NCal_w0p5_shift32-zcu102_50res
-│   │   ├── NCal_2751_shift32-zcu102_80res
 ```
 
 Then you can enter each project and generate the integer samples by:
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/ASL_0p5_shift16-zcu102_80res/full
-make gen
-```
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/ASL_2929_shift16-zcu102_80res/full
-make gen
-```
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/NMNIST_shift16-zcu102_60res/full
-make gen
-```
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/Roshambo_shift16-zcu102_80res/full
-make gen
-```
 
 ```bash
 # Make sure you are in the root directory
@@ -301,27 +248,8 @@ cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
 make gen
 ```
 
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/DVS_0p5_shift16-zcu102_60res/full
-make gen
-```
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/NCal_w0p5_shift32-zcu102_50res/full
-make gen
-```
-
-```bash
-# Make sure you are in the root directory
-cd eventNet/HW/NCal_2751_shift32-zcu102_80res/full
-make gen
-```
-
 The data txt will be generated in the **data** folder inside the project root.
 
-To simplify, we will only demonstrate the project **DVS_1890_shift16-zcu102_80res** as the exmaple for introduction.
 
 
 ### 2. Run vitis and generate ip
@@ -364,6 +292,7 @@ You can check the results inside the **eventNet/HW/DVS_1890_shift16-zcu102_80res
 
 
 
+
 ## Hardware performance evaluation
 
 Finally 
@@ -383,7 +312,7 @@ cd $ESDA_HOME/hardware/board
 python3 evaluate.py -1 -d hw/DVS_1890/
 ```
 
-#### (2) End-to-end evaluation
+#### 2. End-to-end evaluation
 
 ```bash
 # Make sure you are in the root directory
