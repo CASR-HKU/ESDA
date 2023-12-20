@@ -45,7 +45,7 @@ Valid: -1 | loss: 0.0207 | Top-1: 99.00 | Top-5: 99.98: 100%####################
 * Epoch -1 - Prec@1 99.002 - Prec@5 99.985 - Loss 0.032
 99.0 99.98 0.03 281184 270560
 ```
-where the Prec@1 is the accuracy result.
+where the Prec@1 is the accuracy result shown in the **Acc%** column in the table.
 
 
 ### 2. Hardware evaluation
