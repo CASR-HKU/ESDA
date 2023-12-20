@@ -22,13 +22,22 @@ You can activate the environment by
 conda activate esda
 ```
 
-Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
+Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can first link the dataset to your **software/data** folder by:
 
 ```bash
+cd software/data
+ln -s /vol/datastore/event_dataset/* .
+```
+
+You can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
+
+
+```bash
+cd .. # Step back to the 'software' folder
 python main.py --bias_bit 16 --settings_file=weights/ASL_w0p5/settings.yaml --load weights/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 python main.py --bias_bit 16 --settings_file=weights/ASL_2929/settings.yaml --load weights/ASL_2929/ckpt.best.pth.tar --shift_bit 16 -e
-python main.py --bias_bit 16 --settings_file=weights/DVS_1890/settings.yaml --load weights/DVS_1890/ckpt.best.pth.tar --shift_bit 16 -e
-python main.py --bias_bit 16 --settings_file=weights/DVS_w0p5/settings.yaml --load weights/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
+python main.py --bias_bit 16 --settings_file=weights/DVS_slice_1890/settings.yaml --load weights/DVS_1890/ckpt.best.pth.tar --shift_bit 16 -e
+python main.py --bias_bit 16 --settings_file=weights/DVS_slice_w0p5/settings.yaml --load weights/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 python main.py --bias_bit 16 --settings_file=weights/NMNIST/settings.yaml --load weights/NMNIST/ckpt.best.pth.tar --shift_bit 16 -e 
 python main.py --bias_bit 16 --settings_file=weights/Roshambo/settings.yaml --load weights/Roshambo/ckpt.best.pth.tar --shift_bit 16 -e 
 python main.py --bias_bit 32 --settings_file=weights/NCal_2751/settings.yaml --load weights/NCal_2751/ckpt.best.pth.tar --shift_bit 32 -e
