@@ -57,6 +57,20 @@ python setup.py install
 
 Please refer to [dataset preparation](doc/dataset.md) for the details.
 
+Once you finished, you will obtain the data structure like this
+
+```
+EDSA
+├── software
+├── hardware
+├── optimization
+├── data
+│   ├── ASLDVS
+│   ├── dvs_gesture_clip
+│   ├── NCal
+│   ├── NMNIST
+│   ├── Roshambo
+```
 
 
 ### 2. Software model training

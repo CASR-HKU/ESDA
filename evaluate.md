@@ -21,7 +21,8 @@ Then activate the environment by
 conda activate esda
 ```
 
-Finally run the following commands to generate the results.
+Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can directly run the following commands to generate the accuracy results for each dataset in Table 1.
+
 ```bash
 python main.py --bias_bit 16 --settings_file=weights/ASL_w0p5/settings.yaml --load weights/ASL_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 python main.py --bias_bit 16 --settings_file=weights/ASL_2929/settings.yaml --load weights/ASL_2929/ckpt.best.pth.tar --shift_bit 16 -e
@@ -29,12 +30,22 @@ python main.py --bias_bit 16 --settings_file=weights/DVS_1890/settings.yaml --lo
 python main.py --bias_bit 16 --settings_file=weights/DVS_w0p5/settings.yaml --load weights/DVS_w0p5/ckpt.best.pth.tar --shift_bit 16 -e
 python main.py --bias_bit 16 --settings_file=weights/NMNIST/settings.yaml --load weights/NMNIST/ckpt.best.pth.tar --shift_bit 16 -e 
 python main.py --bias_bit 16 --settings_file=weights/Roshambo/settings.yaml --load weights/Roshambo/ckpt.best.pth.tar --shift_bit 16 -e 
-python main.py --bias_bit 16 --settings_file=weights/NCal_2751/settings.yaml --load weights/NCal_2751/ckpt.best.pth.tar --shift_bit 32 -e
-python main.py --bias_bit 16 --settings_file=weights/NCal_w0p5/settings.yaml --load weights/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32 -e
+python main.py --bias_bit 32 --settings_file=weights/NCal_2751/settings.yaml --load weights/NCal_2751/ckpt.best.pth.tar --shift_bit 32 -e
+python main.py --bias_bit 32 --settings_file=weights/NCal_w0p5/settings.yaml --load weights/NCal_w0p5/ckpt.best.pth.tar --shift_bit 32 -e
 ```
 
 The results will be displayed in the terminal respectively.
+For example, if you are evaluating the **NMNIST** dataset, the result displayed should be:
 
+```bash
+Total sample num is 19942
+Number of ALL parameters: 281184
+Number of parameters except BN: 270560
+Valid: -1 | loss: 0.0207 | Top-1: 99.00 | Top-5: 99.98: 100%####################################################################| 78/78 [00:12<00:00,  6.43it/s]
+* Epoch -1 - Prec@1 99.002 - Prec@5 99.985 - Loss 0.032
+99.0 99.98 0.03 281184 270560
+```
+where the Prec@1 is the accuracy result.
 
 
 ### 2. Hardware evaluation
