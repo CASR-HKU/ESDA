@@ -1,30 +1,19 @@
 
 
-## Introduction
+# Reproduce Results in FPGA'24 Paper
 
-Here is the documents for the artifact evaluation.
+Here is the documents for the reproduce the results in the paper.
 
+## Overall Comprehensive Software/Hardware Performance in Table 1
 
-## Procedures 
+### Model accuracy 
 
-### 1. Software evaluation
-
-After logging in our server, go to the directory '/vol/datastore/EDSA/ESDA/software/' by 
 
 ```bash
-cd ~/ESDA/
-```
-
-For convenience, we has create a conda environment for the AE. 
-You can activate the environment by
-
-```bash
+cd ~/ESDA/software
 conda activate esda
 ```
-
-Due to the large size of dataset, we have prepared the dataset in our server in **/vol/datastore/event_dataset/**. You can first link the dataset to your **software/data** folder by:
-
-You can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
+We have prepared the model checkpoint in our server. Since github does not accept large file, we will archive our models in the final datahub with DOI. For now, you can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
 
 
 ```bash
@@ -53,8 +42,8 @@ Valid: -1 | loss: 0.0207 | Top-1: 99.00 | Top-5: 99.98: 100%####################
 where the Prec@1 is the accuracy result shown in the **Acc%** column in the table.
 
 
-### 2. Hardware evaluation
 
+### Hardware Performance
 
 We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **~/ESDA/eventNet/hw/** to run the [commands](#bitstreams-evaluation).
  There are 8 folders in the directory, each folder contains one hardware implementation. 
@@ -67,12 +56,12 @@ To begin with, make sure you are using the **esda** environment.
 conda activate esda
 ```
 
-#### Bitstreams evaluation
+### Hardware: run with our archived Bitstreams
 
-All the generated hardware are prepared in **~/ESDA/eventNet/hw/**. You can directly conduct evalution using the following commands.
+All the generated hardware/bitstreams are located in **~/ESDA/eventNet/hw/**. You can directly conduct performance evalution using the following commands.
 
 
-1. Latency and power consumption evaluation
+####  Latency and power consumption evaluation
 
 ```bash
 cd ~/ESDA/eventNet/hw/ASL_0p5_shift16-zcu102_80res/full/
@@ -120,10 +109,10 @@ After finish the commands above, you can generate the overall results by
 
 
 
-2. End-to-end evaluation
+#### End-to-end result verification 
 
-To evaluate the end-to-end inference results, run the following commands.
-The **python sw_e2e.py** script will generate the software end-to-end inference results, while the **make e2e_inference** hardware end-to-end inference results respectively.
+To verify the end-to-end inference results, run the following commands.
+The **python sw_e2e.py** script will generate the software end-to-end inference results for one test input, while the **make e2e_inference** will obtain the hardware end-to-end inference result on the same input.
 
 ```bash
 cd ~/ESDA/eventNet/hw/ASL_0p5_shift16-zcu102_80res/full/
@@ -174,8 +163,8 @@ make e2e_inference
 ```
 
 
-#### Resysthesis
-if you want to resysthesis the whole project.
+### Resynthesis your hardware (optional)
+If you want to resysthesis the bitstream from scratch by yourself, you can follow the below example instructions for `DVS_1890_shift16-zcu102_80res`. (This can take up to 12 hours to resynthesis one design.)
 
 ```bash
 cd ~/EDSA/hardware
@@ -195,16 +184,14 @@ python sw_e2e.py  # Conduct e2e inference with Pytorch
 
 
 
-## Benchmark
+## Benchmark simulation in Figure 13
 
-If you want to see the benchmark results:
-
-
-entering the **hardware** folder and 
+If you want to reproduce the results compared with dense architecture in Figure 13, run the following instructions:
 
 
 ```bash
-cd ~/ESDA/hardware
+cd ~/ESDA/hardware/benchmark_results
+make all -j4
 python benchmark_extract.py
 ```
 
@@ -214,4 +201,4 @@ csv saved to benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv
 npy saved to benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.npy
 ```
 
-, where the benchmark results are stored in **benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv**
+Where the benchmark results are stored in **benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv**
