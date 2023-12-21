@@ -50,7 +50,6 @@ conda activate ESDA
 Then install the required packages by:
 ```bash
 pip3 install -r requirements.txt
-pip3 install gpkit pyscipopt
 ```
 **Important:** Make sure `$SCIPOPTDIR` is set up first before you install pysciopt.
 

@@ -7,5 +7,6 @@ h5py
 lmdb
 protobuf==3.11.3 
 tonic
+numpy==1.21.0
 gpkit 
 pyscipopt
