@@ -148,6 +148,9 @@ You will obtain a folder of model structure and feature files
 EDSA
 ├── software
 ├── hardware
+│   ├── template_e2e
+│   ├── template_e2e_roshambo
+│   ├── HWConfig
 ├── optimization
 ├── eventNet/model
 │   ├── DVS_1890_shift16
@@ -157,10 +160,10 @@ EDSA
 │   │   ├── output_logit.npy
 ```
 
-You can conduct hardware configuration optimization by the following commands
+You can conduct hardware configuration optimization by the following commands using **zcu102_80res** config
 ```bash
 # Make sure you are in the root directory
-python eventnet.py --model_path ../eventNet/model --eventNet_path /vol/datastore/EDSA/eventNeteventNetConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path ../hardware/HWConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
 ```
 
 
