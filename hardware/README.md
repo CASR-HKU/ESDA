@@ -2,7 +2,7 @@
 # Hardware Synthesis and Implementation
 
 ## Prepare your FPGA board
-We use ZCU102 board with [PYNQ](http://www.pynq.io/board.html) overlay in our design, and the rest command and some tcl scipt are hardend for our board. If you have a different board and setting, please use Vitis, Vitis_HLS, or Vivado to regenerate your project tcl. 
+We use ZCU102 board with [PYNQ](http://www.pynq.io/board.html) overlay in our design, and some commands and tcl scripts are hardend for our board. If you have a different board and setting, please use Vitis, Vitis_HLS, or Vivado to regenerate your project tcl. 
 
 
 
