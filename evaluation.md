@@ -2,11 +2,10 @@
 
 # Reproduce Results in FPGA'24 Paper
 
-Here is the documents for the reproduce the results in the paper.
 
 ## Overall Comprehensive Software/Hardware Performance in Table 1
 
-### Model accuracy 
+### Software model accuracy 
 
 
 ```bash
@@ -43,12 +42,11 @@ where the Prec@1 is the accuracy result shown in the **Acc%** column in the tabl
 
 
 
-### Hardware Performance
+## Hardware performance
 
-We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **~/ESDA/eventNet/hw/** to run the [commands](#bitstreams-evaluation).
- There are 8 folders in the directory, each folder contains one hardware implementation. 
+We have already synthesised all the designs in **~/ESDA/eventNet/hw/** on our server. To evaluate the bitstreams directly, run the below commands.
+There are 8 folders in the directory, each folder contains one hardware implementation. 
 
-If you want to resynthesis the designs, please refer to [resynthesis](#resysthesis)
 
 To begin with, make sure you are using the **esda** environment.
 
@@ -56,7 +54,7 @@ To begin with, make sure you are using the **esda** environment.
 conda activate esda
 ```
 
-### Hardware: run with our archived Bitstreams
+### Hardware evalution: run our archived bitstreams
 
 All the generated hardware/bitstreams are located in **~/ESDA/eventNet/hw/**. You can directly conduct performance evalution using the following commands.
 
@@ -105,10 +103,11 @@ make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 
 The latency will be displayed in the terminal respectively.
 
-After finish the commands above, you can generate the overall results by
+After finish the commands above, you can extract the overall results by
 
 ```bash
 cd ~/ESDA/hardware
+conda activate base # We need python >=3.9 here 
 python baseline_extract.py ../eventNet/hw/ --extract_large
 ```
 The overall results will be saved in **../eventNet/hw/extract_large.csv**, which will match the performance result of Table 1.
@@ -169,17 +168,17 @@ make e2e_inference
 
 
 ### Resynthesis your hardware (optional)
-If you want to resysthesis the bitstream from scratch by yourself, you can follow the below example instructions for `DVS_1890_shift16-zcu102_80res`. (This can take up to 12 hours to resynthesis one design.)
+If you want to resysthesis the bitstream from scratch by yourself, here shows the example instructions for `DVS_1890_shift16-zcu102_80res`. (This can take around 12 hours for one design.)
 
 ```bash
 cd ~/EDSA/hardware
-mkdir MyPrj && cd MyPrj
+mkdir MyPrj && cd MyPrj # create a new folder for your projects
 cp -r ../template_e2e DVS_1890_shift16-zcu102_80res # For roshambo, use '../template_e2e_roshambo'
 cp ../cfgs/DVS_1890_shift16-zcu102_80res.json DVS_1890_shift16-zcu102_80res/cfg.json
 cd DVS_1890_shift16-zcu102_80res
 
 conda activate ESDA 
-make gen  # Generate sample
+make gen  # Generate hls code
 make ip_all  # Vitis systhesis
 make hw_all  # Vivado systhesis
 make make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'" # Evaluate the latency and power consumption
@@ -189,14 +188,15 @@ python sw_e2e.py  # Conduct e2e inference with Pytorch
 
 
 
-## Benchmark simulation in Figure 13
+## Benchmark co-simulation in Figure 13
 
-If you want to reproduce the results compared with dense architecture in Figure 13, run the following instructions:
+If you want to reproduce the results compared with dense architecture in Figure 13, run the following instructions (this can takes hours to finish):
 
 
 ```bash
 cd ~/ESDA/hardware/benchmark_results
 make all -j4
+#after finish all co-sim
 python benchmark_extract.py
 ```
 
@@ -206,4 +206,4 @@ csv saved to benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv
 npy saved to benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.npy
 ```
 
-Where the benchmark results are stored in **benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv**
+The benchmark results are then stored in **benchmark_results/DVS_mobilenet_0707_0p5-zcu102_50res_new.csv**

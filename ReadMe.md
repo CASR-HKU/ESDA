@@ -6,12 +6,12 @@ This repo contains the implementation for
 > Yizhao Gao, Baoheng Zhang, Yuhao Ding, Hayden So  
 > (FPGA 2024)
 
-ESDA is a framework that to build customized DNN accelerator for event-based vision tasks. It aims to leverage the spatial sparsity of event-based input by a novel dynamic sparse dataflow architecture. This is achieved by formulating the computation of each dataflow module using a unified token-feature computation scheme. To enhance the spatial sparsity, ESDA also incoperates [Submanifold Sparse Convolution](https://arxiv.org/abs/1706.01307) to build our model. 
+ESDA is a framework that to build customized DNN accelerator for event-based vision tasks. It leverages the spatial sparsity of event-based input by a novel dynamic sparse dataflow architecture. This is achieved by formulating the computation of each dataflow module as a unified token-feature computation scheme. To enhance the spatial sparsity, ESDA also incoperates [Submanifold Sparse Convolution](https://arxiv.org/abs/1706.01307) to build our DNN models. 
 
 
 The project mainly consists of three parts
 - Software model training on event-based datasets with sparsity and quantization 
-- Hardware design optimization (use constrainted optimization to search optimal mapping)
+- Hardware design optimization (use constrainted optimization to search for optimal mapping)
 - Hardware systhesis, implementation and evaluation
 
 
@@ -82,9 +82,7 @@ We use five datasets for the project:
 [N-Caltech101](https://www.garrickorchard.com/datasets/n-caltech101)
 
 
-## Dataset preparation
-
-Some of the datasets is directly access by using [tonic](https://github.com/neuromorphs/tonic). Other dataset preparation instruction will be post later.
+Some of the datasets is directly access by using [tonic](https://github.com/neuromorphs/tonic). Other dataset preparation instructions will be post later.
 
 (TODO)
 ### 
@@ -107,10 +105,10 @@ EDSA
 
 
 ## Overall Design Flow
-The model training source code lies in `software` folder. After obtained a trained model, use toolflows in `optimization` folder to generate hardware configuration Finally, use the template in makefile in `hardware` folder to generate vitis_hls, vivado projects and synthesis your bitstream. 
+The model training source code lies in `software` folder. After obtained a trained model, use toolflows in `optimization` folder to generate hardware configuration. Finally, use the hardware template and makefile in `hardware` folder to generate vitis_hls, vivado projects and synthesis your bitstream. 
 
 
 ## Acknowledgement
-ESDA is inspired by and replies on many exisitng open-source libraries, including [Asynet](https://github.com/uzh-rpg/rpg_asynet), [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine), [HAWQ](https://github.com/Zhen-Dong/HAWQ). 
+ESDA is inspired by and relies on many exisitng open-source libraries, including [Asynet](https://github.com/uzh-rpg/rpg_asynet), [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine), [HAWQ](https://github.com/Zhen-Dong/HAWQ), [AGNA](https://github.com/CASR-HKU/AGNA-FCCM2023), [DPCAS](https://github.com/CASR-HKU/DPACS) and etc. 
 
 
