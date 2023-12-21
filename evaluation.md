@@ -107,6 +107,11 @@ The latency will be displayed in the terminal respectively.
 
 After finish the commands above, you can generate the overall results by
 
+```bash
+cd ~/ESDA/hardware
+python baseline_extract.py ../eventNet/hw/ --extract_large
+```
+The overall results will be saved in **../eventNet/hw/extract_large.csv**, which will match the performance result of Table 1.
 
 
 #### End-to-end result verification 
