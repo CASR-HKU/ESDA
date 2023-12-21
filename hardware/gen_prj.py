@@ -6,7 +6,7 @@ import sys
 import argparse
 import json
 import time
-from template.common import *
+from common import *
 
 
 def po2_p(n: int, x: int) -> int:
