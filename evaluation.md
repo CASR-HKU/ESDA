@@ -61,7 +61,7 @@ where the Prec@1 is the accuracy result shown in the **Acc%** column in the tabl
 ### 2. Hardware evaluation
 
 
-We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **/vol/datastore/aeguest/ESDA/eventHW/** to run the [commands](#bitstreams-evaluation).
+We have already synthesis all the designs in folder in our server. To evaluate the bitstreams directly, you can go to **/vol/datastore/aeguest/ESDA/hardware/designs/** to run the [commands](#bitstreams-evaluation).
  There are 8 folders in the directory, each folder contains one hardware implementation. 
 
 If you want to resynthesis the designs, please refer to [resynthesis](#resysthesis)
@@ -74,48 +74,48 @@ conda activate esda
 
 #### Bitstreams evaluation
 
-All the generated hardware are prepared in **/vol/datastore/aeguest/ESDA/eventHW/**. You can directly conduct evalution using the following commands.
+All the generated hardware are prepared in **/vol/datastore/aeguest/ESDA/hardware/designs/**. You can directly conduct evalution using the following commands.
 
 
 1. Latency and power consumption evaluation
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/ASL_0p5_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/ASL_0p5_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/ASL_2929_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/ASL_2929_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/DVS_1890_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/DVS_1890_shift16-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/DVS_w0p5_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NMNIST_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NMNIST_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/Roshambo_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/Roshambo_shift16-zcu102_60res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NCal_2751_shift32-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NCal_2751_shift32-zcu102_80res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NCal_w0p5_shift32-zcu102_50res/full/
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
@@ -129,60 +129,60 @@ To evaluate the end-to-end inference results, run the following commands.
 The **python sw_e2e.py** script will generate the software end-to-end inference results, while the **make e2e_inference** hardware end-to-end inference results respectively.
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/ASL_0p5_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/ASL_0p5_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/ASL_2929_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/ASL_2929_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/DVS_1890_shift16-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/DVS_1890_shift16-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash 
-cd /vol/datastore/aeguest/ESDA/eventHW/DVS_w0p5_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/DVS_w0p5_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NMNIST_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NMNIST_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/Roshambo_shift16-zcu102_60res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/Roshambo_shift16-zcu102_60res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NCal_2751_shift32-zcu102_80res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NCal_2751_shift32-zcu102_80res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 ```bash
-cd /vol/datastore/aeguest/ESDA/eventHW/NCal_w0p5_shift32-zcu102_50res/full/
+cd /vol/datastore/aeguest/ESDA/hardware/designs/NCal_w0p5_shift32-zcu102_50res/full/
 python sw_e2e.py
 make e2e_inference
 ```
 
 
 #### Resysthesis
-if you want to resysthesis the whole project, we have prepare the template for each implementation in **/vol/datastore/aeguest/ESDA/eventHW_tpl**.
+if you want to resysthesis the whole project, we have prepare the template for each implementation in **/vol/datastore/aeguest/ESDA/hardware/designs_tpl**.
 
 ```bash
 mkdir resysthesis && cd resysthesis
-cp -r /vol/datastore/aeguest/ESDA/eventHW_tpl/ .
+cp -r /vol/datastore/aeguest/ESDA/hardware/designs_tpl/ .
 ```
 
 The project structure will be generated like this:

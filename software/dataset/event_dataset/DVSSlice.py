@@ -12,7 +12,6 @@ class DVSSlicedDataset:
     def __init__(self, root, mode="training", shuffle=False, slicing_time_window=500000, drop_event_ratio=0.2,
                  drop_area_ratio=0.1, overlap=0, **kwargs):
         is_train = True if mode == "training" else False
-        meta_file_name = "slice_metadata_training.h5" if is_train else "slice_metadata_validation.h5"
         self.istrain = is_train
         dataset = tonic.datasets.DVSGesture(save_to=root, train=is_train)
         slicing_time_window = slicing_time_window  # microseconds
@@ -20,7 +19,7 @@ class DVSSlicedDataset:
         slicer = SliceByTime(time_window=slicing_time_window, overlap=overlap)
         meta_name = "{}_slice.h5".format(mode) if overlap == 0 else "{}_slice_0p{}_overlap.h5".format(mode, overlap*100)
         sliced_dataset = SlicedDataset(
-            dataset, slicer=slicer, metadata_path=root + "_win{}w/".format(int(slicing_time_window/10000)) + meta_file_name
+            dataset, slicer=slicer, metadata_path=root + meta_name
         )
 
         if is_train:
@@ -54,7 +53,7 @@ class DVSSlicedDataset:
             )
 
         self.sliced_dataset = SlicedDataset(
-            dataset, slicer=slicer, transform=transforms, metadata_path=root + "_win{}w/".format(int(slicing_time_window/10000)) + meta_file_name
+            dataset, slicer=slicer, transform=transforms, metadata_path=root + meta_name
         )
         self.files = self.sliced_dataset.slice_dataset_map
         self.nr_classes = len(self.object_classes)
