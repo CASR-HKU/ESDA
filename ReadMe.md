@@ -48,7 +48,7 @@ For example, when your cuda version is 11.X, you can use
 pip3 install torch==1.8.2 torchvision==0.9.2 torchaudio==0.8.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cu111
 ```
 
-Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/MinkowskiEngine):
+Finally you need to install the [Minkowski Engine](https://github.com/NVIDIA/MinkowskiEngine). Due to some trivial modifcations, we currently copy the whole Engine into the, and we will remove it soon.
 
 ```bash
 cd software
