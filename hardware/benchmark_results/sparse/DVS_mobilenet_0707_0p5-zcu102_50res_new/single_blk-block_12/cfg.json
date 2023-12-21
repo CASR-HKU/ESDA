@@ -1,0 +1,103 @@
+{
+    "name": "MobileNetV2",
+    "dataset": "DVS_Gesture",
+    "input_shape": [
+        128,
+        128
+    ],
+    "input_sparsity": 0.0775,
+    "obj": 11288.6767648287,
+    "dsp": 1252,
+    "dsp_uti": 0.993650793650794,
+    "bram": 623,
+    "bram_uti": 0.683114035087722,
+    "model_path": "/vol/datastore/EDSA/eventNetModel/0725_baselines/DVS_0p5",
+    "CFG_SW": 16,
+    "CFG_BW": 16,
+    "CFG_EXP": 16,
+    "layers": [
+        {
+            "name": "block.12",
+            "type": "block",
+            "residual": true,
+            "stride": 1,
+            "tensor_stride": [
+                16,
+                16,
+                16
+            ],
+            "channels": [
+                48,
+                288,
+                48
+            ],
+            "sparsity": [
+                0.9185,
+                0.9185,
+                0.9185
+            ],
+            "kernel_sparsity": [
+                0.0065,
+                0.0192,
+                0.0404,
+                0.0689,
+                0.0972,
+                0.1309,
+                0.1617,
+                0.2004,
+                0.2748
+            ],
+            "input_shape": [
+                8,
+                8
+            ],
+            "parallelism": [
+                6,
+                12,
+                6
+            ],
+            "lat": [
+                11287,
+                9765,
+                11287
+            ],
+            "w0": [
+                2,
+                1,
+                6
+            ],
+            "s0": [
+                1,
+                1,
+                6
+            ],
+            "w1": [
+                3,
+                1,
+                1
+            ],
+            "s1": [
+                1,
+                1,
+                6
+            ],
+            "l1": [
+                3,
+                2,
+                1
+            ],
+            "w2": [
+                3,
+                1,
+                3
+            ],
+            "s2": [
+                1,
+                1,
+                3
+            ],
+            "dsp": 114,
+            "bram": 45
+        }
+    ]
+}
