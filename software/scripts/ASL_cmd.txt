@@ -1,7 +1,0 @@
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_absSum0p3.yaml -s exp_NAS/ASL_1890/absSum_0p3 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_random0p1.yaml -s exp_NAS/ASL_1890/random_0p1 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_absSum0p1.yaml -s exp_NAS/ASL_1890/absSum_0p1 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_absSum0p2.yaml -s exp_NAS/ASL_1890/absSum_0p2 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_random0p3.yaml -s exp_NAS/ASL_1890/random_0p3 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-python3 main.py --settings_file=config/config_NAS/ASL/2_ASL_settings_sgd_random0p2.yaml -s exp_NAS/ASL_1890/random_0p2 --epochs 150 --load exp_NAS/ASL_search/model_1890/ckpt.best.pth.tar --data_path /home/baoheng/Documents/event_dataset_preprocessed/ASLDVS
-
