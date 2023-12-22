@@ -30,7 +30,7 @@ import utils.utils as utils
 from utils import logger
 import utils.visualizations as visualizations
 from utils.bn_fold import fuse_bn_recursively
-from config.config_raw.settings import Settings
+from config.settings import Settings
 import MinkowskiEngine as ME
 from utils.loss import Loss
 
