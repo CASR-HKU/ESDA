@@ -10,7 +10,7 @@
 
 ```bash
 cd ~/ESDA/software
-conda activate esda
+conda activate ESDA
 ```
 We have prepared the model checkpoint in our server. Since github does not accept large file, we will archive our models in the final datahub with DOI. For now, you can directly run the following commands to generate the accuracy results for each dataset in **Table 1** in the paper.
 
@@ -51,7 +51,7 @@ There are 8 folders in the directory, each folder contains one hardware implemen
 To begin with, make sure you are using the **esda** environment.
 
 ```bash
-conda activate esda
+conda activate ESDA
 ```
 
 ### Hardware evalution: run our archived bitstreams
