@@ -96,6 +96,7 @@ def preprocess_time(dataset, window, overlap_ratio, save_folder="", vis_hist=Fal
     # assert save_folder or vis_hist, "Please select file-saving or visualization mode"
 
     if save_folder:
+        os.makedirs("/".join(save_folder.split("/")[:-1]), exist_ok=True)
         f = h5py.File(save_folder, "w")
 
     raw_length, denoise_length = [], []
@@ -106,7 +107,7 @@ def preprocess_time(dataset, window, overlap_ratio, save_folder="", vis_hist=Fal
             if raw_length:
                 raw_ave = sum(raw_length) / len(raw_length)
                 denoise_ave = sum(denoise_length) / len(denoise_length)
-                print("Ratio: {}".format(denoise_ave / raw_ave))
+                # print("Ratio: {}".format(denoise_ave / raw_ave))
 
         events, label = dataset.load_sample(idx)
         file = files[idx]
