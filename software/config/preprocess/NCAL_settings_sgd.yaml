@@ -3,7 +3,7 @@ transform:
   width: 240
   raw_size: True
   denoise:
-    {filter_time: 0.1}
+    {filter_time: -1}
   shift:
     { "max_shift": 20 }
   sample:
@@ -16,7 +16,7 @@ transform:
 dataset:
   # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'NCaltech101'
-  dataset_path: "data/N-Caltech101"
+  dataset_path: "/home/zhangbh/Documents/event_dataset/N-Caltech101"
   object_classes: 'all'
 
 
