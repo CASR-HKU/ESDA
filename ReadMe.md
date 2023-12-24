@@ -86,15 +86,29 @@ Some of the datasets is directly access by using [tonic](https://github.com/neur
 
 ### Dataset download
 
-To download the DVSGesture, ASLDVS, N-MNIST and N-Caltech101 dataset, use the scripts **software/dataset/preprocess/get_dataset.py**
+#### DVSGesture, ASLDVS and N-MNIST
+To download the DVSGesture, ASLDVS and N-MNIST dataset, use the scripts **software/dataset/preprocess/get_dataset.py**
 ```bash
 # Make sure you are in the software folder
 python dataset/preprocess/get_dataset.py DVSGesture -p data
 python dataset/preprocess/get_dataset.py NMNIST -p data
 python dataset/preprocess/get_dataset.py ASLDVS -p data
-python dataset/preprocess/get_dataset.py NCaltech101 -p data
 ```
+
+#### Roshambo
 For RoShamBo17 dataset download, go to [Roshambo17](https://docs.google.com/document/d/e/2PACX-1vTNWYgwyhrutBu5GpUSLXC4xSHzBbcZreoj0ljE837m9Uk5FjYymdviBJ5rz-f2R96RHrGfiroHZRoH/pub#h.uzavf0ex4d2e) and save the file in **software/data/Roshambo** path.
+
+
+#### N-Caltech101
+For N-Caltech101 dataset, we followed the method in [asynet](https://github.com/uzh-rpg/rpg_asynet) using the following scripts.
+
+```bash
+cd data
+wget http://rpg.ifi.uzh.ch/datasets/gehrig_et_al_iccv19/N-Caltech101.zip
+unzip N-Caltech101.zip
+rm N-Caltech101.zip
+cd ..
+```
 
 
 After downloading, your file structure will be:
@@ -106,7 +120,7 @@ EDSA
 │   ├── data
 │   │   ├── ASLDVS
 │   │   ├── DVSGesture
-│   │   ├── NCal
+│   │   ├── N-Caltech101
 │   │   ├── NMNIST
 │   │   ├── Roshambo/dataset_nullhop
 ```

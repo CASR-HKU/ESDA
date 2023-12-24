@@ -1,7 +1,7 @@
 # Hardware Design Optimization
 
 ## Hardware config searching
-With an int8 model, you can search for hardware configuration based on your model architecture, dataset, FPGA board resource (default ZCU102).
+With an int8 model as well as the model configuration, you can search for hardware configuration based on your model architecture, dataset, FPGA board resource (default ZCU102).
 
 
 ```bash
