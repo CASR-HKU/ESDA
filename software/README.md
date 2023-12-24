@@ -46,3 +46,23 @@ python int_inference.py --settings_file=<path-to-config-file> --load <path-to-tr
 ```bash
 python int_inference.py --bias_bit 16 --settings_file=exp_int8/DVS_1890/settings.yaml --load exp_int8/DVS_1890/ckpt.best.pth.tar --shift_bit 16 -e --int_dir ../eventNet/model/DVS_1890_shift16
 ```
+
+```
+EDSA
+├── software
+│   ├── data
+│   │   ├── ASLDVS
+│   │   ├── dvs_gesture_clip
+│   │   ├── NCal
+│   │   ├── NCal_processed
+│   │   ├── NMNIST
+│   │   ├── NMNIST_processed
+│   │   ├── Roshambo/dataset_nullhop
+├── hardware
+├── optimization
+├── eventNet
+│   ├── model
+│   │   ├── DVS_1890_shift16
+```
+
+After the steps above, you can refer to [optimization](../optimization/README.md) to conduct the following steps.
