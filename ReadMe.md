@@ -82,10 +82,59 @@ We use five datasets for the project:
 [N-Caltech101](https://www.garrickorchard.com/datasets/n-caltech101)
 
 
-Some of the datasets is directly access by using [tonic](https://github.com/neuromorphs/tonic). Other dataset preparation instructions will be post later.
+Some of the datasets is directly access by using [tonic](https://github.com/neuromorphs/tonic).
 
-(TODO)
-### 
+### Dataset download
+
+To download the DVSGesture, ASLDVS, N-MNIST and N-Caltech101 dataset, use the scripts **software/dataset/preprocess/get_dataset.py**
+```bash
+# Make sure you are in the software folder
+python dataset/preprocess/get_dataset.py DVSGesture -p data
+python dataset/preprocess/get_dataset.py NMNIST -p data
+python dataset/preprocess/get_dataset.py ASLDVS -p data
+python dataset/preprocess/get_dataset.py NCaltech101 -p data
+```
+For RoShamBo17 dataset download, go to [Roshambo17](https://docs.google.com/document/d/e/2PACX-1vTNWYgwyhrutBu5GpUSLXC4xSHzBbcZreoj0ljE837m9Uk5FjYymdviBJ5rz-f2R96RHrGfiroHZRoH/pub#h.uzavf0ex4d2e) and save the file in **software/data/Roshambo** path.
+
+
+After downloading, your file structure will be:
+```
+EDSA
+├── hardware
+├── optimization
+├── software
+│   ├── data
+│   │   ├── ASLDVS
+│   │   ├── DVSGesture
+│   │   ├── NCal
+│   │   ├── NMNIST
+│   │   ├── Roshambo/dataset_nullhop
+```
+
+
+### Dataset preprocess
+
+Each dataset contains different kinds of preprocess methods.
+
+
+#### NMNIST & NCaltech101
+
+```bash
+# Make sure you are in the 'software' folder.
+# For NMNIST
+python data_preprocess.py --settings_file=config/preprocess/NMNIST_settings_sgd.yaml --preprocess -s dataset/preprocess/NMNIST_preprocessed --window_size 200000 --overlap_ratio 0.5
+# For NCaltech101
+python data_preprocess.py --settings_file=config/preprocess/NCAL_settings_sgd.yaml --preprocess -s dataset/preprocess/NCal_preprocessed --window_size 0.1 --overlap_ratio 0.5
+```
+
+#### DVSGesture
+
+
+
+#### ASLDVS & Roshambo17
+
+There is no additional preprocessing steps for ASLDVS and Roshambo17 dataset.
+
 
 
 Once you finished, the file structure should be like this:
@@ -99,8 +148,10 @@ EDSA
 │   ├── ASLDVS
 │   ├── dvs_gesture_clip
 │   ├── NCal
+│   ├── NCal_processed
 │   ├── NMNIST
-│   ├── Roshambo
+│   ├── NMNIST_processed
+│   ├── Roshambo/dataset_nullhop
 ```
 
 

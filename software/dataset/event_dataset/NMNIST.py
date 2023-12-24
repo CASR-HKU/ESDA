@@ -28,6 +28,7 @@ class NMNISTDataset(BaseDataset):
 
         self.load()
         self.common_preprocess(shuffle)
+        self.nr_classes = int(self.nr_classes)
 
     def get_mode_name(self, mode):
         return "Train" if mode == 'training' else "Test"
