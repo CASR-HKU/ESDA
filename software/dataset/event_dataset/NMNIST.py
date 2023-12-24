@@ -8,6 +8,7 @@ from .utils import read_mnist_file
 class NMNISTDataset(BaseDataset):
     def __init__(self, root, mode='training', shuffle=True, dataset_percentage=1, object_classes="all", **kwargs):
         super().__init__()
+        self.name = "NMNIST"
         self.mode_name = self.get_mode_name(mode)
         self.data_percentage = dataset_percentage
         self.root = os.path.join(root, self.mode_name)

@@ -198,7 +198,7 @@ class MobileNetV2ME(nn.Module):
 
     def forward(self, x, name, size):
         import json
-        from models.sparsity import get_sparsity
+        from .sparsity import get_sparsity
         activation_sparsity , kernel_sparsity = get_sparsity(name)
         resolution_idx = 0
         json_file = open(self.json_file, "w")

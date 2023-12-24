@@ -18,6 +18,8 @@ class NCaltech101Dataset(BaseDataset):
 
         self.load()
         self.common_preprocess(shuffle)
+        self.nr_classes = int(self.nr_classes)
+        self.name = "NCAL"
 
     def get_object_classes(self, object_classes):
         return listdir(self.root) if object_classes == 'all' else object_classes

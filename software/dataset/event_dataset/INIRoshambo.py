@@ -38,6 +38,7 @@ class IniRoshamboDataset(BaseDataset):
         self.load()
         self.common_preprocess(shuffle)
         self.transform = Transform(self.mode_name)
+        self.name = "Roshambo"
 
     def load(self):
         lmdb_env = lmdb.open(self.root, lock=True)

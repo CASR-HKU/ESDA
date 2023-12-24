@@ -9,6 +9,7 @@ import numpy as np
 class DVSGestureDataset(BaseDataset):
     def __init__(self, root, mode='training', shuffle=False, dataset_percentage=1, **kwargs):
         super().__init__()
+        self.name = "DVS"
         self.data_percentage = dataset_percentage
         self.object_classes = ["hand clapping", "right hand wave", "left hand wave", "right arm clockwise",
                                "right arm counter clockwise", "left arm clockwise", "left arm counter clockwise",

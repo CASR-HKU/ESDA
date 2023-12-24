@@ -11,6 +11,7 @@ class ASLDVSDataset(BaseDataset):
         super().__init__()
         self.mode_name = self.get_mode_name(mode)
         self.root = root
+        self.name = "ASL"
         self.object_classes = [chr(letter) for letter in range(97, 123)]
         self.int_classes = dict(zip(self.object_classes, range(len(self.object_classes))))
         self.load()
