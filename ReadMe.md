@@ -143,7 +143,12 @@ python data_preprocess.py --settings_file=config/preprocess/NCAL_settings_sgd.ya
 
 #### DVSGesture
 
-
+To preprocess DVSGesture dataset, use the **dvs_preprocess.py** in **software/dataset/preprocess** folder:
+```bash
+# Make sure you are in the 'software' folder.
+cd dataset/preprocess
+python dvs_preprocess.py --input_dir ../../DvsGesture --output_dir ../../dvs_gesture_clip
+```
 
 #### ASLDVS & Roshambo17
 
@@ -160,6 +165,7 @@ EDSA
 ├── optimization
 ├── data
 │   ├── ASLDVS
+│   ├── DvsGesture
 │   ├── dvs_gesture_clip
 │   ├── NCal
 │   ├── NCal_processed
