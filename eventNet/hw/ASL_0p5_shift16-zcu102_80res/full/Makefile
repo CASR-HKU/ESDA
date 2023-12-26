@@ -124,7 +124,14 @@ evaluate_hw_feat:
 
 
 e2e_inference:
-	@python gen_input.py
+	@if [ -f tb_input_feature.npy ] && [ -f tb_spatial_mask.npy ]; then \
+		echo "Input data exists"; \
+	else \
+		echo "Generating input data..."; \
+		python gen_input.py; \
+		echo "Input data generated"; \
+	fi
+
 	@ssh ${HW_HOST} "mkdir -p ${HW_DIR}"
 	@scp ${SCPFLAGS} hw/top.hwh ${HW_HOST}:${HW_DIR}/
 	@scp ${SCPFLAGS} hw/top.bit ${HW_HOST}:${HW_DIR}/

@@ -5,7 +5,7 @@
 
 ifeq ($(origin Q), undefined)
 MYOUT := /dev/stdout
-SCPFLAGS :=
+SCPFLAGS := 
 else
 MYOUT := /dev/null
 SCPFLAGS := -q
@@ -21,8 +21,7 @@ HW_NAME ?= $(notdir ${CURDIR})
 HW_HOST := zcu102
 HW_MAINDIR := /home/xilinx/jupyter_notebooks/event_spconv
 HW_DIR := ${HW_MAINDIR}/${HW_NAME}
-EVAL_TARGET ?= e2e
-# EVAL_TARGET ?= "e2e ARG_NUM_RUN=20"
+EVAL_TARGET ?= single_run
 
 test:
 	@sleep 1
@@ -37,7 +36,7 @@ all:
 gen:
 # exit with `python` exit code instead of `tee`
 	@python gen_code.py -f 2>&1 | tee gen_code.log > ${MYOUT}; exit $${PIPESTATUS[0]}
-	@python gen_data.py 2>&1 | tee gen_data.log > ${MYOUT}; exit $${PIPESTATUS[0]}
+	@python gen_data.py 2>&1 | tee gen_data.log > ${MYOUT}; exit $${PIPESTATUS[0]} 
 
 try_until_fail:
 	@for i in $$(seq 1 25); do \
@@ -105,43 +104,15 @@ evaluate_hw:
 	@scp ${SCPFLAGS} hw/top.hwh ${HW_HOST}:${HW_DIR}/
 	@scp ${SCPFLAGS} hw/top.bit ${HW_HOST}:${HW_DIR}/
 	@scp ${SCPFLAGS} cfg.json ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} data/tb_input_feature.txt ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} data/tb_spatial_mask.txt ${HW_HOST}:${HW_DIR}/
+	@scp ${SCPFLAGS} data/tb_output.txt ${HW_HOST}:${HW_DIR}/
 	@echo "Running HW on ${HW_HOST}..."
 	@ssh root@${HW_HOST} "cd ${HW_DIR}; make -f ../evaluate.mk ${EVAL_TARGET}"
 	@scp ${SCPFLAGS} ${HW_HOST}:${HW_DIR}/evaluate.log hw/
-	@scp ${SCPFLAGS} ${HW_HOST}:${HW_DIR}/power_record.npy hw/
+	@head -n 3 hw/evaluate.log
 	@echo "HW evaluated and results saved to hw/evaluate.log"
-
-evaluate_hw_feat:
-	@ssh ${HW_HOST} "mkdir -p ${HW_DIR}"
-	@scp ${SCPFLAGS} hw/top.hwh ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} hw/top.bit ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} cfg.json ${HW_HOST}:${HW_DIR}/
-	@echo "Running HW on ${HW_HOST}..."
-	@ssh root@${HW_HOST} "cd ${HW_DIR}; make -f ../evaluate.mk e2e_feat ${EVAL_TARGET}"
-	@scp ${SCPFLAGS} ${HW_HOST}:${HW_DIR}/evaluate_feat.log hw/
-	@scp ${SCPFLAGS} ${HW_HOST}:${HW_DIR}/power_record.npy hw/
-	@echo "HW evaluated and results saved to hw/evaluate.log"
-
-
-e2e_inference:
-	@if [ -f tb_input_feature.npy ] && [ -f tb_spatial_mask.npy ]; then \
-		echo "Input data exists"; \
-	else \
-		echo "Generating input data..."; \
-		python gen_input.py; \
-		echo "Input data generated"; \
-	fi
-
-	@ssh ${HW_HOST} "mkdir -p ${HW_DIR}"
-	@scp ${SCPFLAGS} hw/top.hwh ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} hw/top.bit ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} tb_input_feature.npy ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} tb_spatial_mask.npy ${HW_HOST}:${HW_DIR}/
-	@scp ${SCPFLAGS} cfg.json ${HW_HOST}:${HW_DIR}/
-	@echo "Running HW on ${HW_HOST}..."
-	@ssh root@${HW_HOST} "cd ${HW_DIR}; make -f ../evaluate.mk e2e_feat ${EVAL_TARGET}"
-	@echo "Hardware end-to-end result displayed"
-
+	
 clean:
 	@echo "Not implemented yet" && exit 1
 
