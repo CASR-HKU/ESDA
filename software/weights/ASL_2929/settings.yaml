@@ -25,7 +25,7 @@ model:
   # ['fb_sparse_vgg', 'dense_vgg', 'fb_sparse_object_det', 'dense_object_det', 'fb_sparse_mobilenetv2']
   model_name: 'mink_mobilenetv2_quant'
   width_mult: 1.0
-  model_type: models/mobilenet_cfg_July23/ASL/model_2929.json
+  model_type: models/model_cfg/ASL_2929.json
 #  drop_config: { type: "abs_sum_momentum", thresh: 0.1 }
 optim:
   optimizer: 'sgd'
