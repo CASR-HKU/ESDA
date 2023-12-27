@@ -162,15 +162,15 @@ class MobileNetV2(nn.Module):
                 [6, 24, 2, 2],
                 [6, 32, 3, 2],
             ]
-        elif model_type == "IniRosh":
+        elif model_type == "roshambo":
             inverted_residual_setting = get_roshambo_config(0, model_type, {})
-            final_dim = 96
-            input_channels = 24
+            last_channel = 96
+            input_channel = 24
         elif MNIST:
             inverted_residual_setting = get_MNIST_config(0, model_type, {})
             last_channel = 128
         else:
-            inverted_residual_setting, input_channels, final_dim, _ = get_config(0, model_type, {})
+            inverted_residual_setting, input_channel, last_channel, _ = get_config(0, model_type, {})
 
         # building first layer
         input_channel = _make_divisible(input_channel * width_mult, round_nearest)
