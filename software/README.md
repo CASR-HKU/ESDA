@@ -1,5 +1,94 @@
 # Software model training
 
+## Dataset Preparation
+
+#### DVSGesture, ASLDVS and N-MNIST
+To download the DVSGesture, ASLDVS and N-MNIST dataset, use the scripts **software/dataset/preprocess/get_dataset.py**
+```bash
+# Make sure you are in the software folder
+python dataset/preprocess/get_dataset.py DVSGesture -p data
+python dataset/preprocess/get_dataset.py NMNIST -p data
+python dataset/preprocess/get_dataset.py ASLDVS -p data
+```
+
+#### Roshambo
+For RoShamBo17 dataset download, go to [Roshambo17](https://docs.google.com/document/d/e/2PACX-1vTNWYgwyhrutBu5GpUSLXC4xSHzBbcZreoj0ljE837m9Uk5FjYymdviBJ5rz-f2R96RHrGfiroHZRoH/pub#h.uzavf0ex4d2e) and save the file in **software/data/Roshambo** path.
+
+
+#### N-Caltech101
+For N-Caltech101 dataset, we followed the process in [asynet](https://github.com/uzh-rpg/rpg_asynet) by using the following scripts. You can use tonic too.
+
+```bash
+cd data
+wget http://rpg.ifi.uzh.ch/datasets/gehrig_et_al_iccv19/N-Caltech101.zip
+unzip N-Caltech101.zip
+rm N-Caltech101.zip
+cd ..
+```
+
+After downloading all the datasets, your file structure will be:
+```
+EDSA
+├── hardware
+├── optimization
+├── software
+│   ├── data
+│   │   ├── ASLDVS
+│   │   ├── DVSGesture
+│   │   ├── N-Caltech101
+│   │   ├── NMNIST
+│   │   ├── Roshambo/dataset_nullhop
+```
+
+
+## Dataset preprocess
+
+Before feed events into your DNN model, there are different ways to can convert events into 2D/frame-like representation. In this work, we mainly use histogram for in a fixed time interval. For some dataset, we also perform simple denoise of event to increase input sparsity.  
+Below shows some of our preprocess scripts.
+
+
+#### NMNIST & NCaltech101
+
+```bash
+# Make sure you are in the 'software' folder.
+# For NMNIST
+python data_preprocess.py --settings_file=config/preprocess/NMNIST_settings_sgd.yaml --preprocess -s dataset/preprocess/NMNIST_preprocessed --window_size 200000 --overlap_ratio 0.5
+# For NCaltech101
+python data_preprocess.py --settings_file=config/preprocess/NCAL_settings_sgd.yaml --preprocess -s dataset/preprocess/NCal_preprocessed --window_size 0.1 --overlap_ratio 0.5
+```
+
+#### DVSGesture
+
+To preprocess DVSGesture dataset, use the **dvs_preprocess.py** in **software/dataset/preprocess** folder:
+```bash
+# Make sure you are in the 'software' folder.
+cd dataset/preprocess
+python dvs_preprocess.py --input_dir ../../DvsGesture --output_dir ../../dvs_gesture_clip
+```
+
+
+
+Once you finished, the file structure should be like this:
+
+```
+EDSA
+├── software
+├── hardware
+├── optimization
+├── data
+│   ├── ASLDVS
+│   ├── DvsGesture
+│   ├── dvs_gesture_clip
+│   ├── NCal
+│   ├── NCal_processed
+│   ├── NMNIST
+│   ├── NMNIST_processed
+│   ├── Roshambo/dataset_nullhop
+```
+
+
+
+
 ## Training float32 model
 
 ```bash
