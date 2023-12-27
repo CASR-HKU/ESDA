@@ -6,13 +6,13 @@ This repo contains the implementation for
 > Yizhao Gao, Baoheng Zhang, Yuhao Ding, Hayden So  
 > (FPGA 2024)
 
-ESDA is a framework that to build customized DNN accelerator for event-based vision tasks. It leverages the spatial sparsity of event-based input by a novel dynamic sparse dataflow architecture. This is achieved by formulating the computation of each dataflow module as a unified token-feature computation scheme. To enhance the spatial sparsity, ESDA also incoperates [Submanifold Sparse Convolution](https://arxiv.org/abs/1706.01307) to build our DNN models. 
+ESDA is a framework for building customized DNN accelerators for event-based vision tasks. It leverages the spatial sparsity of event-based input by a novel dynamic sparse dataflow architecture. This is achieved by formulating the computation of each dataflow module as a unified token-feature computation scheme. To enhance the spatial sparsity, ESDA also incorporates [Submanifold Sparse Convolution](https://arxiv.org/abs/1706.01307) to build our DNN models. 
 
 
 The project mainly consists of three parts
 - Software model training on event-based datasets with sparsity and quantization 
-- Hardware design optimization (use constrainted optimization to search for optimal mapping)
-- Hardware systhesis, implementation and evaluation
+- Hardware design optimization (use constrained optimization to search for optimal mapping)
+- Hardware synthesis, implementation and evaluation
 
 
 
