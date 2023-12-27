@@ -1,21 +1,16 @@
-import math
 import os
 import sys
 
 import cv2
 import numpy as np
-import torch.nn as nn
 import tqdm
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
-# import torch.utils.data.distributed
 import argparse
 from models.mink_mobilenetv2 import MobileNetV2ME
-from models.mink_resnet import resnet18
 from models.HAWQ_mobilenetv2 import Q_MobileNetV2
-from models.mink_mobilenetv2_int import MobileNetV2MEInt
 from models.HAWQ_quant_module.quant_modules import freeze_model, unfreeze_model
 from models.mobilenet_base import mobilenet_v2
 try:
@@ -23,19 +18,16 @@ try:
     from torch.utils.tensorboard import SummaryWriter
 except:
     use_tb = False
-# from dataset.dataset import Dataset
+
 import yaml
 from dataset.loader import Loader
 import utils.utils as utils
 from utils import logger
 import utils.visualizations as visualizations
-from utils.bn_fold import fuse_bn_recursively
 from config.settings import Settings
 import MinkowskiEngine as ME
 from utils.loss import Loss
 
-
-# torch.multiprocessing.set_sharing_strategy('file_system')
 
 
 def main():
@@ -55,11 +47,7 @@ def main():
     parser.add_argument('--load', type=str, default='', help='load model path')
     parser.add_argument('--auto_resume', action='store_true', help='Resume automatically')
     parser.add_argument('--gen_meta', action='store_true', help='Generate DVS slice meta')
-    parser.add_argument('--min_event', type=int, default=0)
-    parser.add_argument('--generate_int_model', action='store_true', help='No BN loading in the model')
     parser.add_argument('--ana_file', default=None, help='Path for error analyser')
-    parser.add_argument('--lamb', type=float, default=0, help="random drop ratio")
-    parser.add_argument('--gradually',  action='store_true', default=False)
 
     parser.add_argument('--drop_area_ratio', type=float, default=0.1)
     parser.add_argument('--drop_event_ratio', type=float, default=0.1)
@@ -86,8 +74,6 @@ def main():
 
     if args.data_path != "":
         cfg["dataset"]["dataset_path"] = args.data_path
-    if args.generate_int_model:
-        args.evaluate = True
 
     use_random = utils.check_random(settings, cfg)
     nr_input_channels = utils.get_input_channel(settings.event_representation)
@@ -96,8 +82,8 @@ def main():
     MNIST = True if "MNIST" in cfg["dataset"]["name"] or "Poker" in cfg["dataset"]["name"] else False
 
     val_dataset = Dataset(cfg, mode="validation", shuffle=False, dataset_percentage=args.dataset_percentage,
-                          min_event=args.min_event, slicing_time_window=args.slicing_time_window)
-    if cfg["dataset"]["name"] == "IniRoshambo":
+                          slicing_time_window=args.slicing_time_window)
+    if cfg["dataset"]["name"] == "Roshambo":
         nr_input_channels = 1
 
     nr_classes = val_dataset.nr_classes
@@ -105,14 +91,7 @@ def main():
                         num_workers=settings.num_cpu_workers, pin_memory=False, shuffle=False)
 
     train_quant, base_model = False, False
-    if "mink_mobilenetv2_int" in settings.model_name:
-        model = MobileNetV2MEInt(num_classes=nr_classes, in_channels=nr_input_channels, width_mult=settings.width_mult,
-                                 MNIST=MNIST)
-        model.init_weights()
-        utils.load_int_ckpt(model, args.load)
-        args.evaluate = True
-        print("You are loading integer model. Evaluation only.")
-    elif settings.model_name == "base_mobilenetv2":
+    if  settings.model_name == "base_mobilenetv2":
         base_model = True
         model = mobilenet_v2(num_classes=nr_classes, width_mult=settings.width_mult, MNIST=MNIST,
                              sample_channel=nr_input_channels, model_type=settings.model_type)
@@ -127,9 +106,6 @@ def main():
             model = Q_MobileNetV2(model, nr_input_channels, settings.width_mult, nr_classes, conv1_bit=args.conv1_level,
                                   fix_BN_threshold=args.fixBN_ratio, MNIST=MNIST, shift_bit=args.shift_bit,
                                   drop_config=settings.drop_config, model_type=settings.model_type, bias_bit=args.bias_bit)
-    elif 'mink_resnet18' in settings.model_name:
-        model = resnet18(num_classes=nr_classes, input_dim=nr_input_channels)
-        train_quant = False
     else:
         raise NotImplementedError
 
@@ -141,8 +117,7 @@ def main():
     # model = torch.nn.DataParallel(model).cuda()
     model = model.cuda()
 
-    # criterion = nn.CrossEntropyLoss()
-    criterion = Loss(settings, args.lamb)
+    criterion = Loss()
 
     # specify different optimizer to different training stage
     if not args.evaluate:
@@ -170,13 +145,12 @@ def main():
     if args.evaluate:
         if not use_random:
             metrics, _ = validate(val_loader, model, criterion, settings.gpu_device, error_ana_path=args.ana_file,
-                                  generate_int_model=args.generate_int_model, use_abs_drop=use_abs_drop, base_model=base_model)
+                                  base_model=base_model)
             print(round(metrics[0],2), round(metrics[1],2), round(metrics[2],2), param, param_noBN)
             return metrics + [param, param_noBN]
         else:
             metrics, _ = utils.multiple_validate(validate, val_loader, model, criterion, settings.gpu_device,
-                                                 args.ana_file, generate_int_model=args.generate_int_model,
-                                                 use_abs_drop=use_abs_drop, times=1, base_model=base_model)
+                                                 args.ana_file, times=1, base_model=base_model)
             print(round(metrics[0],2), round(metrics[1],2), round(metrics[2],2), param, param_noBN)
             return metrics + [param, param_noBN]
 

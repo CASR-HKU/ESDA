@@ -1,6 +1,6 @@
 {
     "name": "MobileNetV2",
-    "dataset": "IniRoshambo",
+    "dataset": "Roshambo",
     "input_shape": [
         64,
         64

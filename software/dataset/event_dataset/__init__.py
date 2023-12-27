@@ -9,5 +9,5 @@ from .CIFAR10DVS import Cifar10DVSDataset as CIFAR10
 from .NCaltech101 import NCaltech101ProcessedDataset as NCalProcessed
 from .PokerDVS import PokerDVSDataset as Poker
 from .DVSGesture import DVSGestureProcessedDataset as DVSProcessed
-from .INIRoshambo import IniRoshamboDataset as IniRoshambo
+from .Roshambo import RoshamboDataset as Roshambo
 from .DVSSlice import DVSSlicedDataset as DVSSlice

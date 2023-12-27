@@ -26,7 +26,7 @@ class Transform:
         return np.roll(data, shift, axis=1)
 
 
-class IniRoshamboDataset(BaseDataset):
+class RoshamboDataset(BaseDataset):
     def __init__(self, root, mode='training', shuffle=True, dataset_percentage=1, object_classes="all", **kwargs):
         super().__init__()
         self.mode_name = self.get_mode_name(mode)
