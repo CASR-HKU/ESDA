@@ -79,7 +79,7 @@ class QuantLinear(Module):
     def unfix(self):
         self.fix_flag = False
 
-    def forward(self, x, prev_act_scaling_factor=None):
+    def forward(self, x, prev_act_scaling_factor=None, name="fc", int_folder=""):
         """
         using quantized weights to forward activation x
         """
@@ -119,6 +119,9 @@ class QuantLinear(Module):
                 self.fc_scaling_factor = symmetric_linear_quantization_params(self.weight_bit, w_min, w_max,
                                                                               self.per_channel)
                 self.weight_integer = self.weight_function(self.weight, self.weight_bit, self.fc_scaling_factor)
+                if int_folder:
+                    np.save('{}/{}_weight_integer.npy'.format(int_folder, name),
+                            self.weight_integer.cpu().detach().numpy())
 
                 bias_scaling_factor = self.fc_scaling_factor.view(1, -1) * prev_act_scaling_factor.view(1, -1)
                 if self.bias is not None:
@@ -134,6 +137,8 @@ class QuantLinear(Module):
         prev_act_scaling_factor = prev_act_scaling_factor.view(1, -1)
         x_int = x.features / prev_act_scaling_factor
         correct_output_scale = bias_scaling_factor[0].view(1, -1)
+        if int_folder:
+            np.save('{}/{}_output_integer.npy'.format(int_folder, name), x_int.cpu().detach().numpy())
 
         output = ste_round.apply(
             F.linear(x_int, weight=self.weight_integer, bias=self.bias_integer)) * correct_output_scale
@@ -215,29 +220,13 @@ class QuantAct(Module):
         self.fix_flag = False
 
     def forward(self, x, pre_act_scaling_factor=None, pre_weight_scaling_factor=None, identity=None,
-                identity_scaling_factor=None, identity_weight_scaling_factor=None):
-        """
-        x: the activation that we need to quantize
-        pre_act_scaling_factor: the scaling factor of the previous activation quantization layer
-        pre_weight_scaling_factor: the scaling factor of the previous weight quantization layer
-        identity: if True, we need to consider the identity branch
-        identity_scaling_factor: the scaling factor of the previous activation quantization of identity
-        identity_weight_scaling_factor: the scaling factor of the weight quantization layer in the identity branch
+                identity_scaling_factor=None, identity_weight_scaling_factor=None, name="", int_folder=""):
 
-        Note that there are two cases for identity branch:
-        (1) identity branch directly connect to the input featuremap
-        (2) identity branch contains convolutional layers that operate on the input featuremap
-        """
         if type(x) is tuple:
             if len(x) == 3:
                 channel_num = x[2]
             pre_act_scaling_factor = x[1]
             x = x[0]
-
-        # if type(x) is torch.Tensor:
-        #     output = scn.SparseConvNetTensor()
-        #     output.features = x
-        #     x = output
 
         if self.quant_mode == "symmetric":
             self.act_function = SymmetricQuantFunction.apply
@@ -307,7 +296,9 @@ class QuantAct(Module):
                         pre_weight_scaling_factor = self.pre_weight_scaling_factor
                     quant_act_int = fixedpoint_fn.apply(x.features, self.activation_bit, self.quant_mode,
                                                         self.act_scaling_factor, 0, pre_act_scaling_factor,
-                                                        pre_weight_scaling_factor, None, None, None, self.shift_bit)
+                                                        pre_weight_scaling_factor, None, None, None, name,
+                                                        self.shift_bit, int_folder)
+
                 else:
                     if identity_weight_scaling_factor is None:
                         identity_weight_scaling_factor = self.identity_weight_scaling_factor
@@ -315,7 +306,9 @@ class QuantAct(Module):
                                                         self.act_scaling_factor, 1, pre_act_scaling_factor,
                                                         pre_weight_scaling_factor,
                                                         identity.features, identity_scaling_factor,
-                                                        identity_weight_scaling_factor, self.shift_bit)
+                                                        identity_weight_scaling_factor, name, self.shift_bit,
+                                                        int_folder)
+
             correct_output_scale = self.act_scaling_factor.view(-1)
 
             output = SparseTensor(
@@ -323,7 +316,9 @@ class QuantAct(Module):
                 coordinate_map_key=x.coordinate_map_key,
                 coordinate_manager=x.coordinate_manager,
             )
-            # x.features = quant_act_int * correct_output_scale
+
+            if int_folder:
+                np.save("{}/{}_output_integer.npy".format(int_folder, name), quant_act_int.cpu().numpy())
             return output, self.act_scaling_factor
         else:
             return x
@@ -413,7 +408,7 @@ class QuantBnConv2d(Module):
         self.fix_flag = False
         self.fix_BN = self.training_BN_mode
 
-    def forward(self, x, pre_act_scaling_factor=None):
+    def forward(self, x, pre_act_scaling_factor=None, name="", int_folder=""):
         """
         x: the input activation
         pre_act_scaling_factor: the scaling factor of the previous activation quantization layer
@@ -508,6 +503,7 @@ class QuantBnConv2d(Module):
                                                                                       w_min, w_max, self.per_channel)
                     self.weight_integer = self.weight_function(scaled_weight, self.weight_bit,
                                                                self.convbn_scaling_factor, True)
+
                     if self.quantize_bias:
                         bias_scaling_factor = self.convbn_scaling_factor.view(1, -1) * pre_act_scaling_factor.view(1,
                                                                                                                    -1)
@@ -516,20 +512,24 @@ class QuantBnConv2d(Module):
                 else:
                     raise Exception('For weight, we only support symmetric quantization.')
 
-            # pre_act_scaling_factor = pre_act_scaling_factor.view(1, -1)
-            # x_int = x.features / pre_act_scaling_factor
             x_int = SparseTensor(
                 x.features / pre_act_scaling_factor,
                 coordinate_map_key=x.coordinate_map_key,
                 coordinate_manager=x.coordinate_manager,
             )
+            if int_folder:
+                np.save("{}/{}_input_coordinate_stride{}.npy".format(int_folder, name, x.tensor_stride[0]),
+                        x.C.cpu().numpy())
+                np.save("{}/{}_input_integer.npy".format(int_folder, name),
+                        (x.features / pre_act_scaling_factor).cpu().numpy())
+                np.save("{}/{}_bias_integer.npy".format(int_folder, name), self.bias_integer.cpu().numpy())
+                np.save("{}/{}_weight_integer.npy".format(int_folder, name), self.weight_integer.cpu().numpy())
+                np.save("{}/{}_input_act_scale.npy".format(int_folder, name), pre_act_scaling_factor.cpu().numpy())
+                np.save("{}/{}_weight_scale.npy".format(int_folder, name), self.convbn_scaling_factor.cpu().numpy())
+
             correct_output_scale = bias_scaling_factor.view(1, -1)
             y = self.conv(x_int, None, (self.weight_integer, self.bias_integer, correct_output_scale))
 
-            # y = ME.MinkowskiConvolutionFunction.apply(x_int, self.weight_integer, self.bias_integer)
-            # elif isinstance(self.conv, ME.Min):
-            #     y = 1
-            # x.features = y * correct_output_scale
             return y, self.convbn_scaling_factor
 
 

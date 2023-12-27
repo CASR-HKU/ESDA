@@ -18,7 +18,6 @@ class Q_LinearBottleneck(nn.Module):
                 expand_ratio,
                 shift_bit=31,
                 bias_bit=32,
-                drop_config=[],
                 **kwargs):
         """
         So-called 'Linear Bottleneck' layer. It is used as a quantized MobileNetV2 unit.
@@ -60,46 +59,62 @@ class Q_LinearBottleneck(nn.Module):
 
         self.quant_act_int32 = QuantAct(shift_bit=shift_bit)
 
-    def forward(self, x, scaling_factor_int32=None, mask=None):
+    def forward(self, x, scaling_factor_int32=None, block_id=0, int_folder=""):
         if isinstance(x, tuple):
-            x, scaling_factor_int32, mask = x
+            x, scaling_factor_int32, block_id, int_folder = x
+        if int_folder:
+            np.save("{}/block_{}_input_scale.npy".format(int_folder, block_id),
+                    scaling_factor_int32.cpu().numpy())
+
         if self.use_residual:
             identity = x
 
-        # x, act_scaling_factor = self.quant_act(x, scaling_factor_int32, None, None, None, None)
         act_scaling_factor = scaling_factor_int32
         identity_scaling_factor = act_scaling_factor
 
-        # if self.use_exp_conv:
-        x, weight_scaling_factor = self.conv1(x, act_scaling_factor)
+        x, weight_scaling_factor = self.conv1(x, act_scaling_factor, "block_{}_conv1".format(block_id), int_folder)
+        x = self.activation_func(x)
+        x, act_scaling_factor = self.quant_act1(x, act_scaling_factor, weight_scaling_factor, None, None,
+                                                name="block_{}_conv1".format(block_id), int_folder=int_folder)
+        if int_folder:
+            np.save("{}/block_{}_conv1_act_out.npy".format(int_folder, block_id),
+                    act_scaling_factor.cpu().numpy())
+
+        x, weight_scaling_factor = self.conv2(x, act_scaling_factor, "block_{}_conv2".format(block_id), int_folder)
         x = self.activation_func(x)
 
-        x, act_scaling_factor = self.quant_act1(x, act_scaling_factor, weight_scaling_factor, None, None)
+        x, act_scaling_factor = self.quant_act2(x, act_scaling_factor, weight_scaling_factor, None, None,
+                                                name="block_{}_conv2".format(block_id), int_folder=int_folder)
+        if int_folder:
+            np.save("{}/block_{}_conv2_act_out.npy".format(int_folder, block_id), act_scaling_factor.cpu().numpy())
 
-        x, weight_scaling_factor = self.conv2(x, act_scaling_factor)
-        x = self.activation_func(x)
-        x, act_scaling_factor = self.quant_act2(x, act_scaling_factor, weight_scaling_factor, None, None)
-
-
-        # note that, there is no activation for the last conv
-        x, weight_scaling_factor = self.conv3(x, act_scaling_factor)
-        # else:
-        #     x, weight_scaling_factor = self.conv2(x, act_scaling_factor)
-        #     x = self.activation_func(x)
-        #     x, act_scaling_factor = self.quant_act2(x, act_scaling_factor, weight_scaling_factor, None, None)
-        #
-        #     # note that, there is no activation for the last conv
-        #     x, weight_scaling_factor = self.conv3(x, act_scaling_factor)
+        x, weight_scaling_factor = self.conv3(x, act_scaling_factor, "block_{}_conv3".format(block_id), int_folder)
 
         if self.use_residual:
             x = x + identity
-            x, act_scaling_factor = self.quant_act_int32(x, act_scaling_factor, weight_scaling_factor, identity, identity_scaling_factor, None)
+            if int_folder:
+                np.save("{}/block_{}_identity_inp_int.npy".format(int_folder, block_id),
+                        (identity.F/identity_scaling_factor).cpu().numpy())
+            x, act_scaling_factor = self.quant_act_int32(
+                x, act_scaling_factor, weight_scaling_factor, identity, identity_scaling_factor, None,
+                name="block_{}_conv3".format(block_id), int_folder=int_folder)
+            if int_folder:
+                np.save("{}/block_{}_identity_added_out_integer.npy".format(int_folder, block_id),
+                        (x.F/act_scaling_factor).cpu().numpy())
+                np.save("{}/block_{}_identity_added_out_out_C_stride{}.npy".
+                        format(int_folder, block_id, x.tensor_stride[0]), x.C.cpu().numpy())
         else:
-            x, act_scaling_factor = self.quant_act_int32(x, act_scaling_factor, weight_scaling_factor, None, None, None)
+            x, act_scaling_factor = self.quant_act_int32(
+                x, act_scaling_factor, weight_scaling_factor, None, None, None, name="block_{}_conv3".format(block_id),
+                int_folder=int_folder)
 
-        return x, act_scaling_factor, mask
-
-
+        if int_folder:
+            np.save("{}/block_{}_conv3_act_out.npy".format(int_folder, block_id), act_scaling_factor.cpu().numpy())
+            np.save("{}/block_{}_conv3_output_coordinate_stride{}.npy".format(int_folder, block_id, x.tensor_stride[0]),
+                    x.C.cpu().numpy())
+            np.save("{}/block_{}_conv3_output_integer.npy".format(int_folder, block_id),
+                    (x.F / act_scaling_factor).cpu().numpy())
+        return x, act_scaling_factor
 
 
 class Q_MobileNetV2(nn.Module):
@@ -173,21 +188,15 @@ class Q_MobileNetV2(nn.Module):
         self.inverted_residual_setting = inverted_residual_setting
 
         blocks = []
-        self.drop_blocks = []
-
         input_channels = int(input_channels * width_mult)
         ori_blocks = model.blocks
         block_idx = 0
         for t, c, n, s, dr in inverted_residual_setting:
             output_channel = int(c * width_mult)
             for i in range(n):
-                if self.drop_before_block[0]:
-                    self.drop_blocks.append(DropClass(type=self.drop_before_block[1][0],
-                                                      drop_config=self.drop_before_block[1][1]).cuda())
-                    dr = 0
                 stride = s if i == 0 else 1
                 blocks.append(Q_LinearBottleneck(ori_blocks[block_idx], input_channels, output_channel, stride=stride,
-                                                 expand_ratio=t, shift_bit=shift_bit, drop_config=dr, bias_bit=bias_bit,
+                                                 expand_ratio=t, shift_bit=shift_bit, bias_bit=bias_bit,
                                                  **kwargs))
                 input_channels = output_channel
                 block_idx += 1
@@ -195,63 +204,72 @@ class Q_MobileNetV2(nn.Module):
         self.drop_blocks = nn.Sequential(*self.drop_blocks)
         # change the final block
         self.quant_act_before_final_block = QuantAct(shift_bit=shift_bit)
-        # self.sparseModel.add_module(str(i+1), QuantBnConv2d())
-        # self.sparseModel[i+1].set_param(model.sparseModel[18], model.sparseModel[19])
+
         self.conv8 = QuantBnConv2d(per_channel=True, bias_bit=bias_bit, **kwargs)
         self.conv8.set_param(model.conv8, model.bn8)
         self.quant_act_int32_final = QuantAct(shift_bit=shift_bit)
 
-        # in_channels = final_block_channels
         self.pool = QuantAveragePool2d()
         self.pool.set_param(model.pool)
 
-        # self.sparseModel.add_module(str(i+2), QuantAveragePool2d(model.sparseModel[20].pool_size))
-        # self.sparseModel.add_module(str(i+3), model.sparseModel[21])
-        # self.sparseModel[i+2].set_param(model.sparseModel[20])
         self.quant_act_output = QuantAct(shift_bit=shift_bit)
         self.quant_act_int32 = QuantAct(shift_bit=shift_bit)
 
         self.fc = QuantLinear(bias_bit=bias_bit)
         self.fc.set_param(model.fc)
 
-    def forward(self, x):
+    def forward(self, x, int_folder):
         # quantize input
-        # x, act_scaling_factor = self.quant_act_before_first_block(x, None, None, None, None)
+
         act_scaling_factor = torch.ones(1).cuda()
         x, weight_scaling_factor = self.conv1(x, act_scaling_factor)
         x = self.activation_func(x)
         x, act_scaling_factor = self.quant_act_after_first_block(x, act_scaling_factor, weight_scaling_factor, None, None)
 
-        # the init block
-        # x, weight_scaling_factor = self.init_block(x, act_scaling_factor)
-        # x = self.activatition_func(x)
-        # x, act_scaling_factor = self.quant_act_int32(x, act_scaling_factor, weight_scaling_factor, None, None)
+        if int_folder:
+            np.save("{}/conv1_act_out.npy".format(int_folder), act_scaling_factor.cpu().numpy())
+            np.save("{}/conv1_output_coordinate_stride{}.npy".format(int_folder, x.tensor_stride[0]), x.C.cpu().numpy())
+            np.save("{}/conv1_output_integer.npy".format(int_folder),
+                    np.round((x.F / act_scaling_factor).cpu().numpy()))
 
         # the feature block
         for i, channels in enumerate(self.blocks):
             cur_stage = getattr(self.blocks, str(i))
-            if self.drop_before_block[0]:
-                x, _ = self.drop_blocks[i](x)
-            x, act_scaling_factor, _ = cur_stage((x, act_scaling_factor, None))
+            x, act_scaling_factor = cur_stage((x, act_scaling_factor, i, int_folder))
 
         x, act_scaling_factor = self.quant_act_before_final_block(x, act_scaling_factor, None, None, None, None)
         x, weight_scaling_factor = self.conv8(x, act_scaling_factor)
         x = self.activation_func(x)
         x, act_scaling_factor = self.quant_act_int32_final(x, act_scaling_factor, weight_scaling_factor, None, None, None)
 
+        if int_folder:
+            np.save("{}/conv8_act_out.npy".format(int_folder), act_scaling_factor.cpu().numpy())
+            np.save("{}/conv8_output_coordinate_stride{}.npy".format(int_folder, x.tensor_stride[0]), x.C.cpu().numpy())
+            np.save("{}/conv8_output_integer.npy".format(int_folder), (x.F / act_scaling_factor).cpu().numpy())
+
         # the final pooling
         x, act_scaling_factor = self.pool(x, act_scaling_factor)
-        # x = self.sparseModel[i+3](x)
 
         # the output
         x, act_scaling_factor = self.quant_act_output(x, act_scaling_factor, None, None, None, None)
+        
+        if int_folder:
+            np.save("{}/fc_act_input.npy".format(int_folder), act_scaling_factor.cpu().numpy())
+            np.save("{}/fc_input_integer.npy".format(int_folder), (x.F / act_scaling_factor).cpu().numpy())
+
+        
         x = SparseTensor(
             x.features.view(x.features.size(0), -1),
             coordinate_map_key=x.coordinate_map_key,
             coordinate_manager=x.coordinate_manager,
         )
-        # x.features =
+
         x = self.fc(x, act_scaling_factor)
+        if int_folder:
+            np.save("{}/output_logit.npy".format(int_folder), x.cpu().numpy())
+            np.save("{}/output_softmax.npy".format(int_folder), torch.nn.functional.softmax(x, dim=1).cpu().numpy())
+            np.save("{}/output_argmax.npy".format(int_folder), torch.argmax(x, dim=1).cpu().numpy())
+
         if isinstance(x, torch.Tensor):
             return x
         else:

@@ -377,7 +377,8 @@ class fixedpoint_fn(Function):
     @staticmethod
     def forward(ctx, z, bitwidth, quant_mode, z_scaling_factor, case, pre_act_scaling_factor=None,
                 pre_weight_scaling_factor=None, identity=None, identity_scaling_factor=None,
-                identity_weight_scaling_factor=None, shift_bit=31):
+                identity_weight_scaling_factor=None, name="", shift_bit=32, int_folder=""):
+
         if quant_mode == 'symmetric':
             n = 2 ** (bitwidth - 1) - 1
         else:
@@ -416,8 +417,10 @@ class fixedpoint_fn(Function):
                 elif len(z.shape) == 2:
                     new_scale = transfer_fc_size(new_scale)
 
-                # m, e = batch_frexp(new_scale)
                 m = torch.round(pow(2, shift_bit) * new_scale)
+                if int_folder:
+                    np.save("{}/{}_Sw_bar.npy".format(int_folder, name),
+                            torch.round((pow(2, shift_bit) * new_scale)).cpu().numpy())
 
                 output = z_int.type(torch.double) * m.type(torch.double)
 
@@ -442,8 +445,10 @@ class fixedpoint_fn(Function):
                 elif len(z.shape) == 2:
                     new_scale = transfer_fc_size(new_scale)
 
-                # m1, e1 = batch_frexp(new_scale)
-                m1 = torch.round(pow(2, shift_bit) * new_scale)
+                m1 = torch.round(pow(2, shift_bit) * new_scale) #m1 = pow(2, shift_bit) * new_scale
+                if int_folder:
+                    np.save("{}/{}_Sid_bar.npy".format(int_folder, name),
+                            torch.round((pow(2, shift_bit) * new_scale)).cpu().numpy())
 
                 output1 = wx_int.type(torch.double) * m1.type(torch.double)
 
@@ -463,11 +468,13 @@ class fixedpoint_fn(Function):
                 elif len(z.shape) == 2:
                     new_scale = transfer_fc_size(new_scale)
 
-                # m2, e2 = batch_frexp(new_scale)
-                m2 = torch.round(pow(2, shift_bit) * new_scale)
+                m2 = torch.round(pow(2, shift_bit) * new_scale) #m2 = pow(2, shift_bit) * new_scale
+
+                if int_folder:
+                    np.save("{}/{}_Sw_bar.npy".format(int_folder, name),
+                            torch.round((pow(2, shift_bit) * new_scale)).cpu().numpy())
 
                 output2 = wy_int.type(torch.double) * m2.type(torch.double)
-
                 output2 /= (2.0 ** shift_bit)
                 output2 = torch.round(output2)
 
@@ -475,7 +482,7 @@ class fixedpoint_fn(Function):
                     return torch.clamp((output1 + output2).type(torch.float), -n - 1, n)
                 else:
                     return torch.clamp((output1 + output2).type(torch.float), 0, n)
-                # return (output1 + output2).type(torch.float)
+
 
     @staticmethod
     def backward(ctx, grad_output):
