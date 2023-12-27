@@ -153,12 +153,9 @@ def main():
             return metrics + [param, param_noBN]
 
     train_dataset = Dataset(cfg, mode="training", dataset_percentage=args.dataset_percentage,
-                            min_event=args.min_event, slicing_time_window=args.slicing_time_window)
+                            slicing_time_window=args.slicing_time_window)
     train_loader = Loader(train_dataset, batch_size=settings.batch_size, device=settings.gpu_device,
                           num_workers=settings.num_cpu_workers, pin_memory=False, shuffle=True)
-
-    if args.gen_meta:
-        sys.exit(0)
 
     if args.save_dir:
         train_log, test_log, msg_log, global_log = logger.handle_loggers(args)

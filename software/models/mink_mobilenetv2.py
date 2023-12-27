@@ -53,40 +53,18 @@ class InvertedResidualBlockME(nn.Module):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
-        # x = self.mask_forward(x, mask)
 
         x = self.conv2(x)
-        if save_coordinate:
-            if self.conv2.kernel_generator.kernel_stride[0] == 2:
-                global coord_batch_idx, coord_res_idx
-                np.save(f"coordinates/{coord_batch_idx}_{coord_res_idx}.npy", x.C.cpu().numpy())
-                coord_res_idx += 1
 
         x = self.bn2(x)
         x = self.relu2(x)
-        if self.use_drop:
-            x, mask = self.drop(x)
-        # else:
-        #     x = self.mask_forward(x, mask)
-
         x = self.conv3(x)
         x = self.bn3(x)
-        # x = self.mask_forward(x, mask)
 
         if self.use_residual:
             x = x + identity
 
         return x
-
-    def mask_forward(self, x, mask):
-        if mask is None:
-            return x
-        else:
-            return SparseTensor(
-                x.F * mask.unsqueeze(dim=1).expand_as(x.F),
-                coordinate_map_key=x.coordinate_map_key,
-                coordinate_manager=x.coordinate_manager,
-            )
 
 
 class MobileNetV2ME(nn.Module):
