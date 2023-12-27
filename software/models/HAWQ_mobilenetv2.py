@@ -6,7 +6,7 @@
 
 from models.HAWQ_quant_module.quant_modules import *
 import MinkowskiEngine as ME
-from .mobilenet_settings import get_config, get_MNIST_config, get_Roshambo_config
+from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
 from .drop_utils import DropClass
 
 

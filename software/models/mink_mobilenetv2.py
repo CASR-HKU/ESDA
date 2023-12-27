@@ -2,7 +2,7 @@ import torch.nn as nn
 import MinkowskiEngine as ME
 import os
 import numpy as np
-from .mobilenet_settings import get_config, get_MNIST_config, get_Roshambo_config
+from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
 from .drop_utils import DropClass
 from MinkowskiEngine.MinkowskiSparseTensor import SparseTensor
 
@@ -111,23 +111,7 @@ class MobileNetV2ME(nn.Module):
         self.width_mult = width_mult
 
         final_dim = 1280
-        if model_type == "Roshambo_cut1stage":
-            inverted_residual_setting = [
-                # t, c, n, s, drop
-                [1, 16, 1, 1, 0],
-                [6, 24, 2, 2, 0],
-                [6, 32, 3, 2, 0],
-                [6, 64, 4, 2, 0],
-                [6, 96, 3, 1, 0],
-            ]
-        elif model_type == "NMNIST_cut2stage":
-            inverted_residual_setting = [
-                # t, c, n, s, drop
-                [1, 16, 1, 1, 0],
-                [6, 24, 2, 2, 0],
-                [6, 32, 3, 2, 0],
-            ]
-        elif MNIST:
+        if MNIST:
             inverted_residual_setting = get_MNIST_config(remove_depth, model_type, drop_config)
             final_dim = 128
         elif model_type == "roshambo":
@@ -135,7 +119,7 @@ class MobileNetV2ME(nn.Module):
             final_dim = 96
             input_channels = 24
         else:
-            inverted_residual_setting, input_channels, final_dim, self.drop_before_block = get_config(remove_depth, model_type, drop_config)
+            inverted_residual_setting, input_channels, final_dim = get_config(remove_depth, model_type, drop_config)
             # final_dim = 1280
         final_input = inverted_residual_setting[-1][1]
 
@@ -150,16 +134,11 @@ class MobileNetV2ME(nn.Module):
         self.relu1 = self.relu(inplace=True)
 
         blocks = []
-        self.drop_blocks = []
         
         input_channels = int(input_channels * width_mult)
         for t, c, n, s, dr in inverted_residual_setting:
             output_channel = int(c * width_mult)
             for i in range(n):
-                if self.drop_before_block[0]:
-                    self.drop_blocks.append(DropClass(type=self.drop_before_block[1][0],
-                                                      drop_config=self.drop_before_block[1][1]).cuda())
-                    dr = 0
                 stride = s if i == 0 else 1
                 blocks.append(InvertedResidualBlockME(
                     input_channels, output_channel, stride=stride, expand_ratio=t, drop_config=dr))
@@ -178,7 +157,6 @@ class MobileNetV2ME(nn.Module):
         self.relu8 = self.relu(inplace=True)
 
         self.pool = ME.MinkowskiGlobalAvgPooling()
-        self.dp = ME.MinkowskiDropout()
 
         self.fc = ME.MinkowskiLinear(int(final_dim * width_mult), self.num_classes)
         self.weight_initialization()
@@ -193,18 +171,11 @@ class MobileNetV2ME(nn.Module):
                 nn.init.constant_(m.bn.bias, 0)
 
     def forward(self, x):
-        if save_coordinate:
-            global coord_batch_idx, coord_res_idx
-            coord_batch_idx += 1
-            np.save(f"coordinates/{coord_batch_idx}_1.npy", x.C.cpu().numpy())
-
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
         # (x, masks) = self.blocks((x, None))
         for idx, block in enumerate(self.blocks):
-            if self.drop_before_block[0]:
-                x, _ = self.drop_blocks[idx](x)
             x = block(x)
 
         x = self.conv8(x)
@@ -212,7 +183,6 @@ class MobileNetV2ME(nn.Module):
         x = self.relu8(x)
 
         x = self.pool(x)
-        x = self.dp(x)
         x = self.fc(x)
 
         return x.F

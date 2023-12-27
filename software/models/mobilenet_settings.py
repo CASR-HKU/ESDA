@@ -90,9 +90,6 @@ def get_MNIST_config(remove_depth=0, model_type="base", drop_config={}):
 
 def get_config(remove_depth=0, model_type="base", drop_config={}):
     input_channel, output_channel = 32, 1280
-    drop_before_block = [False]
-    if "before_block" in drop_config and drop_config["before_block"]:
-        drop_before_block = [True]
 
     if remove_depth == 0:
         depth_cfg = [1, 2, 3, 4, 3, 3, 1]
@@ -138,38 +135,10 @@ def get_config(remove_depth=0, model_type="base", drop_config={}):
         inverted_residual_setting, input_channel, output_channel = load_json(model_type)
     stride2_block = [idx for idx in range(len(inverted_residual_setting)) if inverted_residual_setting[idx][3] == 2]
 
-    # if drop_ratio > 0:
-    if drop_config:
-        gradually = False if "gradually" not in drop_config else drop_config["gradually"]
-        if drop_config["type"] == "random":
-            if isinstance(drop_config["ratios"], float) or isinstance(drop_config["ratios"], int):
-                drop_config["ratios"] = [drop_config["ratios"] for _ in range(len(stride2_block))]
-            assert len(drop_config["ratios"]) == len(stride2_block), "drop ratio length should be equal to stride2_block"
-            if not drop_before_block[0]:
-                for idx, ratio in enumerate(drop_config["ratios"]):
-                    inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"],
-                                                                        [ratio, gradually]]
-            else:
-                drop_before_block = [drop_before_block[0],
-                                     [drop_config["type"], [drop_config["ratios"][0], gradually]]]
-        elif "abs_sum" in drop_config["type"]:
-            if isinstance(drop_config["thresh"], float) or isinstance(drop_config["thresh"], int):
-                drop_config["thresh"] = [drop_config["thresh"] for _ in range(len(stride2_block))]
-            # drop_conf = [drop_config["type"], [drop_config["thresh"]]]
-            if not drop_before_block:
-                for idx, ratio in enumerate(drop_config["thresh"]):
-                    inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"],
-                                                                        [ratio, gradually]]
-            else:
-                drop_before_block = [drop_before_block[0],
-                                     [drop_config["type"], [drop_config["thresh"][0], gradually]]]
-        else:
-            raise ValueError("drop type should be either random or abs_sum")
-
     if model_type == "base":
         for i in range(len(depth_cfg)):
             inverted_residual_setting[i][2] = depth_cfg[i]
-    return inverted_residual_setting, input_channel, output_channel, drop_before_block
+    return inverted_residual_setting, input_channel, output_channel
 
 
 def generate_cfg():

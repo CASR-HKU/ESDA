@@ -1,8 +1,7 @@
 from torch import nn
 from torch import Tensor
 from typing import Callable, Any, Optional, List
-from torch.hub import load_state_dict_from_url
-from .mobilenet_settings import get_config, get_MNIST_config, get_Roshambo_config
+from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
 
 
 __all__ = ['MobileNetV2', 'mobilenet_v2']
