@@ -140,8 +140,6 @@ def main():
     start_epoch += 1
     cudnn.benchmark = True
 
-    use_abs_drop = utils.check_abs_sum_drop(settings)
-
     if args.evaluate:
         if not use_random:
             metrics, _ = validate(val_loader, model, criterion, settings.gpu_device, error_ana_path=args.ana_file,
@@ -191,11 +189,11 @@ def main():
             freeze_model(model)
         if not use_random:
             metrics, matrix = validate(val_loader, model, criterion, settings.gpu_device, epoch, writer, test_file,
-                                       args.ana_file, use_abs_drop=use_abs_drop, msg_log=msg_file, base_model=base_model)
+                                       args.ana_file, msg_log=msg_file, base_model=base_model)
         else:
             metrics, matrix = utils.multiple_validate(validate, val_loader, model, criterion, settings.gpu_device,
                                                       epoch, writer, test_file, args.ana_file, base_model=base_model,
-                                                      use_abs_drop=use_abs_drop, times=5, msg_log=msg_file)
+                                                      times=5, msg_log=msg_file)
         if args.save_dir:
             cv2.imwrite(os.path.join(args.save_dir, "confusion_matrix", "{}.jpg".format(epoch)), matrix)
         scheduler.step()
@@ -220,7 +218,7 @@ def main():
 
 
 def validate(val_loader, model, criterion, device, epoch=-1, writer=None, epoch_log=None, error_ana_path=None,
-             generate_int_model=False, use_abs_drop=False, msg_log=None, base_model=False):
+             msg_log=None, base_model=False):
     val_loader_desc = tqdm.tqdm(val_loader, ascii=True, mininterval=5, total=len(val_loader))
     Recorder = logger.MetricRecorder("valid")
     model = model.eval()
@@ -229,8 +227,6 @@ def validate(val_loader, model, criterion, device, epoch=-1, writer=None, epoch_
 
     if error_ana_path is not None:
         analyser = logger.ErrorAnalyser(error_ana_path)
-    if use_abs_drop:
-        prune_logger = logger.PruneRatioLogger()
     
     for i_batch, sample_batched in enumerate(val_loader_desc):
 
@@ -260,21 +256,8 @@ def validate(val_loader, model, criterion, device, epoch=-1, writer=None, epoch_
             format(epoch=epoch, loss=loss.item(), acc1=Recorder.get_metric("Top-1"), acc5=Recorder.get_metric("Top-5"))
         )
 
-        if generate_int_model:
-            int_model = MobileNetV2MEInt(num_classes=model.num_classes, in_channels=model.in_channels,
-                                         width_mult=model.width_mult, MNIST=model.MNIST)
-            int_model.init_weights(model)
-
-            torch.save(int_model.state_dict(), "int_model.pth.tar")
-            utils.calculate_weight_sparsity(int_model)
-            print("Integer model generated!")
-            sys.exit(1)
-
         if error_ana_path is not None:
             analyser.update(model_output, labels)
-
-        if use_abs_drop:
-            prune_logger.update(model)
         
         # Save validation statistics
         predicted_classes = model_output.argmax(1)
@@ -288,8 +271,6 @@ def validate(val_loader, model, criterion, device, epoch=-1, writer=None, epoch_
         epoch_log.write("{}, {}, {}, {}\n".format(epoch, Top1, Top5, Loss))
     if error_ana_path is not None:
         analyser.finish()
-    if use_abs_drop:
-        prune_logger.release(msg_log, epoch)
 
     if writer is not None:
         writer.add_image('Validation/Confusion_Matrix', plot_confusion_matrix, epoch, dataformats='HWC')
@@ -323,9 +304,6 @@ def train(train_loader, model, criterion, device, optimizer, writer, epoch, epoc
         labels = torch.tensor(sample_batched["labels"], dtype=torch.long).to(device)
 
         loss = criterion(model_output, labels, model)
-        if torch.isnan(loss):
-            print("Removing all pruning batch")
-            continue
 
         try:
             acc1, acc5 = utils.accuracy(model_output, labels, topk=(1, 5))
@@ -339,12 +317,6 @@ def train(train_loader, model, criterion, device, optimizer, writer, epoch, epoc
             'Train: {epoch} | loss: {loss:.4f} | Top-1: {acc1:.2f} | Top-5: {acc5:.2f}'.
             format(epoch=epoch, loss=loss.item(), acc1=Recorder.get_metric("Top-1"), acc5=Recorder.get_metric("Top-5"))
         )
-
-        # if i_batch == 0:
-        #     # image = utils.histogram_visualize(histogram, model_input_size,
-        #     #                                   [train_loader.loader.dataset.object_classes[idx] for idx in labels])
-        #     # if writer is not None:
-        #     #     writer.add_image('Training/Input Histogram', image, epoch, dataformats='HWC')
 
     Top1, Top5, Loss = Recorder.summary(epoch)
     if epoch_log is not None:
