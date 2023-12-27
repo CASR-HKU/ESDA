@@ -106,7 +106,7 @@ For example, after downloading the dataset, you can conduct training float32 mod
 
 ```bash
 python main.py --settings_file=config/default/float32/ASL_w0p5.yaml -s exp_float32/ASL_w0p5  # For ASL-DVS
-python main.py --settings_file=config/default/float32/DVS_w0p5.yaml -s exp_float32/DVS_1890  # For DvsGesture
+python main.py --settings_file=config/default/float32/DVS_1890.yaml -s exp_float32/DVS_1890  # For DvsGesture
 python main.py --settings_file=config/default/float32/NMNIST.yaml -s exp_float32/NMNIST   # For N-MNIST
 python main.py --settings_file=config/default/float32/Roshambo.yaml -s exp_float32/Roshambo  # For RoShamBo17
 python main.py --settings_file=config/default/float32/NCal_w0p5.yaml -s exp_float32/NCal_w0p5   # For N-Caltech101

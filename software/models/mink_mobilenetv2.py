@@ -67,7 +67,7 @@ class InvertedResidualBlockME(nn.Module):
             tensor_strides.append(x.tensor_stride[0])
 
         x = self.conv2(x)
-        if self.stride == 2:
+        if self.stride == 2 and save_json:
             res_idx += 1
 
         x = self.bn2(x)
@@ -175,7 +175,7 @@ class MobileNetV2ME(nn.Module):
                 nn.init.constant_(m.bn.weight, 1)
                 nn.init.constant_(m.bn.bias, 0)
 
-    def forward(self, x, name, size):
+    def forward(self, x, name="", size=""):
         save_json = True if name and size else False
         if save_json:
             import json
@@ -210,9 +210,8 @@ class MobileNetV2ME(nn.Module):
         x = self.bn1(x)
         x = self.relu1(x)
 
-        struct["layers"].append(conv_json)
-
         if save_json:
+            struct["layers"].append(conv_json)
             (x, struct, resolution_idx, block_idx, kernel_sparsity, activation_sparsity) = \
                 self.blocks((x, struct, resolution_idx, 0, kernel_sparsity, activation_sparsity))
         else:
