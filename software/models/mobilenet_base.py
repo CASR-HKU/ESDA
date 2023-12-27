@@ -146,16 +146,6 @@ class MobileNetV2(nn.Module):
             [6, 320, 1, 1],
         ]
 
-        # if MNIST or model_type == "IniRosh":
-        #     inverted_residual_setting = [
-        #         [1, 16, 1, 1],
-        #         [6, 24, 2, 2],
-        #         [6, 32, 3, 2],
-        #         [6, 64, 4, 2],
-        #         [6, 96, 3, 1],
-        #         [6, 160, 1, 2],
-        #     ]
-
         if model_type == "Roshambo_cut1stage":
             inverted_residual_setting = [
                 # t, c, n, s, drop
@@ -173,7 +163,7 @@ class MobileNetV2(nn.Module):
                 [6, 32, 3, 2],
             ]
         elif model_type == "IniRosh":
-            inverted_residual_setting = get_Roshambo_config(0, model_type, {})
+            inverted_residual_setting = get_roshambo_config(0, model_type, {})
             final_dim = 96
             input_channels = 24
         elif MNIST:
@@ -181,11 +171,6 @@ class MobileNetV2(nn.Module):
             last_channel = 128
         else:
             inverted_residual_setting, input_channels, final_dim, _ = get_config(0, model_type, {})
-
-        # only check the first element, assuming user knows t,c,n,s are required
-        # if len(inverted_residual_setting) == 0 or len(inverted_residual_setting[0]) != 4:
-        #     raise ValueError("inverted_residual_setting should be non-empty "
-        #                      "or a 4-element list, got {}".format(inverted_residual_setting))
 
         # building first layer
         input_channel = _make_divisible(input_channel * width_mult, round_nearest)
