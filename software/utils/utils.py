@@ -42,9 +42,6 @@ def multiple_validate(val_func, val_loader, model, criterion, device, epoch=-1, 
 
 def check_random(settings, cfg):
     random = False
-    if "type" in settings.drop_config:
-        if settings.drop_config["type"] == "random":
-            random = True
     if "sample_type" in cfg["transform"]["sample"]:
         if cfg["transform"]["sample"]["sample_type"] == "random":
             random = True

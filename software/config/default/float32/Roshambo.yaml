@@ -21,7 +21,7 @@ dataset:
 model:
   model_name: 'mink_mobilenetv2'
   width_mult: 1.0
-  model_type: "IniRosh"
+  model_type: "roshambo"
 optim:
   optimizer: 'sgd'
   batch_size: 1024

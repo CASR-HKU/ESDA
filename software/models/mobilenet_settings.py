@@ -52,7 +52,7 @@ def NMNIST_base(remove_depth=0):
     return depth_cfg
 
 
-def get_iniRosh_config(remove_depth=0, model_type="base", drop_config={}):
+def get_roshambo_config(remove_depth=0, model_type="base", drop_config={}):
     inverted_residual_setting = [
         # t, c, s
         [1, 16, 1, 1, 0],
@@ -62,25 +62,6 @@ def get_iniRosh_config(remove_depth=0, model_type="base", drop_config={}):
         [4, 72, 1, 2, 0],
     ]
     stride2_block = [idx for idx, block in enumerate(inverted_residual_setting) if block[3] == 2]
-
-    if drop_config:
-        gradually = False if "gradually" not in drop_config else drop_config["gradually"]
-        if drop_config["type"] == "random":
-            if isinstance(drop_config["ratios"], float) or isinstance(drop_config["ratios"], int):
-                drop_config["ratios"] = [drop_config["ratios"] for _ in range(len(stride2_block))]
-            assert len(drop_config["ratios"]) == len(
-                stride2_block), "drop ratio length should be equal to stride2_block"
-            for idx, ratio in enumerate(drop_config["ratios"]):
-                inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"], [ratio, gradually]]
-        elif "abs_sum" in drop_config["type"]:
-            if isinstance(drop_config["thresh"], float) or isinstance(drop_config["thresh"], int):
-                drop_config["thresh"] = [drop_config["thresh"] for _ in range(len(stride2_block))]
-            # drop_conf = [drop_config["type"], [drop_config["thresh"]]]
-            for idx, ratio in enumerate(drop_config["thresh"]):
-                inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"],
-                                                                    [ratio, gradually]]
-        else:
-            raise ValueError("drop type should be either random or abs_sum")
 
     return inverted_residual_setting
 
@@ -101,24 +82,6 @@ def get_MNIST_config(remove_depth=0, model_type="base", drop_config={}):
         [6, 96, 1, 1, 0],
     ]
     stride2_block = [idx for idx, block in enumerate(inverted_residual_setting) if block[3] == 2]
-    
-    if drop_config:
-        gradually = False if "gradually" not in drop_config else drop_config["gradually"]
-        if drop_config["type"] == "random":
-            if isinstance(drop_config["ratios"], float) or isinstance(drop_config["ratios"], int):
-                drop_config["ratios"] = [drop_config["ratios"] for _ in range(len(stride2_block))]
-            assert len(drop_config["ratios"]) == len(stride2_block), "drop ratio length should be equal to stride2_block"
-            for idx, ratio in enumerate(drop_config["ratios"]):
-                inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"], [ratio, gradually]]
-        elif "abs_sum" in drop_config["type"]:
-            if isinstance(drop_config["thresh"], float) or isinstance(drop_config["thresh"], int):
-                drop_config["thresh"] = [drop_config["thresh"] for _ in range(len(stride2_block))]
-            # drop_conf = [drop_config["type"], [drop_config["thresh"]]]
-            for idx, ratio in enumerate(drop_config["thresh"]):
-                inverted_residual_setting[stride2_block[idx]][4] = [drop_config["type"],
-                                                                    [ratio, gradually]]
-        else:
-            raise ValueError("drop type should be either random or abs_sum")
 
     for i in range(len(depth_cfg)):
         inverted_residual_setting[i][2] = depth_cfg[i]

@@ -97,7 +97,7 @@ def main():
                              sample_channel=nr_input_channels, model_type=settings.model_type)
     elif 'mink_mobilenetv2' in settings.model_name:
         model = MobileNetV2ME(num_classes=nr_classes, in_channels=nr_input_channels, width_mult=settings.width_mult,
-                              MNIST=MNIST, remove_depth=settings.remove_depth, drop_config=settings.drop_config,
+                              MNIST=MNIST, remove_depth=settings.remove_depth,
                               relu=settings.relu_type, model_type=settings.model_type)
         if settings.model_name == 'mink_mobilenetv2_quant':
             train_quant = True
@@ -105,7 +105,7 @@ def main():
             model = utils.load_model(args.load, model)
             model = Q_MobileNetV2(model, nr_input_channels, settings.width_mult, nr_classes, conv1_bit=args.conv1_level,
                                   fix_BN_threshold=args.fixBN_ratio, MNIST=MNIST, shift_bit=args.shift_bit,
-                                  drop_config=settings.drop_config, model_type=settings.model_type, bias_bit=args.bias_bit)
+                                  model_type=settings.model_type, bias_bit=args.bias_bit)
     else:
         raise NotImplementedError
 

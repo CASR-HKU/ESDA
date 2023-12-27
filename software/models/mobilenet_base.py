@@ -2,7 +2,7 @@ from torch import nn
 from torch import Tensor
 from typing import Callable, Any, Optional, List
 from torch.hub import load_state_dict_from_url
-from .mobilenet_settings import get_config, get_MNIST_config, get_iniRosh_config
+from .mobilenet_settings import get_config, get_MNIST_config, get_Roshambo_config
 
 
 __all__ = ['MobileNetV2', 'mobilenet_v2']
@@ -174,7 +174,7 @@ class MobileNetV2(nn.Module):
                 [6, 32, 3, 2],
             ]
         elif model_type == "IniRosh":
-            inverted_residual_setting = get_iniRosh_config(0, model_type, {})
+            inverted_residual_setting = get_Roshambo_config(0, model_type, {})
             final_dim = 96
             input_channels = 24
         elif MNIST:

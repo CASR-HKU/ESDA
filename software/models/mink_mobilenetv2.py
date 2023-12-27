@@ -2,7 +2,7 @@ import torch.nn as nn
 import MinkowskiEngine as ME
 import os
 import numpy as np
-from .mobilenet_settings import get_config, get_MNIST_config, get_iniRosh_config
+from .mobilenet_settings import get_config, get_MNIST_config, get_Roshambo_config
 from .drop_utils import DropClass
 from MinkowskiEngine.MinkowskiSparseTensor import SparseTensor
 
@@ -110,10 +110,6 @@ class MobileNetV2ME(nn.Module):
         self.num_classes = num_classes
         self.width_mult = width_mult
 
-        # if len(model_type) > 10:
-        #     assert width_mult == 1.0, "width_mult must be 1.0 for custom model"
-
-        self.drop_before_block = [False]
         final_dim = 1280
         if model_type == "Roshambo_cut1stage":
             inverted_residual_setting = [
@@ -134,8 +130,8 @@ class MobileNetV2ME(nn.Module):
         elif MNIST:
             inverted_residual_setting = get_MNIST_config(remove_depth, model_type, drop_config)
             final_dim = 128
-        elif model_type == "IniRosh":
-            inverted_residual_setting = get_iniRosh_config(remove_depth, model_type, drop_config)
+        elif model_type == "roshambo":
+            inverted_residual_setting = get_roshambo_config(remove_depth, model_type, drop_config)
             final_dim = 96
             input_channels = 24
         else:
