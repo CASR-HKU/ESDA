@@ -26,7 +26,6 @@ optim:
   optimizer: 'sgd'
   batch_size: 32
   init_lr: 0.01
-  # Set to "steps: ~" if no scheduler is needed
   steps_lr: 30
   factor_lr: 0.1
 hardware:

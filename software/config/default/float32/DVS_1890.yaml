@@ -22,7 +22,7 @@ dataset:
 model:
   model_name: 'mink_mobilenetv2'
   width_mult: 1.0
-  model_type: models/mobilenet_cfg/DVS/model_1890.json
+  model_type: models/model_cfg/DVS_1890.json
 optim:
   optimizer: 'sgd'
   batch_size: 32

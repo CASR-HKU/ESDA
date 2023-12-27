@@ -24,7 +24,7 @@ dir:
 model:
   model_name: 'mink_mobilenetv2'
   width_mult: 1.0
-  model_type: models/mobilenet_cfg_July23/NCal/model_2751.json
+  model_type: models/model_cfg/NCal_2751.json
 optim:
   optimizer: 'sgd'
   batch_size: 16

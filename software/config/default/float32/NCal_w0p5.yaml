@@ -18,9 +18,6 @@ dataset:
   dataset_path: "data/NCal"
   object_classes: 'all'
 
-
-dir:
-  log: 'log/'
 model:
   model_name: 'mink_mobilenetv2'
   width_mult: 0.5
