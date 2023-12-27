@@ -171,7 +171,7 @@ make e2e_inference
 If you want to resysthesis the bitstream from scratch by yourself, here shows the example instructions for `DVS_1890_shift16-zcu102_80res`. (This can take around 12 hours for one design.)
 
 ```bash
-cd ~/EDSA/hardware
+cd ~/ESDA/hardware
 mkdir MyPrj && cd MyPrj # create a new folder for your projects
 cp -r ../template_e2e DVS_1890_shift16-zcu102_80res # For roshambo, use '../template_e2e_roshambo'
 cp ../cfgs/DVS_1890_shift16-zcu102_80res.json DVS_1890_shift16-zcu102_80res/cfg.json
