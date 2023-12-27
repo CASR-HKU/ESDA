@@ -2,11 +2,10 @@
 
 ## Dataset Preparation
 
-#### DVSGesture, ASLDVS and N-MNIST
+#### ASLDVS and N-MNIST
 To download the DVSGesture, ASLDVS and N-MNIST dataset, use the scripts **software/dataset/preprocess/get_dataset.py**
 ```bash
 # Make sure you are in the software folder
-python dataset/preprocess/get_dataset.py DVSGesture -p data
 python dataset/preprocess/get_dataset.py NMNIST -p data
 python dataset/preprocess/get_dataset.py ASLDVS -p data
 ```
@@ -16,7 +15,7 @@ For RoShamBo17 dataset download, go to [Roshambo17](https://docs.google.com/docu
 
 
 #### N-Caltech101
-For N-Caltech101 dataset, we followed the process in [asynet](https://github.com/uzh-rpg/rpg_asynet) by using the following scripts. You can use tonic too.
+For N-Caltech101 dataset, we followed the procedures in [asynet](https://github.com/uzh-rpg/rpg_asynet) by using the following scripts. You can use tonic too.
 
 ```bash
 cd data
@@ -25,6 +24,11 @@ unzip N-Caltech101.zip
 rm N-Caltech101.zip
 cd ..
 ```
+
+
+#### DVSGesture
+For DVSGesture dataset, download it from the [official website](https://research.ibm.com/interactive/dvsgesture/) abd place it in **software/data/DVSGesture** path.
+
 
 After downloading all the datasets, your file structure will be:
 ```
