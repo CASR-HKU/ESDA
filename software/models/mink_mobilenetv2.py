@@ -3,13 +3,7 @@ import MinkowskiEngine as ME
 import os
 import numpy as np
 from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
-from .drop_utils import DropClass
 from MinkowskiEngine.MinkowskiSparseTensor import SparseTensor
-
-save_coordinate = False
-coord_batch_idx, coord_res_idx = 0, 0
-if save_coordinate:
-    os.makedirs("coordinates", exist_ok=True)
 
 
 class InvertedResidualBlockME(nn.Module):
@@ -50,10 +44,7 @@ class InvertedResidualBlockME(nn.Module):
 
         self.use_residual = (in_channels == out_channels and stride == 1)
         self.stride = stride
-        self.use_drop = False
-        if drop_config and self.stride == 2:
-            self.use_drop = True
-            self.drop = DropClass(type=drop_config[0], drop_config=drop_config[1])
+
 
     def forward(self, inp):
         x = inp

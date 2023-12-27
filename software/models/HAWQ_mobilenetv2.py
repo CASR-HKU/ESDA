@@ -7,7 +7,6 @@
 from models.HAWQ_quant_module.quant_modules import *
 import MinkowskiEngine as ME
 from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
-from .drop_utils import DropClass
 
 
 class Q_LinearBottleneck(nn.Module):
@@ -60,10 +59,6 @@ class Q_LinearBottleneck(nn.Module):
         self.conv3.set_param(model.conv3, model.bn3)
 
         self.quant_act_int32 = QuantAct(shift_bit=shift_bit)
-        self.use_drop = False
-        if drop_config and model.conv2.kernel_generator.kernel_stride[0] == 2:
-            self.use_drop = True
-            self.drop = DropClass(type=drop_config[0], drop_config=drop_config[1])
 
     def forward(self, x, scaling_factor_int32=None, mask=None):
         if isinstance(x, tuple):
@@ -84,10 +79,7 @@ class Q_LinearBottleneck(nn.Module):
         x, weight_scaling_factor = self.conv2(x, act_scaling_factor)
         x = self.activation_func(x)
         x, act_scaling_factor = self.quant_act2(x, act_scaling_factor, weight_scaling_factor, None, None)
-        if self.use_drop:
-            x, mask = self.drop(x)
-        else:
-            x = self.mask_forward(x, mask)
+
 
         # note that, there is no activation for the last conv
         x, weight_scaling_factor = self.conv3(x, act_scaling_factor)
@@ -107,15 +99,6 @@ class Q_LinearBottleneck(nn.Module):
 
         return x, act_scaling_factor, mask
 
-    def mask_forward(self, x, mask):
-        if mask is None:
-            return x
-        else:
-            return SparseTensor(
-                x.F * mask.unsqueeze(dim=1).expand_as(x.F),
-                coordinate_map_key=x.coordinate_map_key,
-                coordinate_manager=x.coordinate_manager,
-            )
 
 
 
