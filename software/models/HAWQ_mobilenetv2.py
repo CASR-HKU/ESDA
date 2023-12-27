@@ -201,7 +201,6 @@ class Q_MobileNetV2(nn.Module):
                 input_channels = output_channel
                 block_idx += 1
         self.blocks = nn.Sequential(*blocks)
-        self.drop_blocks = nn.Sequential(*self.drop_blocks)
         # change the final block
         self.quant_act_before_final_block = QuantAct(shift_bit=shift_bit)
 
@@ -218,7 +217,7 @@ class Q_MobileNetV2(nn.Module):
         self.fc = QuantLinear(bias_bit=bias_bit)
         self.fc.set_param(model.fc)
 
-    def forward(self, x, int_folder):
+    def forward(self, x, int_folder=""):
         # quantize input
 
         act_scaling_factor = torch.ones(1).cuda()
