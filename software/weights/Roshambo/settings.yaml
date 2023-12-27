@@ -18,9 +18,6 @@ dataset:
   dataset_path: "data/dataset_nullhop/lmdb_train"
   object_classes: 'all'
 
-
-dir:
-  log: 'test/'
 model:
   # ['fb_sparse_vgg', 'dense_vgg', 'fb_sparse_object_det', 'dense_object_det', 'fb_sparse_mobilenetv2']
   model_name: 'mink_mobilenetv2_quant'
