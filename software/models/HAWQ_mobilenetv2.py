@@ -163,12 +163,12 @@ class Q_MobileNetV2(nn.Module):
         if MNIST:
             inverted_residual_setting = get_MNIST_config(remove_depth, model_type, drop_config)
             final_dim = 128
-        elif model_type == "IniRosh":
-            inverted_residual_setting = get_Roshambo_config(remove_depth, model_type, drop_config)
+        elif model_type == "roshambo":
+            inverted_residual_setting = get_roshambo_config(remove_depth, model_type, drop_config)
             final_dim = 96
             input_channels = 24
         else:
-            inverted_residual_setting, input_channels, final_dim, self.drop_before_block = get_config(remove_depth, model_type, drop_config)
+            inverted_residual_setting, input_channels, final_dim = get_config(model_type)
             # final_dim = 1280
         self.inverted_residual_setting = inverted_residual_setting
 

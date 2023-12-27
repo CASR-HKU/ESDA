@@ -81,44 +81,14 @@ def get_MNIST_config(remove_depth=0, model_type="base", drop_config={}):
         [6, 64, 3, 2, 0],
         [6, 96, 1, 1, 0],
     ]
-    stride2_block = [idx for idx, block in enumerate(inverted_residual_setting) if block[3] == 2]
 
     for i in range(len(depth_cfg)):
         inverted_residual_setting[i][2] = depth_cfg[i]
     return inverted_residual_setting
 
 
-def get_config(remove_depth=0, model_type="base", drop_config={}):
+def get_config(model_type="base"):
     input_channel, output_channel = 32, 1280
-
-    if remove_depth == 0:
-        depth_cfg = [1, 2, 3, 4, 3, 3, 1]
-    elif remove_depth == 1:
-        depth_cfg = [1, 2, 3, 4, 3, 2, 1]
-    elif remove_depth == 2:
-        depth_cfg = [1, 2, 3, 4, 2, 2, 1]
-    elif remove_depth == 3:
-        depth_cfg = [1, 2, 3, 3, 2, 2, 1]
-    elif remove_depth == 4:
-        depth_cfg = [1, 2, 2, 3, 2, 2, 1]
-    elif remove_depth == 5:
-        depth_cfg = [1, 2, 2, 2, 2, 2, 1]
-    elif remove_depth == 6:
-        depth_cfg = [1, 2, 2, 2, 2, 1, 1]
-    elif remove_depth == 7:
-        depth_cfg = [1, 2, 2, 2, 1, 1, 1]
-    elif remove_depth == 8:
-        depth_cfg = [1, 2, 2, 1, 1, 1, 1]
-    elif remove_depth == 9:
-        depth_cfg = [1, 2, 1, 1, 1, 1, 1]
-    elif remove_depth == 10:
-        depth_cfg = [1, 1, 1, 1, 1, 1, 1]
-    elif remove_depth == 11:
-        depth_cfg = [1, 1, 1, 1, 1, 1, 0]
-    elif remove_depth == 12:
-        depth_cfg = [1, 1, 1, 1, 0, 1, 0]
-    else:
-        raise ValueError("You are removing too many layers!")
 
     if model_type == "base":
         inverted_residual_setting = [
@@ -133,11 +103,7 @@ def get_config(remove_depth=0, model_type="base", drop_config={}):
         ]
     else:
         inverted_residual_setting, input_channel, output_channel = load_json(model_type)
-    stride2_block = [idx for idx in range(len(inverted_residual_setting)) if inverted_residual_setting[idx][3] == 2]
 
-    if model_type == "base":
-        for i in range(len(depth_cfg)):
-            inverted_residual_setting[i][2] = depth_cfg[i]
     return inverted_residual_setting, input_channel, output_channel
 
 
