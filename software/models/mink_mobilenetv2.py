@@ -110,7 +110,7 @@ class MobileNetV2ME(nn.Module):
             final_dim = 96
             input_channels = 24
         else:
-            inverted_residual_setting, input_channels, final_dim = get_config(remove_depth, model_type, drop_config)
+            inverted_residual_setting, input_channels, final_dim = get_config(model_type)
             # final_dim = 1280
         final_input = inverted_residual_setting[-1][1]
 

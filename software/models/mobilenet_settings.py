@@ -61,7 +61,6 @@ def get_roshambo_config(remove_depth=0, model_type="base", drop_config={}):
         [4, 64, 2, 1, 0],
         [4, 72, 1, 2, 0],
     ]
-    stride2_block = [idx for idx, block in enumerate(inverted_residual_setting) if block[3] == 2]
 
     return inverted_residual_setting
 

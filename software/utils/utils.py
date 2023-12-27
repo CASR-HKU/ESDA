@@ -27,13 +27,12 @@ def check_abs_sum_drop(settings):
 
 
 def multiple_validate(val_func, val_loader, model, criterion, device, epoch=-1, writer=None, epoch_log=None, ana_file=None,
-             generate_int_model=False, use_abs_drop=False, msg_log=None, times=5, base_model=False):
+              msg_log=None, times=5, base_model=False):
     metrics = []
     for t in range(times):
         msg_log = None if t > 0 else msg_log
         metric, matrix = val_func(val_loader, model, criterion, device, error_ana_path=ana_file, epoch=epoch,
-                                  writer=writer, epoch_log=epoch_log, msg_log=msg_log, base_model=base_model,
-                                  generate_int_model=generate_int_model, use_abs_drop=use_abs_drop)
+                                  writer=writer, epoch_log=epoch_log, msg_log=msg_log, base_model=base_model)
         metrics.append(metric)
 
     metrics = np.array(metrics).mean(axis=0).tolist()
