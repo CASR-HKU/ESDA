@@ -19,7 +19,7 @@ void conv_3x3_line_buffer_stride1_serial(
     const int BUFFER_WIDTH = WIDTH * IC / PI;
     const int FIFO_DEPTH = WIDTH * (BUFFER_ROWS);
 
-    bool token_read_enable = 1; // enable the first read
+    bool token_read_enable = 1;
     bool data_read_enable = 1;
     bool output_valid = 0;
     bool out_valid_one_line = 0;
@@ -27,8 +27,7 @@ void conv_3x3_line_buffer_stride1_serial(
 
     ap_uint<HW_W>
         ptr_to_lastest = 0,
-        ptr_to_oldest =
-            0; // pointer to the lastest and oldest data in the buffer
+        ptr_to_oldest = 0;
     T_K lastest_token = {.end = 0, .x = 0, .y = 0},
         oldest_token = {.end = 0, .x = 0, .y = 0};
     T_K oldest_token_reg = {.end = 0, .x = 0, .y = 0};
@@ -37,7 +36,7 @@ void conv_3x3_line_buffer_stride1_serial(
 
     T_K token_fifo[FIFO_DEPTH];
     ap_int<PI * AW> line_buff[BUFFER_ROWS][BUFFER_WIDTH];
-    ap_int<PI *AW> output_read = 0;
+    ap_int<PI * AW> output_read = 0;
 
     BundleT<PI, ap_int<AW>> output_pack;
 
@@ -72,14 +71,11 @@ void conv_3x3_line_buffer_stride1_serial(
     for (T_HW rep = 0; rep < HEIGHT * WIDTH * 2; rep++)
     {
         if (token_read_enable)
-        { // originally it's the same as
-          // data_read_enable, but sepetae it out is
-          // better to understand
+        {
             lastest_token = token_in.read();
             token_fifo[ptr_to_lastest] = lastest_token;
             ptr_to_lastest = (ptr_to_lastest + 1) % FIFO_DEPTH;
-        } // can not update data storage yet, need to ensure old data all
-          // popoed out if jump far
+        }
         oldest_token_reg = token_fifo[ptr_to_oldest];
         jump_y = oldest_token_reg.y - oldest_token.y;
 
@@ -89,9 +85,6 @@ void conv_3x3_line_buffer_stride1_serial(
             for (T_HW l = 0; l < jump_y; l++)
             {
 #pragma HLS PIPELINE II = 1
-                // cout << "clean valid at line:"
-                //      << (oldest_token_reg.y + l + 2) % BUFFER_ROWS << endl;
-                // cout << "oldest token reg:" << oldest_token_reg.y << endl;
                 for (T_HW k = 0; k < WIDTH; k++)
                 {
 #pragma HLS UNROLL
@@ -111,34 +104,12 @@ void conv_3x3_line_buffer_stride1_serial(
 
         data_read_enable = (y_delta <= 1) && !lastest_token.end;
         token_read_enable =
-            data_read_enable; // if data read in current iteration, then can
-                              // start to read token in next iteration
+            data_read_enable;
 
-        // cout << "rep" << rep << "\t";
-        // cout << " lastest_token.x:" << lastest_token.x
-        //      << " lastest_token.y:" << lastest_token.y
-        //      << " lastest_token.end:" << lastest_token.end;
-        // cout << " oldest_token.x:" << oldest_token.x
-        //      << " oldest_token.y:" << oldest_token.y
-        //      << " oldest_token.end:" << oldest_token.end;
-        // cout << " output_valid:" << output_valid
-        //      << " data_read_enable:" << data_read_enable
-        //      << " token_read_enable:" << token_read_enable << endl;
-
-        // update bitmap
         if (data_read_enable)
         {
             valid[lastest_token.y % BUFFER_ROWS][lastest_token.x] = 1;
         }
-
-        // for (ap_uint<4> r = 0; r < 3; r++)
-        // {
-        //     for (T_HW j = 0; j < WIDTH; j++)
-        //     {
-        //         cout << valid[r][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
 
         if (output_valid)
         {
@@ -154,7 +125,7 @@ void conv_3x3_line_buffer_stride1_serial(
             {
 #pragma HLS PIPELINE II = 1
                 BundleT<PI, ap_int<AW>> data_in = act_in.read();
-                ap_int<PI *AW> data_repacked = 0;
+                ap_int<PI * AW> data_repacked = 0;
                 for (T_C i = 0; i < PI; i++)
                 {
                     data_repacked((i + 1) * AW - 1, i * AW) = data_in.data[i];
@@ -202,7 +173,6 @@ void conv_3x3_line_buffer_stride1_serial(
             }
             offset_s.write(end_3x3);
         }
-        // cout << endl;
     }
 }
 
@@ -257,7 +227,7 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
     T_K new_token;
 
     ap_int<PI * AW> line_buff[BUFFER_ROWS][BUFFER_WIDTH];
-    ap_int<PI *AW> output_read = 0;
+    ap_int<PI * AW> output_read = 0;
     BundleT<PI, ap_int<AW>> output_pack;
 
     bool valid[BUFFER_ROWS][WIDTH];
@@ -310,7 +280,6 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
         if (token_read_enable)
         {
             new_token = token_in.read();
-            // stride 2 of tensor coordinate
             lastest_token = new_token;
             new_x_s2 = new_token.x >> 1;
             new_y_s2 = new_token.y >> 1;
@@ -319,14 +288,11 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             odd_last_x_s2 = odd_lastest_token.x >> 1;
             odd_last_y_s2 = odd_lastest_token.y >> 1;
             if (new_token.y[0] == 0)
-            { // even case
+            { // even rows
                 if (new_x_s2 != even_last_x_s2 || new_y_s2 != even_last_y_s2 ||
                     even_fifo_empty || new_token.end)
                 {
                     even_token_fifo[even_ptr_to_lastest] = new_token;
-                    // cout << "storing even token:"
-                    //      << " x:" << new_token.x << " y:" << new_token.y
-                    //      << endl;
                     even_lastest_token = new_token;
                     even_ptr_to_lastest =
                         (even_ptr_to_lastest + 1) % FIFO_DEPTH;
@@ -334,20 +300,10 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             }
             else
             { // odd
-                // cout << (new_x_s2 != odd_last_x_s2) << " ";
-                // cout << (new_y_s2 != odd_last_y_s2) << " ";
-                // cout << new_token.end << endl;
                 if (new_x_s2 != odd_last_x_s2 || new_y_s2 != odd_last_y_s2 ||
                     odd_fifo_empty || new_token.end)
                 {
                     odd_token_fifo[odd_ptr_to_lastest] = new_token;
-                    // cout << "new_x_s2:" << new_x_s2
-                    //      << " odd_last_x_s2:" << odd_last_x_s2 << endl;
-                    // cout << "new_y_s2:" << new_y_s2
-                    //      << " odd_last_y_s2:" << odd_last_y_s2 << endl;
-                    // cout << "storing odd token:"
-                    //      << " x:" << new_token.x << " y:" << new_token.y
-                    //      << endl;
                     odd_lastest_token = new_token;
                     odd_ptr_to_lastest = (odd_ptr_to_lastest + 1) % FIFO_DEPTH;
                 }
@@ -369,8 +325,6 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
 
         even_fifo_empty = (even_ptr_to_lastest == even_ptr_to_oldest);
         odd_fifo_empty = (odd_ptr_to_lastest == odd_ptr_to_oldest);
-        // cout << "even_fifo_empty:" << even_fifo_empty
-        //      << " odd_fifo_empty:" << odd_fifo_empty << endl;
 
         if (((key_even < key_odd) && !even_fifo_empty) || odd_fifo_empty)
         {
@@ -400,9 +354,6 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             for (T_HW l = 0; l < jump_y; l++)
             {
 #pragma HLS PIPELINE II = 1
-                // cout << "clean valid at line:"
-                //      << (oldest_token_reg.y + l + 2) % BUFFER_ROWS << endl;
-                // cout << "oldest token reg:" << oldest_token_reg.y << endl;
                 for (T_HW k = 0; k < WIDTH; k++)
                 {
 #pragma HLS UNROLL
@@ -422,46 +373,12 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
 
         data_read_enable = (y_delta <= 1) && !lastest_token.end;
         token_read_enable =
-            data_read_enable; // if data read in current iteration, then can
-                              // start to read token in next iteration
+            data_read_enable;
 
-        // cout << "rep" << rep << "\t";
-        // cout << "new_token.x:" << new_token.x << " new_token.y:" << new_token.y
-        //      << " new_token.end:" << new_token.end << endl;
-        // cout << "key_even:" << key_even << " key_odd:" << key_odd << endl;
-        // cout << "pop_even:" << pop_even << " pop_odd:" << pop_odd << endl;
-        // cout << "olddest_even_token_reg.x:" << olddest_even_token_reg.x
-        //      << " olddest_even_token_reg.y:" << olddest_even_token_reg.y
-        //      << endl;
-        // cout << "olddest_odd_token_reg.x:" << olddest_odd_token_reg.x
-        //      << " olddest_odd_token_reg.y:" << olddest_odd_token_reg.y << endl;
-
-        // cout << "lastest_token.x:" << lastest_token.x
-        //      << " lastest_token.y:" << lastest_token.y
-        //      << " lastest_token.end:" << lastest_token.end << endl;
-        // cout << "oldest_token.x:" << oldest_token.x
-        //      << " oldest_token.y:" << oldest_token.y
-        //      << " oldest_token.end:" << oldest_token.end << endl;
-        // cout << "output_valid_one_line:" << out_valid_one_line
-        //      << " output_valid_multi_line:" << out_valid_multi_line
-        //      << " output_valid:" << output_valid << endl;
-        // cout << " data_read_enable:" << data_read_enable
-        //      << " token_read_enable:" << token_read_enable << endl;
-
-        // update bitmap
         if (data_read_enable)
         {
             valid[lastest_token.y % BUFFER_ROWS][lastest_token.x] = 1;
         }
-
-        // for (ap_uint<4> r = 0; r < 3; r++)
-        // {
-        //     for (T_HW j = 0; j < WIDTH; j++)
-        //     {
-        //         cout << valid[r][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
 
         if (output_valid)
         {
@@ -471,8 +388,7 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             stride2_token.end = oldest_token.end;
 
             token_out.write(stride2_token);
-            // cout << "generate output tokenx:" << oldest_token.x
-            //      << " output tokeny:" << oldest_token.y << endl;
+
             if (pop_even)
                 even_ptr_to_oldest = (even_ptr_to_oldest + 1) % FIFO_DEPTH;
             if (pop_odd)
@@ -487,7 +403,7 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             {
 #pragma HLS PIPELINE
                 BundleT<PI, ap_int<AW>> data_in = act_in.read();
-                ap_int<PI *AW> data_repacked = 0;
+                ap_int<PI * AW> data_repacked = 0;
                 for (T_C i = 0; i < PI; i++)
                 {
                     data_repacked((i + 1) * AW - 1, i * AW) = data_in.data[i];
@@ -535,7 +451,6 @@ void conv_3x3_line_buffer_stride2_fifo_serial(
             }
             offset_s.write(end_3x3);
         }
-        // cout << endl;
     }
 }
 
@@ -558,7 +473,7 @@ void conv_3x3_line_buffer_first_layer(
     const int BUFFER_WIDTH = WIDTH * IC / PI;
     const int FIFO_DEPTH = WIDTH * (BUFFER_ROWS);
 
-    bool token_read_enable = 1; // enable the first read
+    bool token_read_enable = 1;
     bool data_read_enable = 1;
     bool output_valid = 0;
     bool out_valid_one_line = 0;
@@ -644,7 +559,6 @@ void conv_3x3_line_buffer_first_layer(
         if (token_read_enable)
         {
             new_token = token_in.read();
-            // stride 2 of tensor coordinate
             lastest_token = new_token;
         }
 
@@ -680,32 +594,8 @@ void conv_3x3_line_buffer_first_layer(
 
         data_read_enable = (y_delta <= 1) && !lastest_token.end;
         token_read_enable =
-            data_read_enable; // if data read in current iteration, then can
-                              // start to read token in next iteration
+            data_read_enable;
 
-        // cout<<"rep"<<rep<<"\t";
-        // cout<<"new_token.x:"<<new_token.x<<" new_token.y:"<<new_token.y<<"
-        // new_token.end:"<<new_token.end<<endl; cout<<"key_even:"<<key_even<<"
-        // key_odd:"<<key_odd<<endl; cout<<"pop_even:"<<pop_even<<"
-        // pop_odd:"<<pop_odd<<endl;
-        // cout<<"olddest_even_token_reg.x:"<<olddest_even_token_reg.x<<"
-        // olddest_even_token_reg.y:"<<olddest_even_token_reg.y<<endl;
-        // cout<<"olddest_odd_token_reg.x:"<<olddest_odd_token_reg.x<<"
-        // olddest_odd_token_reg.y:"<<olddest_odd_token_reg.y<<endl;
-
-        // cout<<"lastest_token.x:"<<lastest_token.x<<"
-        // lastest_token.y:"<<lastest_token.y<<"
-        // lastest_token.end:"<<lastest_token.end<<endl;
-        // cout<<"oldest_token.x:"<<oldest_token.x<<"
-        // oldest_token.y:"<<oldest_token.y<<"
-        // oldest_token.end:"<<oldest_token.end<<endl;
-        // cout<<"output_valid_one_line:"<<out_valid_one_line<<"
-        // output_valid_multi_line:"<<out_valid_multi_line<<"
-        // output_valid:"<<output_valid<<endl; cout<<"
-        // data_read_enable:"<<data_read_enable<<"
-        // token_read_enable:"<<token_read_enable<<endl;
-
-        // update bitmap
         if (data_read_enable)
         {
             valid[lastest_token.y % BUFFER_ROWS][lastest_token.x] = 1;
@@ -730,7 +620,7 @@ void conv_3x3_line_buffer_first_layer(
         if (data_read_enable)
         {
             BundleT<PI, ap_int<AW>> data_in = act_in.read();
-            ap_int<PI *AW> data_repacked = 0;
+            ap_int<PI * AW> data_repacked = 0;
             for (T_C i = 0; i < PI; i++)
             {
 #pragma HLS UNROLL
@@ -752,8 +642,7 @@ void conv_3x3_line_buffer_first_layer(
                                        (ki + oldest_token.y < HEIGHT) &&
                                        (kj + oldest_token.x >= 0) &&
                                        (kj + oldest_token.x < WIDTH);
-                    // bool valid_point = not_padding && valid[oldest_token.y +
-                    // ki][oldest_token.x + kj]; cout<<valid_point<<" ";
+
                     bool valid_point = 0;
                     if (not_padding)
                     {
@@ -772,11 +661,8 @@ void conv_3x3_line_buffer_first_layer(
                         win.data[(ki + 1) * 3 + kj + 1] = 0;
                     }
                 }
-                // cout<<endl;
             }
             act_out.write(win);
         }
-
-        // cout<<endl;
     }
 }

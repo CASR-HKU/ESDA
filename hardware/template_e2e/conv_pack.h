@@ -11,12 +11,12 @@ void conv_1x1_module(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
     hls::stream<T_K> token_1;
 #pragma HLS STREAM variable = token_1 depth = 2
 
-    cout<<"conv_1x1_kernel_dsp"<<endl;
+    // cout<<"conv_1x1_kernel_dsp"<<endl;
     conv_1x1_kernel_dsp<PI, PO, IC, OC, HEIGHT, WIDTH, AW, WW, PSUMW>(
         act_in, pusm_1, token_in, token_1, w_buffer);
 
     // quantize
-    cout<<"quantize"<<endl;
+    // cout<<"quantize"<<endl;
     quantize<PO, OC, HEIGHT, WIDTH, PSUMW, AW, SCALEW, BIASW, EXP, RELU>(
         pusm_1, act_out, token_1, token_out, scale_buffer);
 }
@@ -146,19 +146,19 @@ void conv_1x1_3x3_dw_1x1_stride1(
 #pragma HLS STREAM variable = token_2 depth = 2
 
     // conv 1x1
-    cout << "conv 1x1" << endl;
+    // cout << "conv 1x1" << endl;
     conv_1x1_module<PF_0, PF_1, IC, C, HEIGHT, WIDTH, AW, WW, PSUMW0, SCALEW0,
                     BIASW0, EXP, 1>(act_in, act_1, token_in, token_1,
                                     w_buffer_0, scale_buffer_0);
 
     // conv 3x3 dw
-    cout << "conv 3x3 dw" << endl;
+    // cout << "conv 3x3 dw" << endl;
     conv_3x3_dw_module_stride1_serial<PF_1, C, HEIGHT, WIDTH, AW, WW, PSUMW1,
                                       SCALEW1, BIASW1, EXP>(
         act_1, act_2, token_1, token_2, w_buffer_1, scale_buffer_1);
 
     // conv 1x1
-    cout << "conv 1x1_2" << endl;
+    // cout << "conv 1x1_2" << endl;
     conv_1x1_module<PF_1, PF_2, C, OC, HEIGHT, WIDTH, AW, WW, PSUMW2, SCALEW2,
                     BIASW2, EXP, 0>(act_2, act_out, token_2, token_out,
                                     w_buffer_2, scale_buffer_2);
@@ -190,19 +190,19 @@ void conv_1x1_3x3_dw_1x1_stride2(
 #pragma HLS STREAM variable = token_2 depth = 2
 
     // conv 1x1
-    cout << "conv 1x1" << endl;
+    // cout << "conv 1x1" << endl;
     conv_1x1_module<PF_0, PF_1, IC, C, HEIGHT, WIDTH, AW, WW, PSUMW0, SCALEW0,
                     BIASW0, EXP, 1>(act_in, act_1, token_in, token_1,
                                     w_buffer_0, scale_buffer_0);
 
     // conv 3x3 dw
-    cout << "conv 3x3 dw" << endl;
+    // cout << "conv 3x3 dw" << endl;
     conv_3x3_dw_module_stride2_serial<PF_1, C, HEIGHT, WIDTH, AW, WW, PSUMW1,
                                       SCALEW1, BIASW1, EXP>(
         act_1, act_2, token_1, token_2, w_buffer_1, scale_buffer_1);
 
     // conv 1x1
-    cout << "conv 1x1_2" << endl;
+    // cout << "conv 1x1_2" << endl;
     conv_1x1_module<PF_1, PF_2, C, OC, HEIGHT, WIDTH, AW, WW, PSUMW2, SCALEW2,
                     BIASW2, EXP, 0>(act_2, act_out, token_2, token_out,
                                     w_buffer_2, scale_buffer_2);
@@ -248,19 +248,19 @@ void conv_1x1_3x3_dw_1x1_stride1_residual(
     duplicate_stream<PF_0, PF_2, IC, AW, HEIGHT, WIDTH>(act_in, act_0, act_id,
                                                         token_in, token_0);
 
-    cout << "conv 1x1" << endl;
+    // cout << "conv 1x1" << endl;
     conv_1x1_module<PF_0, PF_1, IC, C, HEIGHT, WIDTH, AW, WW, PSUMW0, SCALEW0,
                     BIASW0, EXP, 1>(act_0, act_1, token_0, token_1, w_buffer_0,
                                     scale_buffer_0);
 
     // conv 3x3 dw
-    cout << "conv 3x3 dw" << endl;
+    // cout << "conv 3x3 dw" << endl;
     conv_3x3_dw_module_stride1_serial<PF_1, C, HEIGHT, WIDTH, AW, WW, PSUMW1,
                                       SCALEW1, BIASW1, EXP>(
         act_1, act_2, token_1, token_2, w_buffer_1, scale_buffer_1);
 
     // conv 1x1
-    cout << "conv 1x1_2" << endl;
+    // cout << "conv 1x1_2" << endl;
     conv_1x1_module_residual<PF_1, PF_2, C, OC, HEIGHT, WIDTH, AW, WW, PSUMW2,
                              SCALEW2, BIASW2, SCALEIDW, EXP>(
         act_2, act_id, act_out, token_2, token_out, w_buffer_2, scale_buffer_2,

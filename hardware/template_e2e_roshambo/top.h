@@ -3,20 +3,6 @@
 #define PRAGMA_SUB(x) _Pragma(#x)
 #define DO_PRAGMA(x) PRAGMA_SUB(x)
 
-// constexpr int flog2(int x) {
-//     // return x<=1 ? 0 : 1+flog2(x >> 1);
-//     int result = 0;
-//     while (x > 1) {
-//         result++;
-//         x >>= 1;
-//     }
-//     return result + 1;
-// }
-
-// constexpr unsigned const_bit_width(int x) { return flog2(x) + 1; }
-
-
-
 
 #include "hls_stream.h"
 #include "ap_int.h"

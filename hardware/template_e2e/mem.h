@@ -70,61 +70,12 @@ void M2S_mask_merge(ap_int<PI * AW> *act_in, ap_int<MW> *mask,
     token_out.write(token);
 }
 
-// template <int MW, int HEIGHT, int WIDTH>
-// void M2S_mask(ap_int<MW> *mask, hls::stream<T_K> &token_out,
-//               hls::stream<ap_int<MW> > &mask_out) {
-//     T_K token;
-//     // ap_uint<16> REP = ceil_div<MW>(HEIGHT * WIDTH);
 
-//     static const int WIDTH_DIV_ROUND = (WIDTH + MW - 1) / MW;
-
-//     ap_int<MW> mask_buffer[HEIGHT * WIDTH_DIV_ROUND];
-
-//     for (int rep = 0; rep < HEIGHT * WIDTH_DIV_ROUND; rep++) {
-// #pragma HLS PIPELINE II = 1
-//         ap_uint<MW> mask_read = mask[rep];
-//         mask_buffer[rep] = mask_read;
-//         mask_out.write(mask_read);
-//     }
-
-//     int count = 0;
-//     int index = 0;
-//     ap_uint<8> x_index = 0;
-//     ap_uint<8> y_index = 0;
-
-//     for (ap_uint<16> rep = 0; rep < HEIGHT * WIDTH_DIV_ROUND; rep++) {
-//         ap_int<MW> mask_pack = mask_buffer[rep];
-//         for (ap_uint<16> i = 0; i < MW; i++) {
-// #pragma HLS PIPELINE II = 1
-//             bool nz_flag = mask_pack[i];
-//             token.x = x_index;
-//             token.y = y_index;
-//             token.end = 0;
-//             if (nz_flag) {
-//                 token_out.write(token);
-//                 // cout<<count++<<" nz_flag:"<<nz_flag<<" x:"<<token.x<<"
-//                 // y:"<<token.y<<endl;
-//             }
-//             x_index++;
-//             if (x_index == WIDTH) {
-//                 x_index = 0;
-//                 y_index++;
-//             }
-//         }
-//     }
-
-//     // end token
-//     token.x = 255;
-//     token.y = 255;
-//     token.end = 1;
-//     token_out.write(token);
-// }
 
 template <int MW, int HEIGHT, int WIDTH>
 void M2S_mask(ap_int<MW> *mask, hls::stream<T_K> &token_out,
               hls::stream<ap_int<MW> > &mask_out) {
     T_K token;
-    // ap_uint<16> REP = ceil_div<MW>(HEIGHT * WIDTH);
 
     static const int WIDTH_DIV_ROUND = (WIDTH + MW - 1) / MW;
     static const int WIDTH_ROUND = WIDTH_DIV_ROUND * MW;
@@ -158,8 +109,6 @@ void M2S_mask(ap_int<MW> *mask, hls::stream<T_K> &token_out,
                 token.end = 0;
                 if (nz_flag) {
                     token_out.write(token);
-                    // cout<<count++<<" nz_flag:"<<nz_flag<<" x:"<<token.x<<"
-                    // y:"<<token.y<<endl;
                 }
             }
         }
@@ -215,8 +164,6 @@ void mask_stride2(hls::stream<ap_int<MW> > &mask_in,
                 token.y = y * 2;
                 token.end = 0;
                 token_out.write(token);
-                // cout<<count++<<" nz_flag:"<<nz_flag<<" x:"<<token.x<<"
-                // y:"<<token.y<<endl;
             }
         }
     }
@@ -320,7 +267,6 @@ void write_output(hls::stream<BundleT<PO, ap_int<AW> > > &out_s,
     for (int rep = 0; rep < HEIGHT * WIDTH + 1; rep++) {
         T_K token = token_out.read();
         if (token.end == 1) break;
-        // int index = (token.x + token.y * WIDTH) * OC / PO;
 
         for (int i = 0; i < OC / PO; i++) {
 #pragma HLS PIPELINE II = 1
@@ -336,98 +282,6 @@ void write_output(hls::stream<BundleT<PO, ap_int<AW> > > &out_s,
     }
 }
 
-// duplicate stream
-// template<int PI, int IC, int AW, int HEIGHT, int WIDTH>
-// void duplicate_stream(
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_in,
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_out_0,
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_out_1,
-// 	hls::stream<T_K> &token_in,
-// 	hls::stream<T_K> &token_out
-// ){
-
-// 	T_K token;
-// 	BundleT<PI, ap_int<AW> > in_read;
-
-// 	for(int rep = 0; rep < HEIGHT * WIDTH + 1; rep++){
-// 		token = token_in.read();
-// 		token_out.write(token);
-// 		if (token.end == 1) break;
-// 		for(int i = 0; i < IC / PI; i++){
-// #pragma HLS PIPELINE II=1
-// 			in_read = act_in.read();
-// 			act_out_0.write(in_read);
-// 			act_out_1.write(in_read);
-// 		}
-// 	}
-// }
-
-// // duplicate stream
-// template<int PI, int PO, int IC, int AW, int HEIGHT, int WIDTH>
-// void duplicate_stream(
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_in,
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_out,
-// 	hls::stream<BundleT<PO, ap_int<AW> > > &act_id,
-// 	hls::stream<T_K> &token_in,
-// 	hls::stream<T_K> &token_out
-// ){
-
-// 	T_K token;
-// 	BundleT<PI, ap_int<AW> > in_pack;
-// 	BundleT<PO, ap_int<AW> > id_pack;
-
-// 	cout<<"PI:"<<PI<<" PO:"<<PO<<" IC:"<<IC<<endl;
-
-// 	for(int rep = 0; rep < HEIGHT * WIDTH + 2; rep++){
-// 		token = token_in.read();
-// 		token_out.write(token);
-// 		if (token.end == 1) break;
-// 		if(PI > PO){
-// 			for(int i = 0; i < IC / PI; i++){
-// #pragma HLS PIPELINE
-// 				in_pack = act_in.read();
-// 				act_out.write(in_pack);
-// 				for(int j = 0; j < PI / PO; j++){
-// 					for(int po = 0; po < PO; po++){
-// 						id_pack.data[po] =
-// in_pack.data[po
-// +
-// j
-// * PO];
-// 					}
-// 					act_id.write(id_pack);
-// 				}
-// 			}
-// 		}
-// 		else if(PI < PO){
-// 			for(int i = 0; i < IC / PO; i++){
-// 				for(int j = 0; j < PO / PI; j++){
-// #pragma HLS PIPELINE
-// 					in_pack = act_in.read();
-// 					act_out.write(in_pack);
-// 					for(int pi = 0; pi < PI; pi++){
-// 						id_pack.data[pi + j * PI] =
-// in_pack.data[pi];
-// 					}
-// 				}
-// 				act_id.write(id_pack);
-// 			}
-// 		}
-// 		else{
-// 			for(int i = 0; i < IC / PI; i++){
-// #pragma HLS PIPELINE
-// 				in_pack = act_in.read();
-// 				for(int j = 0; j < PI; j++){
-// 					id_pack.data[j] = in_pack.data[j];
-// 				}
-// 				act_out.write(in_pack);
-// 				act_id.write(id_pack);
-// 			}
-// 		}
-// 	}
-// }
-
-// duplicate stream
 template <int PI, int PO, int IC, int AW, int HEIGHT, int WIDTH>
 void duplicate_stream(hls::stream<BundleT<PI, ap_int<AW> > > &act_in,
                       hls::stream<BundleT<PI, ap_int<AW> > > &act_out,
@@ -508,8 +362,6 @@ void M2S_mask_first_layer(ap_uint<WIDTH> *mask, hls::stream<T_K> &token_out,
             token.end = 0;
             if (nz_flag) {
                 token_out.write(token);
-                // cout<<count++<<" nz_flag:"<<nz_flag<<" x:"<<token.x<<"
-                // y:"<<token.y<<endl;
             }
             x_index++;
             if (x_index == WIDTH) {
@@ -526,27 +378,3 @@ void M2S_mask_first_layer(ap_uint<WIDTH> *mask, hls::stream<T_K> &token_out,
     token_out.write(token);
 }
 
-// //adjust stream
-// template<int PI, int PF, int AW, int HEIGHT, int WIDTH>
-// void adjust_stream(
-// 	hls::stream<BundleT<PI, ap_int<AW> > > &act_in,
-// 	hls::stream<BundleT<PF, ap_int<AW> > > &act_out,
-// 	hls::stream<T_K> &token_in,
-// 	hls::stream<T_K> &token_out
-// ){
-// 	T_K token;
-// 	BundleT<PI, ap_int<AW> > in_data;
-// 	BundleT<PF, ap_int<AW> > out_data;
-
-// 	for(int rep = 0; rep < HEIGHT * WIDTH + 1; rep++){
-// 		token = token_in.read();
-// 		if (token.end == 1) break;
-// 		if(PI > PF){
-// 			for(int i = 0; i < PI; i++){
-// 				in_data = act_in.read();
-// 				for(int j = 0; j < PI / PF; j++){
-
-// 			}
-// 		}
-
-// )

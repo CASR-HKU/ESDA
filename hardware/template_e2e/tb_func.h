@@ -41,34 +41,6 @@ void readfile(T_OUT *mem, int length, const char *name) {
     fclose(f_s);
 }
 
-// template <int W, int PA, typename T_OUT>
-// int read_tb_mask(T_OUT *mem, int length, const char *name) {
-//     int count = 0;
-//     FILE *f_s;
-//     f_s = fopen(name, "r");
-//     int rep = ceil_div<PA>(length);
-//     int nz_count = 0;
-//     int FLAG = 0;
-//     for (int i = 0; i < rep; i++) {
-//         T_OUT temp;
-//         for (int j = 0; j < PA; j++) {
-//             int tmp;
-//             FLAG = fscanf(f_s, "%d", &tmp);
-//             if (FLAG == EOF) {
-//                 break;
-//             }
-//             //   cout<<"tmp:"<<tmp<<endl;
-//             temp.range(W * (j + 1) - 1, W * j) = tmp;
-//             if (tmp != 0) nz_count++;
-//         }
-//         mem[count++] = temp;
-//         //   cout<<temp<<endl;
-//     }
-//     fclose(f_s);
-//     return nz_count;
-// }
-
-
 
 template <int PA>
 int read_tb_mask(ap_int<PA> *mem, int height, int width, const char *name) {

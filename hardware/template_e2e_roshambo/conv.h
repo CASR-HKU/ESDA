@@ -48,10 +48,7 @@ void conv_3x3_dw_kernel(hls::stream<BundleT<9, ap_int<PI * AW>>> &act_in,
                     ap_int<WW> weight = (ap_int<WW>)weight_pack.data[k].range(
                         (pi + 1) * WW - 1, pi * WW);
                     psum += activation * weight;
-                    // cout << " a:" << activation << " w:" << weight
-                    //      << " p:" << psum;
                 }
-                // cout << endl;
                 psum_pack.data[pi] = psum;
             }
             psum_out.write(psum_pack);
@@ -87,8 +84,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
     for (ap_int<HW_W> r = 0; r < HEIGHT * WIDTH + 2; r++) {
         T_K token = token_in.read();
         token_out.write(token);
-        // cout<<"token.x:"<<token.x<<"
-        // token.y:"<<token.y<<"token.end:"<<token.end<<endl;
+
         if (token.end == 1) break;
 
         for (ap_uint<C_W> c = 0; c < IC / PI; c++) {
@@ -106,7 +102,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 ap_int<PSUMW + SCALEW + 1> psum_mul =
                     (psum + bias) * scale + round_shift;
 
-                cout<<"psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<" psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<" exp:"<<EXP;
+                // cout<<"psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<" psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<" exp:"<<EXP;
 
                 psum_mul = psum_mul >> EXP;
 
@@ -120,7 +116,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 } else {
                     act_pack.data[p] = quantized_act;
                 }
-                cout<<" output:"<<act_pack.data[p]<<endl;
+                // cout<<" output:"<<act_pack.data[p]<<endl;
             }
             act_out.write(act_pack);
         }
@@ -189,10 +185,6 @@ void quantize_id_add(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 ap_int<PSUMW + SCALEW + 1> psum_mul =
                     ((psum + bias) * scale + round_shift);
 
-                // cout<<count++;
-                // cout<<" psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<"
-                // psum_mul:"<<psum_mul<<" round shift:"<<round_shift;
-
                 psum_mul = psum_mul >> EXP;
 
                 if (psum_mul > high_1) psum_mul = high_1;
@@ -201,19 +193,12 @@ void quantize_id_add(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
 
                 ap_int<AW + SCALEIDW + 1> id_mul =
                     (id * id_scale + round_shift);
-                // cout<<" SCALEWIDW:"<<SCALEIDW <<" id:"<<id<<"
-                // id_scale:"<<id_scale<<" id_mul:"<<id_mul<<" round
-                // shift:"<<round_shift;
 
                 id_mul = id_mul >> EXP;
 
-                // if (id_mul > high_1) id_mul = high_1;
-                // if (id_mul < low_1) id_mul = low_1;
                 quantize_id = id_mul;
 
                 final_sum = quantize_psum + quantize_id;
-                // cout<<" quantize_psum:"<<quantize_psum<<"
-                // quantize_id:"<<quantize_id<<" final_sum:"<<final_sum<<endl;
 
                 if (final_sum > high) final_sum = high;
                 if (final_sum < low) final_sum = low;
@@ -232,8 +217,7 @@ void conv_1x1_kernel_dsp(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
                          hls::stream<T_K> &token_in,
                          hls::stream<T_K> &token_out,
                          const ap_int<PI * WW> w_buffer[OC][IC / PI]) {
-    // const int C_W = 10;
-    // const int HW_W = 16;
+
 #pragma HLS bind_storage variable = w_buffer type = rom_2p impl = BRAM
 
     DO_PRAGMA(HLS ARRAY_PARTITION variable = w_buffer cyclic factor =
@@ -288,7 +272,6 @@ void conv_1x1_kernel_dsp(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
                     weight_pack.data[po] = w_buffer[oc * PO + po][ic];
                 }
 
-                // pack 2 MAC on 1 DSP
                 for (T_C po = 0; po < PO / 2; po++) {
 #pragma HLS UNROLl
                     for (T_C pi = 0; pi < PI; pi++) {
@@ -369,7 +352,6 @@ void conv_3x3_dw_kernel_serial(
         if (token.end == 1) break;
         for (ap_uint<4> k = 0; k < 10; k++) {
             T_OFFSET offset = offset_s.read();
-            // cout << "offset:" << offset << endl;
             if (offset == end_3x3) break;
             for (T_C ic = 0; ic < IC / PI; ic++) {
 #pragma HLS PIPELINE II = 1
@@ -395,67 +377,6 @@ void conv_3x3_dw_kernel_serial(
     }
 }
 
-// // average pooling layer
-// template <int PI, int PO, int IC, int N_CLASS, int HEIGHT, int WIDTH, int AW,
-//           int WW, int PSUMW>
-// void global_avgpool_linear(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
-//                            ap_int<PO * PSUMW> *c_out,
-//                            hls::stream<T_K> &token_in,
-//                            const ap_int<PI * WW> weight[N_CLASS][IC / PI]) {
-//     ap_int<PSUMW * PI> sum[IC / PI];
-//     ap_int<PSUMW *PO> out_pack = 0;
-
-//     for (int i = 0; i < IC / PI; i++) {
-// #pragma HLS PIPELINE II = 1
-//         sum[i] = 0;
-//     }
-
-//     for (int i = 0; i < HEIGHT * WIDTH + 2; i++) {
-//         T_K token = token_in.read();
-//         cout<<"token:"<<token.x<<" "<<token.y<<" "<<token.end<<endl;
-//         if (token.end == 1) break;
-//         for (int j = 0; j < IC / PI; j++) {
-// #pragma HLS PIPELINE II = 1
-//             BundleT<PI, ap_int<AW>> act = act_in.read();
-//             ap_int<PSUMW *PI> s_pack = sum[j];
-//             for (int pi = 0; pi < PI; pi++) {
-//                 ap_int<PSUMW> s = (ap_int<PSUMW>)s_pack.range(
-//                     PSUMW * (pi + 1) - 1, PSUMW * pi);
-//                 ap_int<AW> a = act.data[pi];
-//                 s += a;
-//                 s_pack.range(PSUMW * (pi + 1) - 1, PSUMW * pi) = s;
-//             }
-//             sum[j] = s_pack;
-//         }
-//     }
-
-//     // for (int i = 0; i < IC / PI; i++) {
-//     //     for (int j = 0; j < PI; j++) {
-//     //         cout << sum[i].range(PSUMW * (j + 1) - 1, PSUMW * j) << " ";
-//     //     }
-//     //     cout << endl;
-//     // }
-
-//     for (int oc = 0; oc < N_CLASS / PO; oc++) {
-//         for (int ic = 0; ic < IC / PI; ic++) {
-// #pragma HLS PIPELINE II = 1
-//             for (int po = 0; po < PO; po++) {
-//                 ap_int<PSUMW> logit = (ap_int<PSUMW>)out_pack.range(
-//                     PSUMW * (po + 1) - 1, PSUMW * po);
-//                 for (int pi = 0; pi < PI; pi++) {
-//                     ap_int<PSUMW> s = (ap_int<PSUMW>)sum[ic].range(
-//                         PSUMW * (pi + 1) - 1, PSUMW * pi);
-//                     ap_int<AW> w = weight[oc * PO + po][ic].range(
-//                         AW * (pi + 1) - 1, AW * pi);
-//                     logit += s * w;
-//                 }
-//                 out_pack.range(PSUMW * (po + 1) - 1, PSUMW * po) = logit;
-//             }
-//         }
-//         c_out[oc] = out_pack;
-//         out_pack = 0;
-//     }
-// }
 
 // PI == IC
 template <int PI, int PO, int OC, int HEIGHT, int WIDTH, int AW, int WW,
@@ -499,7 +420,6 @@ void conv_3x3_kernel_dsp_first_layer(
         }
     }
 
-    // cout<<"WW:"<<WW<<" AW:"<<AW<<" PI:"<<PI<<endl;
 
     for (ap_uint<HW_W> r = 0; r < HEIGHT * WIDTH + 2; r++) {
         T_K token = token_in.read();
@@ -522,13 +442,13 @@ void conv_3x3_kernel_dsp_first_layer(
                 T_PSUM psum_1 = 0;
                 for (ap_uint<4> k = 0; k < 9; k++) {
                     T_ACT activation = act_in_pack.data[k];
-                    cout<<" act:"<<activation;
+                    // cout<<" act:"<<activation;
                     ap_int<18> in_expend = (ap_int<18>)activation;
 
                     T_WEIGHT w_0 = weight_pack.data[po * 18 + k];
                     T_WEIGHT w_1 = weight_pack.data[po * 18 + 9 + k];
 
-                    cout<<" w_0:"<<w_0<<" w_1:"<<w_1;
+                    // cout<<" w_0:"<<w_0<<" w_1:"<<w_1;
 
                     ap_int<27> w_1_shift = 0;
                     ap_int<27> w_0_expend = (ap_int<27>)w_0;
@@ -544,23 +464,15 @@ void conv_3x3_kernel_dsp_first_layer(
                         mul_temp.range(AW + WW - 1, AW + WW - 1);
                     psum_0 += low;
                     psum_1 += high;
-                    cout<<" low:"<<low<<" high:"<<high<<endl;
-                    cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
+                    // cout<<" low:"<<low<<" high:"<<high<<endl;
+                    // cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
                 }
                 psum_pack.data[po * 2] = psum_0;
                 psum_pack.data[po * 2 + 1] = psum_1;
-                cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
+                // cout<<" psum_0:"<<psum_0<<" psum_1:"<<psum_1<<endl;
             }
             psum_out.write(psum_pack);
         }
-//         for (T_C oc = 0; oc < OC / PO; oc++) {
-// #pragma HLS PIPELINE
-//             for (T_C po = 0; po < PO; po++) {
-//                 psum_pack.data[po] = psum_buffer[oc * PO + po];
-//                 psum_buffer[oc * PO + po] = 0;
-//             }
-//             psum_out.write(psum_pack);
-//         }
     }
 }
 
@@ -624,22 +536,14 @@ void global_avgpool_linear(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
                 ap_int<OUT_W> logit = 0;
                 for (ap_uint<IC_W> pi = 0; pi < PI; pi++) {
                     ap_int<SUM_W> s = (ap_int<SUM_W>)sum[ic].range( SUM_W * (pi + 1) - 1, SUM_W * pi);
-                    cout << "s:" << s << endl;
-                    cout << "pi:" << pi << endl;
-                    cout << "ic:" << ic << endl;
-                    cout << "oc:" << oc << endl;
                     ap_int<WW> w = weight[oc * PO + po][ic].range( WW * (pi + 1) - 1, WW * pi);
-                    cout << "w:" << w << endl;
                     out_buffer[oc * PO + po] += s * w;
-                    cout << "out_buffer:" << out_buffer[oc * PO + po] << endl;
                 }
             }
         }
     }
 
-    for (int i = 0; i < N_CLASS; i++) {
-        cout << "out_buffer:" << out_buffer[i] << endl;
-    }
+
 
     for (int i = 0; i < N_CLASS; i++) {
 #pragma HLS PIPELINE II = 1
