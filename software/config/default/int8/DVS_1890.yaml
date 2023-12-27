@@ -14,7 +14,6 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'DVSGesture_processed'
   dataset_path: "data/dvs_gesture_clip"
   object_classes: 'all'
@@ -23,7 +22,6 @@ dataset:
 dir:
   log: 'test/'
 model:
-  # ['fb_sparse_vgg', 'dense_vgg', 'fb_sparse_object_det', 'dense_object_det', 'fb_sparse_mobilenetv2']
   model_name: 'mink_mobilenetv2_quant'
   width_mult: 1.0
   model_type: models/model_cfg/DVS_1890.json
@@ -31,7 +29,6 @@ optim:
   optimizer: 'sgd'
   batch_size: 32
   init_lr: 0.001
-  # Set to "steps: ~" if no scheduler is needed
   steps_lr: 50
   factor_lr: 0.1
 checkpoint:
