@@ -1,9 +1,7 @@
 import torch.nn as nn
 import MinkowskiEngine as ME
-import os
-import numpy as np
+import sys
 from .mobilenet_settings import get_config, get_MNIST_config, get_roshambo_config
-from MinkowskiEngine.MinkowskiSparseTensor import SparseTensor
 
 
 class InvertedResidualBlockME(nn.Module):
@@ -12,6 +10,9 @@ class InvertedResidualBlockME(nn.Module):
         super(InvertedResidualBlockME, self).__init__()
 
         hidden_channels = int(round(in_channels * expand_ratio))
+        self.hidden_channels = hidden_channels
+        self.out_channels = out_channels
+        self.in_channels = in_channels
 
         self.conv1 = ME.MinkowskiConvolution(
             in_channels,
@@ -46,25 +47,60 @@ class InvertedResidualBlockME(nn.Module):
         self.stride = stride
 
 
-    def forward(self, inp):
-        x = inp
+    def forward(self, x):
+        if isinstance(x, tuple):
+            save_json = True
+            x, struct, res_idx, b_idx, kernel_sparsity, activation_sparsity = x
+            act_sparsity = []
+            tensor_strides = []
+            ks = kernel_sparsity[res_idx]
+        else:
+            save_json = False
+
         identity = x
 
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
+        if save_json:
+            act_sparsity.append(activation_sparsity[res_idx])
+            tensor_strides.append(x.tensor_stride[0])
 
         x = self.conv2(x)
+        if self.stride == 2:
+            res_idx += 1
 
         x = self.bn2(x)
         x = self.relu2(x)
+        if save_json:
+            act_sparsity.append(activation_sparsity[res_idx])
+            tensor_strides.append(x.tensor_stride[0])
+
         x = self.conv3(x)
         x = self.bn3(x)
+        if save_json:
+            act_sparsity.append(activation_sparsity[res_idx])
+            tensor_strides.append(x.tensor_stride[0])
+            conv_json = {
+                "name": "block.{}".format(b_idx),
+                "type": "block",
+                "residual": self.use_residual,
+                "stride": self.stride,
+                "tensor_stride": tensor_strides,
+                "channels": [self.in_channels, self.hidden_channels, self.out_channels],
+                "sparsity": act_sparsity,
+                "kernel_sparsity": ks,
+            }
+            b_idx += 1
+            struct["layers"].append(conv_json)
 
         if self.use_residual:
             x = x + identity
 
-        return x
+        if save_json:
+            return (x, struct, res_idx, b_idx, kernel_sparsity, activation_sparsity)
+        else:
+            return x
 
 
 class MobileNetV2ME(nn.Module):
@@ -91,6 +127,7 @@ class MobileNetV2ME(nn.Module):
             inverted_residual_setting, input_channels, final_dim = get_config(model_type)
             # final_dim = 1280
         final_input = inverted_residual_setting[-1][1]
+        self.inverted_residual_setting = inverted_residual_setting
 
         self.conv1 = ME.MinkowskiConvolution(
             in_channels,
@@ -103,7 +140,6 @@ class MobileNetV2ME(nn.Module):
         self.relu1 = self.relu(inplace=True)
 
         blocks = []
-        
         input_channels = int(input_channels * width_mult)
         for t, c, n, s, dr in inverted_residual_setting:
             output_channel = int(c * width_mult)
@@ -139,31 +175,82 @@ class MobileNetV2ME(nn.Module):
                 nn.init.constant_(m.bn.weight, 1)
                 nn.init.constant_(m.bn.bias, 0)
 
-    def forward(self, x):
+    def forward(self, x, name, size):
+        save_json = True if name and size else False
+        if save_json:
+            import json
+            from .sparsity import get_sparsity
+            activation_sparsity , kernel_sparsity = get_sparsity(name)
+            resolution_idx = 0
+            json_file = open(self.json_file, "w")
+            struct = {
+                "name": "MobileNetV2",
+                "dataset": name,
+                "input_shape": size,
+                "input_sparsity": activation_sparsity[resolution_idx],
+                "settings": self.inverted_residual_setting,
+                "param": self.param,
+                "layers": []
+            }
+
         x = self.conv1(x)
+
+        if save_json:
+            resolution_idx += 1
+            conv_json = {
+                "name": "conv1",
+                "type": "conv",
+                "residual": False,
+                "stride": self.conv1.kernel_generator.kernel_stride[0],
+                "tensor_stride": [int(x.tensor_stride[0]/2), x.tensor_stride[1]],
+                "channels": [self.conv1.in_channels, self.conv1.out_channels],
+                "sparsity": activation_sparsity[resolution_idx],
+                "kernel_sparsity": kernel_sparsity[resolution_idx],
+            }
         x = self.bn1(x)
         x = self.relu1(x)
-        # (x, masks) = self.blocks((x, None))
-        for idx, block in enumerate(self.blocks):
-            x = block(x)
+
+        struct["layers"].append(conv_json)
+
+        if save_json:
+            (x, struct, resolution_idx, block_idx, kernel_sparsity, activation_sparsity) = \
+                self.blocks((x, struct, resolution_idx, 0, kernel_sparsity, activation_sparsity))
+        else:
+            x = self.blocks(x)
 
         x = self.conv8(x)
+
+        if save_json:
+            conv_json = {
+                "name": "conv8",
+                "type": "conv",
+                "residual": False,
+                "stride": self.conv8.kernel_generator.kernel_stride[0],
+                "tensor_stride": [x.tensor_stride[0], x.tensor_stride[0]],
+                "channels": [self.conv8.in_channels, self.conv8.out_channels],
+                "sparsity": activation_sparsity[resolution_idx],
+                "kernel_sparsity": kernel_sparsity[resolution_idx],
+            }
+            struct["layers"].append(conv_json)
         x = self.bn8(x)
         x = self.relu8(x)
 
         x = self.pool(x)
         x = self.fc(x)
 
-        return x.F
-
-    def _make_block(self, in_channels, out_channels, t, s):
-        layers = []
-        layers.append(InvertedResidualBlockME(
-            in_channels,
-            out_channels,
-            stride=s,
-            expansion_factor=t,
-            dimension=2
-        ))
-
-        return nn.Sequential(*layers)
+        if save_json:
+            conv_json = {
+                "name": "fc",
+                "type": "linear",
+                "residual": False,
+                "stride": 1,
+                "tensor_stride": [x.tensor_stride[0], x.tensor_stride[0]],
+                "channels": [self.conv8.out_channels, self.num_classes],
+                "sparsity": 0,
+                "kernel_sparsity": [0 for _ in range(9)],
+            }
+            struct["layers"].append(conv_json)
+            json.dump(struct, json_file, indent=4)
+            sys.exit(0)
+        else:
+            return x.F

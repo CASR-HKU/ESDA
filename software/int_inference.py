@@ -7,8 +7,8 @@ import torch.backends.cudnn as cudnn
 import torch.optim
 import torch.utils.data
 import argparse
-from models_int.mink_mobilenetv2 import MobileNetV2ME
-from models_int.HAWQ_mobilenetv2 import Q_MobileNetV2
+from models.mink_mobilenetv2 import MobileNetV2ME
+from models.HAWQ_mobilenetv2 import Q_MobileNetV2
 
 try:
     use_tb = True
@@ -119,7 +119,8 @@ def gen_npy(val_loader, model, device, base_model=False, int_folder=""):
                 minknet_input = ME.SparseTensor(
                     coordinates=sample_batched["coordinates"], features=sample_batched["features"], device=device
                 )
-                model(minknet_input, int_folder)
+                model(minknet_input)
+                # model(minknet_input, int_folder)
         return
 
 

@@ -132,12 +132,12 @@ python main.py --settings_file=config/default/int8/DVS_1890.yaml --epochs 100 --
 After obtaining the trained int8 model, before conducting hardware systhesis, use **int_inference.py** to generate necessary software configuration and input data.
 
 ```bash
-python int_inference.py --settings_file=<path-to-config-file> --load <path-to-trained-model-path> --bias_bit <bias-bit> --shift_bit <scale-bit> -e --int_dir <path-to-model-folder>
+python int_inference.py --settings_file=<path-to-config-file> --load <path-to-trained-model-path> --bias_bit <bias-bit> --shift_bit <scale-bit> --int_dir <path-to-model-folder>
 ```
 
 
 ```bash
-python int_inference.py --bias_bit 16 --settings_file=exp_int8/DVS_1890/settings.yaml --load exp_int8/DVS_1890/ckpt.best.pth.tar --shift_bit 16 -e --int_dir ../eventNet/model/DVS_1890_shift16
+python int_inference.py --bias_bit 16 --settings_file=exp_int8/DVS_1890/settings.yaml --load exp_int8/DVS_1890/ckpt.best.pth.tar --shift_bit 16 --int_dir ../eventNet/model/DVS_1890_shift16
 ```
 
 ```
