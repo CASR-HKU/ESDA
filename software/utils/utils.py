@@ -86,12 +86,6 @@ def load_model(path, model, device="cuda:0"):
 def reinit_settings(settings, args):
     if settings.steps_lr < 5:
         settings.steps_lr = int(args.epochs/(settings.steps_lr+1))
-    if args.gradually:
-        try:
-            settings.drop_config["gradually"] = True
-            print("Using gradually increase in dropping")
-        except:
-            pass
     return settings
 
 def select_dataset(name):

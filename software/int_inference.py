@@ -99,7 +99,7 @@ def main():
 
     val_dataset = Dataset(cfg, mode="validation", shuffle=True, dataset_percentage=args.dataset_percentage,
                           min_event=args.min_event)
-    if cfg["dataset"]["name"] == "IniRoshambo":
+    if cfg["dataset"]["name"] == "Roshambo":
         nr_input_channels = 1
 
     nr_classes = val_dataset.nr_classes

@@ -49,8 +49,8 @@ class Dataset:
         elif self.dataset_name == "CIFAR10":
             self.dataset = ds.CIFAR10(cfg["dataset"]["dataset_path"], mode, shuffle,
                                       sampler=self.transform.get_sampler(), **kwargs)
-        elif self.dataset_name == "IniRoshambo":
-            self.dataset = ds.IniRoshambo(cfg["dataset"]["dataset_path"], mode, shuffle, **kwargs)
+        elif self.dataset_name == "Roshambo":
+            self.dataset = ds.Roshambo(cfg["dataset"]["dataset_path"], mode, shuffle, **kwargs)
             self.dataset_type = "frame"
         elif self.dataset_name == "DVS_slice":
             self.dataset = ds.DVSSlice(cfg["dataset"]["dataset_path"], mode, shuffle, **kwargs)
