@@ -14,7 +14,6 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'NCaltech101Processed'
   dataset_path: "data/preprocess_h5/NCal_window0p1_overlap0p5"
   object_classes: 'all'

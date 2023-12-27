@@ -14,7 +14,6 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'ASLDVS'
   dataset_path: "data/ASLDVS"
   object_classes: 'all'
@@ -23,10 +22,8 @@ dataset:
 dir:
   log: 'log/'
 model:
-  # ['fb_sparse_vgg', 'dense_vgg', 'fb_sparse_object_det', 'dense_object_det', 'fb_sparse_mobilenetv2']
   model_name: 'mink_mobilenetv2'
-  width_mult: 0.5
-#  drop_config: { type: "abs_sum_momentum", thresh: 0.1 }
+  width_mult: 0.5 # The model is mobilenet with 50% width
 optim:
   optimizer: 'sgd'
   batch_size: 128

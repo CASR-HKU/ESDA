@@ -14,7 +14,6 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'DVS_slice'
   dataset_path: "data/DVS_slice/"
   object_classes: 'all'

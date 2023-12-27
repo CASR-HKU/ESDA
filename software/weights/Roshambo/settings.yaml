@@ -14,8 +14,7 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
-  name: 'IniRoshambo'
+  name: 'Roshambo'
   dataset_path: "data/dataset_nullhop/lmdb_train"
   object_classes: 'all'
 

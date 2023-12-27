@@ -14,7 +14,6 @@ transform:
     {type: 'histogram'}
 
 dataset:
-  # 'NCaltech101' or 'NCaltech101_ObjectDetection', 'Prophesee', 'NCars'
   name: 'ASLDVS'
   dataset_path: "data/ASLDVS"
   object_classes: 'all'
