@@ -487,16 +487,10 @@ void conv_3x3_kernel_dsp_first_layer(
 }
 
 // average pooling layer
-template <int PI, int PO, int IC, int N_CLASS, int HEIGHT, int WIDTH, int AW,
-          int WW, int EXP>
-void global_avgpool_linear(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
-                           hls::stream<T_K> &token_in, ap_int<32> *c_out,
-                           const ap_int<PI * WW> weight[N_CLASS][IC / PI]) {
-    static const int OUT_W = boost::static_log2<IC>::value + AW + WW +
-                             boost::static_log2<HEIGHT * WIDTH>::value;
+template <int PI, int PO, int IC, int HEIGHT, int WIDTH, int AW>
+void global_avgpool(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
+                           hls::stream<T_K> &token_in, ap_int<32> *c_out) {
     static const int SUM_W = AW + boost::static_log2<HEIGHT * WIDTH>::value;
-
-
     static const int IC_W = boost::static_log2<IC>::value + 2;
     static const int OC_W = boost::static_log2<N_CLASS>::value + 2;
     static const int HW_W = boost::static_log2<HEIGHT * WIDTH>::value + 2;
@@ -504,20 +498,10 @@ void global_avgpool_linear(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
 
     ap_int<SUM_W * PI> sum[IC / PI];
 
-    ap_int<OUT_W> out_buffer[N_CLASS];
-    DO_PRAGMA(HLS ARRAY_PARTITION variable = out_buffer cyclic factor = PO dim=1)
-
-#pragma HLS BIND_STORAGE variable = weight type = rom_2p impl = bram
-DO_PRAGMA(HLS ARRAY_PARTITION variable = weight cyclic factor = PO / 2 dim=1)
 
     for (ap_uint<IC_W> i = 0; i < IC / PI; i++) {
 #pragma HLS PIPELINE II = 1
         sum[i] = 0;
-    }
-
-    for(ap_uint<OC_W> i = 0; i < N_CLASS; i++){
-#pragma HLS PIPELINE II = 1
-        out_buffer[i] = 0;
     }
 
     for (ap_uint<HW_W> i = 0; i < HEIGHT * WIDTH + 1; i++) {
@@ -538,22 +522,9 @@ DO_PRAGMA(HLS ARRAY_PARTITION variable = weight cyclic factor = PO / 2 dim=1)
         }
     }
 
-    for (ap_uint<OC_W> oc = 0; oc < N_CLASS / PO; oc++) {
-        for (ap_uint<IC_W> ic = 0; ic < IC / PI; ic++) {
-#pragma HLS PIPELINE II = 1
-            for (ap_uint<OC_W> po = 0; po < PO; po++) {
-                ap_int<OUT_W> logit = 0;
-                for (ap_uint<IC_W> pi = 0; pi < PI; pi++) {
-                    ap_int<SUM_W> s = (ap_int<SUM_W>)sum[ic].range( SUM_W * (pi + 1) - 1, SUM_W * pi);
-                    ap_int<WW> w = weight[oc * PO + po][ic].range( WW * (pi + 1) - 1, WW * pi);
-                    out_buffer[oc * PO + po] += s * w;
-                }
-            }
-        }
-    }
 
-    for (int i = 0; i < N_CLASS; i++) {
+    for (int i = 0; i < IC; i++) {
 #pragma HLS PIPELINE II = 1
-        c_out[i] = out_buffer[i];
+        c_out[i] = sum[i];
     }
 }
