@@ -775,7 +775,7 @@ def main():
         shift_n = 32
         bias_bit = 32
     else:
-        shift_n = 16
+        shift_n = 32
         bias_bit = 16
 
     input_h, input_w = cfg["input_shape"]
@@ -872,6 +872,9 @@ def main():
             # build module
             test_module = tb_1x1_3x3dw_1x1_block(**module_kwargs)
         elif layer["type"] == "linear":
+            feat_out = output_st.F.sum(dim=0, keepdim=True)
+            print("Output is {}".format(feat_out))
+            continue
             input_tensor = output_st.F
             pooled_feat = input_tensor.sum(dim=0, keepdim=True)
             fpath = os.path.join(data_dir, npy_of(layer, "", "weight_integer"))
@@ -918,6 +921,9 @@ def main():
             input_st = output_st
             input_C = input_st.C.numpy()
             input_F = input_st.F
+            first_sample_idx = max([i for i, item in enumerate(input_C) if item[0] == 0])
+            input_C = input_C[:first_sample_idx]
+            input_F = input_F[:first_sample_idx]
         # generate mask
         # mask = generate_mask(input_C, in_tensor_stride, input_h, input_w)
         # build input sparse tensor
