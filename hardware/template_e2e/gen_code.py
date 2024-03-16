@@ -258,26 +258,29 @@ def append_perlayer_code(codes, layer, prev_name, first_layer=False, last_layer=
     elif layer["type"] == "linear":
         # pass
         func_name = "global_avgpool"
-        def_k_list = [cfg_of(name, k) for k in ["PIC", "POC", "IC", "OC", "H", "W"]]
-        def_v_list = layer["parallelism"] + layer["channels"] + layer["input_shape"]
+        def_k_list = [cfg_of(name, k) for k in ["PIC", "POC", "IC", "H", "W"]]
+        def_v_list = layer["parallelism"] + [layer["channels"][0]] + layer["input_shape"]
         unique_tpl_list = def_k_list.copy()
         common_arg_list = []  # clear common_arg_list
         unique_arg_list = [
             afifo_of(prev_name),
             tfifo_of(prev_name),
             "act_out",
-            wbuf_of(name),
+            # wbuf_of(name),
         ]
         # weight.h wbuf
-        codes["weight.h"] += variable_code_block(
-            name,
-            "w",
-            f"{cfg_of(name, 'PIC')}*CFG_WW",
-            f"{cfg_of(name, 'OC')}][{cfg_of(name, 'IC')}/{cfg_of(name, 'PIC')}",
-        )
+        # codes["weight.h"] += variable_code_block(
+        #     name,
+        #     "w",
+        #     f"{cfg_of(name, 'PIC')}*CFG_WW",
+        #     f"{cfg_of(name, 'OC')}][{cfg_of(name, 'IC')}/{cfg_of(name, 'PIC')}",
+        # )
     else:
         raise ValueError(f"unknown layer type {layer['type']}")
-    tpl_list = unique_tpl_list + common_tpl_list
+    if last_layer:
+        tpl_list = unique_tpl_list + ["CFG_AW"]
+    else:
+        tpl_list = unique_tpl_list + common_tpl_list# if not last_layer else unique_tpl_list
     arg_list = common_arg_list + unique_arg_list
     codes["comp"] += func_code_block(func_name, tpl_list, arg_list)
     # para.h
