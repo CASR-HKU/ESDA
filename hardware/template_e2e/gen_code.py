@@ -9,7 +9,7 @@ import warnings
 from common import *
 
 dflt_top_name = "top"
-valid_dataset_list = ["ASL", "DVS", "NCAL", "NMNIST", "Roshambo"]
+valid_dataset_list = ["EyeTracking", "ASL", "DVS", "NCAL", "NMNIST", "Roshambo"]
 
 
 def single_fifo_code_block(fifo_name, dtype, depth):
