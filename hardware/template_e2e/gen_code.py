@@ -346,6 +346,7 @@ def gen_code(top_tpl, cfg, work_dir):
             for k in ["H", "W"]
         }
     )
+    top_para["CFG_TOP_OC"] = "CFG_FC_IC"
 
     # prolouge
     append_prolouge_code(codes, common_para)
