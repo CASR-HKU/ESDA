@@ -256,7 +256,7 @@ def append_perlayer_code(codes, layer, prev_name, first_layer=False, last_layer=
                 None,
             )
     elif layer["type"] == "linear":
-        func_name = "global_avgpool_linear"
+        func_name = "global_avgpool"
         def_k_list = [cfg_of(name, k) for k in ["PIC", "POC", "IC", "OC", "H", "W"]]
         def_v_list = layer["parallelism"] + layer["channels"] + layer["input_shape"]
         unique_tpl_list = def_k_list.copy()
