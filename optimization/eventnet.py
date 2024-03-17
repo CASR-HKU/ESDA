@@ -22,6 +22,7 @@ def model_parser(model: dict) -> dict:
     """assign input_shape to each layer and verify the parameters"""
     logger = get_logger("")
     assert model["dataset"] in [
+        "EyeTracking",
         "ASL",
         "DVS",
         "NCAL",
