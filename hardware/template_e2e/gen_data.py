@@ -872,10 +872,15 @@ def main():
             # build module
             test_module = tb_1x1_3x3dw_1x1_block(**module_kwargs)
         elif layer["type"] == "linear":
+            pooled_feat = output_st.F.sum(dim=0, keepdim=True)
+            with open(os.path.join(out_dir, "tb_output.txt"), "w") as f:
+                for i in pooled_feat.tolist()[0]:
+                    f.write(str(int(i)) + "\n")
             continue
-            input_tensor = output_st.F
-            pooled_feat = input_tensor.sum(dim=0, keepdim=True)
-            fpath = os.path.join(data_dir, npy_of(layer, "", "weight_integer"))
+
+            # input_tensor = output_st.F
+            # pooled_feat = input_tensor.sum(dim=0, keepdim=True)
+            # fpath = os.path.join(data_dir, npy_of(layer, "", "weight_integer"))
             if args.save_dir:
                 dpath = os.path.join(args.save_dir, npy_of(layer, "", "weight_integer"))
                 shutil.copy(fpath, dpath)
