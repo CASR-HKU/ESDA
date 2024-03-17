@@ -771,12 +771,12 @@ def main():
 
     # parse cfg
     # dataset = cfg["dataset"]
-    if cfg["dataset"] == "NCAL":
-        shift_n = 32
-        bias_bit = 32
-    else:
-        shift_n = 16
-        bias_bit = 16
+    # if cfg["dataset"] == "NCAL":
+    #     shift_n = 32
+    #     bias_bit = 32
+    # else:
+    shift_n = 32
+    bias_bit = 32
 
     input_h, input_w = cfg["input_shape"]
     # for each layer
