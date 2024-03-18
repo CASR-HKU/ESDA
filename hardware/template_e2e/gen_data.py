@@ -776,7 +776,7 @@ def main():
     #     bias_bit = 32
     # else:
     shift_n = 16
-    bias_bit = 16
+    bias_bit = 32
 
     input_h, input_w = cfg["input_shape"]
     # for each layer
@@ -916,6 +916,9 @@ def main():
         # )
         # input_C = np.load(fpath)
         if layer_i == 0:
+            first_sample_idx = max([i for i, item in enumerate(input_C) if item[0] == 0])
+            input_C = input_C[:first_sample_idx]
+            input_F = input_F[:first_sample_idx]
             input_st = ME.SparseTensor(
                 features=torch.from_numpy(input_F),
                 coordinates=torch.from_numpy(input_C),
@@ -925,9 +928,7 @@ def main():
             input_st = output_st
             input_C = input_st.C.numpy()
             input_F = input_st.F
-            first_sample_idx = max([i for i, item in enumerate(input_C) if item[0] == 0])
-            input_C = input_C[:first_sample_idx]
-            input_F = input_F[:first_sample_idx]
+
         # generate mask
         # mask = generate_mask(input_C, in_tensor_stride, input_h, input_w)
         # build input sparse tensor

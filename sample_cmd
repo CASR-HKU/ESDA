@@ -7,6 +7,6 @@ cd ../hardware
 python gen_prj.py gen_full --cfg_name int_sample2-zcu102_60res --cfg_path /vol/datastore/zhangbh/eyetracking/eventHWConfig --tpl_dir template_e2e --dst_path /vol/datastore/zhangbh/eyetracking/eventNetHW
 
 export XILINXD_LICENSE_FILE=2200@bluemountain.eee.hku.hk
-alias xilinx-2020_2='source /media/ssd512g4/Xilinx/2020.2/settings64.sh'
+alias xilinx-2020_2='source /media/ssd512g4/Xilinx/Vitis_HLS/2020.2/settings64.sh'
 
 xilinx-2020_2
