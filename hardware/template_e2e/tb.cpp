@@ -43,25 +43,23 @@ int main() {
 
     std::ifstream inputFile("tb_output.txt");
 
-    std::vector<int> intArray;
+    std::vector<float> floatArray;
     std::string line;
     while (std::getline(inputFile, line)) {
-        int number = std::stoi(line);
-        intArray.push_back(number);
+        float number = std::stoi(line);
+        floatArray.push_back(number);
     }
 
     inputFile.close();
 
-    for (int i = 0; i < intArray.size(); i++) {
-            ap_int<32> rd = intArray[i];
-            if (rd != act_out_buffer[i]) {
-                err_cnt++;
+    for (int i = 0; i < floatArray.size(); i++) {
+        float rd = floatArray[i];
+        int out_int = act_out_buffer[i];
+        Float_Int_T out;
+        out.as_int = out_int;
+        if (abs(rd - out.as_float) > 0.0001) {
+            err_cnt++;
         }
-    }
-
-    for (int i = 0; i < CFG_TOP_OC; i++) {
-        ap_int<32> rd = act_out_buffer[i];
-        cout << i << ":" << rd << endl;
     }
 
 

@@ -14,6 +14,7 @@ void conv_3x3_dw_kernel(hls::stream<BundleT<9, ap_int<PI * AW>>> &act_in,
                         const ap_int<PI * WW> w_buffer[9][IC / PI]) {
     static const int C_W = boost::static_log2<IC>::value + 2;
     static const int HW_W = boost::static_log2<HEIGHT * WIDTH>::value + 2;
+    cout << "-------------start testing conv 3x3 dw--------------" << endl;
 
     typedef ap_uint<C_W> T_C;
 #pragma HLS bind_storage variable = w_buffer type = rom_2p impl = BRAM
@@ -101,7 +102,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 ap_int<PSUMW + SCALEW + 1> psum_mul =
                     (psum + bias) * scale + round_shift;
 
-                // cout<<"psum: "<<psum<<" scale:"<<scale<<" bias:"<<bias<<" psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<" exp:"<<EXP ;
+                cout<<"psum: "<<psum<<" scale:"<<scale<<" bias:"<<bias<<" psum_mul:"<<psum_mul<<" round shift:"<<round_shift<<" exp:"<<EXP;
 
                 psum_mul = psum_mul >> EXP;
 
@@ -115,7 +116,7 @@ void quantize(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 } else {
                     act_pack.data[p] = quantized_act;
                 }
-                // cout<<" output:"<<act_pack.data[p]<<endl ;
+                cout<<" output:"<<act_pack.data[p]<<endl ;
             }
             act_out.write(act_pack);
         }
@@ -185,7 +186,7 @@ void quantize_id_add(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                     ((psum + bias) * scale + round_shift);
 
                 // cout<<count++;
-                // cout<<" psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<"psum_mul:"<<psum_mul<<" round shift:"<<round_shift;
+                cout<<" psum:"<<psum<<" scale:"<<scale<<" bias:"<<bias<<"psum_mul:"<<psum_mul<<" round shift:"<<round_shift << "\n";
 
                 psum_mul = psum_mul >> EXP;
 
@@ -204,8 +205,7 @@ void quantize_id_add(hls::stream<BundleT<PI, ap_int<PSUMW>>> &psum_in,
                 quantize_id = id_mul;
 
                 final_sum = quantize_psum + quantize_id;
-                // cout<<" quantize_psum:"<<quantize_psum<<"
-                // quantize_id:"<<quantize_id<<" final_sum:"<<final_sum<<endl;
+                // cout<<" quantize_psum:"<<quantize_psum<<"quantize_id:"<<quantize_id<<" final_sum:"<<final_sum<<endl;
 
                 if (final_sum > high) final_sum = high;
                 if (final_sum < low) final_sum = low;
@@ -250,6 +250,7 @@ void conv_1x1_kernel_dsp(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
     typedef ap_uint<C_W> T_C;
 
     ap_int<PI * AW> act_buffer[IC / PI];
+    cout << "-------------start testing conv 1x1 dw--------------" << endl;
 
     for (T_C oc = 0; oc < PO; oc++) {
 #pragma HLS UNROLL
@@ -420,6 +421,7 @@ void conv_3x3_kernel_dsp_first_layer(
 
     BundleT<PO, ap_int<PSUMW>> psum_pack;
 #pragma HLS ARRAY_PARTITION variable = psum_pack.data complete dim = 0
+    cout << "-------------start testing conv 3x3--------------" << endl;
 
     for (T_C oc = 0; oc < OC / PO; oc++) {
         for (T_C po = 0; po < PO; po++) {
@@ -490,9 +492,8 @@ void conv_3x3_kernel_dsp_first_layer(
 template <int PI, int PO, int IC, int HEIGHT, int WIDTH, int AW>
 void global_avgpool(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
                            hls::stream<T_K> &token_in, ap_int<32> *c_out) {
-    static const int SUM_W = AW + boost::static_log2<HEIGHT * WIDTH>::value;
+    static const int SUM_W = 32;
     static const int IC_W = boost::static_log2<IC>::value + 2;
-    static const int OC_W = boost::static_log2<N_CLASS>::value + 2;
     static const int HW_W = boost::static_log2<HEIGHT * WIDTH>::value + 2;
 
 
@@ -512,8 +513,7 @@ void global_avgpool(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
             BundleT<PI, ap_int<AW>> act = act_in.read();
             ap_int<SUM_W *PI> s_pack = sum[j];
             for (ap_uint<IC_W> pi = 0; pi < PI; pi++) {
-                ap_int<SUM_W> s = (ap_int<SUM_W>)s_pack.range(
-                    SUM_W * (pi + 1) - 1, SUM_W * pi);
+                ap_int<SUM_W> s = (ap_int<SUM_W>)s_pack.range(SUM_W * (pi + 1) - 1, SUM_W * pi);
                 ap_int<AW> a = act.data[pi];
                 s += a;
                 s_pack.range(SUM_W * (pi + 1) - 1, SUM_W * pi) = s;
@@ -523,8 +523,16 @@ void global_avgpool(hls::stream<BundleT<PI, ap_int<AW>>> &act_in,
     }
 
 
-    for (int i = 0; i < IC; i++) {
+    for (int i = 0; i < IC / PI; i++) {
+        ap_int<SUM_W * PI> s_pack = sum[i];
+        for(int j = 0; j < PI; j++){
 #pragma HLS PIPELINE II = 1
-        c_out[i] = sum[i];
+            ap_int<SUM_W> s = (ap_int<SUM_W>)s_pack.range(SUM_W * (j + 1) - 1, SUM_W * j);
+            cout<<"s:"<<s<<endl;
+            Float_Int_T s_f;
+            float avg = (float)s / (float)(HEIGHT * WIDTH);
+            s_f.as_float = avg;
+            c_out[i * PI + j] = s_f.as_int;
+        }
     }
 }
