@@ -776,7 +776,7 @@ def main():
     #     bias_bit = 32
     # else:
     shift_n = 16
-    bias_bit = 32
+    bias_bit = 16
 
     input_h, input_w = cfg["input_shape"]
     # for each layer
