@@ -1,0 +1,15 @@
+{
+    "input_channel": 32,
+    "last_channel": 128,
+    "backbone": [[1, 16, 1, 2], [1, 24, 2, 1], [6, 32, 1, 1], [1, 48, 1, 2], [2, 96, 1, 2]],
+    "pool":{
+        "type": "global_avg"
+    },
+    "rnn":
+    {
+        "type": "ConvGRU",
+        "num_layers": 2
+    },
+    "heatmap": true
+
+}

@@ -1,0 +1,8 @@
+'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_standard/resnet50_standard_length30_lstm.json --mlflow=exp/0309_base_standard/resnet50_standard_length30_lstm',
+'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_standard/resnet34_standard_length30_lstm.json --mlflow=exp/0309_base_standard/resnet34_standard_length30_lstm',
+'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_standard/resnet18_standard_length30.json --mlflow=exp/0309_base_standard/resnet18_standard_length30',
+'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_standard/resnet18_standard_length30_lstm.json --mlflow=exp/0309_base_standard/resnet18_standard_length30_lstm',
+'CUDA_VISIBLE_DEVICES=3 python train.py --config_file=configs/0227_base_standard/mobilenet_standard_length30_lstm.json --mlflow=exp/0309_base_standard/mobilenet_standard_length30_lstm',
+'CUDA_VISIBLE_DEVICES=3 python train.py --config_file=configs/0227_base_standard/resnet50_standard_length30.json --mlflow=exp/0309_base_standard/resnet50_standard_length30',
+'CUDA_VISIBLE_DEVICES=3 python train.py --config_file=configs/0227_base_standard/resnet34_standard_length30.json --mlflow=exp/0309_base_standard/resnet34_standard_length30',
+'CUDA_VISIBLE_DEVICES=3 python train.py --config_file=configs/0227_base_standard/mobilenet_standard_length30.json --mlflow=exp/0309_base_standard/mobilenet_standard_length30',

@@ -1,0 +1,10 @@
+{
+    "optim": {
+      "type": "adam",
+      "weight_decay": 5e-4
+    },
+    "scheduler": {
+      "type": "cosine_annealing",
+      "T_max": 200
+    }
+}

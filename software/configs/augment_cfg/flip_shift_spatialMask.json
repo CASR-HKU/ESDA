@@ -1,0 +1,13 @@
+{
+    "flip": {
+      "p": 0.5
+    },
+    "shift": {
+      "p": 0.5,
+      "max_shift": 20
+    },
+    "spatial_mask": {
+      "p": 0.5,
+      "mask": 0.1
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "optim": {
+      "type": "adam",
+      "weight_decay": 5e-4
+    },
+    "scheduler": {
+      "type": "exp",
+      "gamma": 0.98
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "optim": {
+        "type": "sgd",
+        "momentum": 0.9,
+        "weight_decay": 0.0005
+    },
+    "scheduler": {
+      "type": "step",
+      "milestones": [
+        100,
+        150,
+        180
+      ],
+      "gamma": 0.2
+    }
+}

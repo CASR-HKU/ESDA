@@ -1,0 +1,6 @@
+{
+    "temporal_mask": {
+      "p": 0.5,
+      "max_length": 10
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "optim": {
+        "type": "rmsprop",
+        "momentum": 0.9,
+        "weight_decay": 0.0005
+    },
+    "scheduler": {
+      "type": "cosine_annealing",
+      "T_max": 200
+    }
+}

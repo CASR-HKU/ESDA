@@ -1,0 +1,11 @@
+{
+    "optim": {
+      "type": "rmsprop",
+      "weight_decay": 5e-4,
+      "momentum": 0.9
+    },
+    "scheduler": {
+      "type": "exp",
+      "gamma": 0.98
+    }
+}
