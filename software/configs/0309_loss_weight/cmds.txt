@@ -1,4 +1,0 @@
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0309_loss_weight/resnet18_standard_length30.json --mlflow=exp/0309_loss_weight/resnet18_standard_length30',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0309_loss_weight/resnet50_standard_length30.json --mlflow=exp/0309_loss_weight/resnet50_standard_length30',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0309_loss_weight/resnet34_standard_length30.json --mlflow=exp/0309_loss_weight/resnet34_standard_length30',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0309_loss_weight/mobilenet_standard_length30.json --mlflow=exp/0309_loss_weight/mobilenet_standard_length30',

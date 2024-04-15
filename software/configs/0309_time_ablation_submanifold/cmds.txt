@@ -1,8 +1,0 @@
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length3.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length3',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length50.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length50',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length10.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length10',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length30.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length30',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length5.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length5',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length40.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length40',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length20.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length20',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0309_time_ablation_submanifold/mobilenet_base_submanifold_length1.json --mlflow=exp/0309_time_ablation_submanifold/mobilenet_base_submanifold_length1',

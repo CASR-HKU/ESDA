@@ -1,8 +1,0 @@
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_submanifold/resnet18_submanifold_length30.json --mlflow=exp/0309_base_submanifold/resnet18_submanifold_length30',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_submanifold/resnet34_submanifold_length30_lstm.json --mlflow=exp/0309_base_submanifold/resnet34_submanifold_length30_lstm',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_submanifold/resnet34_submanifold_length30.json --mlflow=exp/0309_base_submanifold/resnet34_submanifold_length30',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0227_base_submanifold/resnet50_submanifold_length30.json --mlflow=exp/0309_base_submanifold/resnet50_submanifold_length30',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0227_base_submanifold/resnet18_submanifold_length30_lstm.json --mlflow=exp/0309_base_submanifold/resnet18_submanifold_length30_lstm',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0227_base_submanifold/resnet50_submanifold_length30_lstm.json --mlflow=exp/0309_base_submanifold/resnet50_submanifold_length30_lstm',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0227_base_submanifold/mobilenet_submanifold_length30_lstm.json --mlflow=exp/0309_base_submanifold/mobilenet_submanifold_length30_lstm',
-'CUDA_VISIBLE_DEVICES=1 python train.py --config_file=configs/0227_base_submanifold/mobilenet_submanifold_length30.json --mlflow=exp/0309_base_submanifold/mobilenet_submanifold_length30',

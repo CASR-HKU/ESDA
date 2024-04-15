@@ -1,5 +1,0 @@
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0302_randomDrop_293/cfg_293.json --mlflow=exp/0302_randomDrop_293/cfg_293',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0302_randomDrop_293/cfg_293_dropAllBlocks_0p1.json --mlflow=exp/0302_randomDrop_293/cfg_293_dropAllBlocks_0p1',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0302_randomDrop_293/cfg_293_dropAllStage_0p1.json --mlflow=exp/0302_randomDrop_293/cfg_293_dropAllStage_0p1',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0302_randomDrop_293/cfg_293_dropStride2_0p1.json --mlflow=exp/0302_randomDrop_293/cfg_293_dropStride2_0p1',
-'CUDA_VISIBLE_DEVICES=0 python train.py --config_file=configs/0302_randomDrop_293/cfg_293_dropAllLayers_0p1.json --mlflow=exp/0302_randomDrop_293/cfg_293_dropAllLayers_0p1',

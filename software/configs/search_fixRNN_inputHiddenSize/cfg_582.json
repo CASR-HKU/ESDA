@@ -1,1 +1,0 @@
-{"input_channel": 64, "last_channel": 128, "backbone": [[6, 16, 1, 1], [4, 32, 1, 2], [6, 64, 1, 1], [4, 72, 4, 2], [4, 96, 2, 2]], "pool": {"type": "global_avg"}, "rnn": {"type": "gru", "units": 64, "num_layers": 1}}
