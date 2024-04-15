@@ -88,6 +88,14 @@ More about dataset preparation, please refer to software [readme](software/READM
 The model training source code lies in `software` folder. After obtained a trained model, use toolflows in `optimization` folder to generate hardware configuration. Finally, use the hardware template and makefile in `hardware` folder to generate vitis_hls, vivado projects and synthesis your bitstream. 
 
 
+## Eye-tracking challenge
+Apart from the FPGA'24 artifact, we also participate in the [Eye-tracking challenge](https://www.kaggle.com/competitions/event-based-eye-tracking-ais2024). 
+The source code for the challenge is in `eye_tracking` branch. 
+More details can be found in the 'eye_tracking' branch by 
+```bash
+git checkout eye_tracking
+```
+
 ## Acknowledgement
 ESDA is inspired by and relies on many exisitng open-source libraries, including [Asynet](https://github.com/uzh-rpg/rpg_asynet), [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine), [HAWQ](https://github.com/Zhen-Dong/HAWQ), [AGNA](https://github.com/CASR-HKU/AGNA-FCCM2023), [DPCAS](https://github.com/CASR-HKU/DPACS) and etc. 
 
