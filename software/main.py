@@ -50,7 +50,7 @@ def setup_seed(seed):
 
 
 def train(model, train_loader, val_loader, criterion, optimizer, args):
-    best_val_loss = float("inf")
+    best_val_loss, best_val_error = float("inf"), float("inf")
     best_val_p10_acc, best_val_p5_acc = 0, 0
     recorder = MetricRecorder(os.path.join(args.mlflow_path, "log.txt"))
 
@@ -74,6 +74,8 @@ def train(model, train_loader, val_loader, criterion, optimizer, args):
 
         val_loss, val_metrics = validate_epoch(model, val_loader, criterion, args, epoch)
         recorder.update(recorder.transform_metric(train_loss, val_loss, metrics, val_metrics), epoch)
+
+        torch.save(model.state_dict(), os.path.join(mlflow.get_artifact_uri(), f"model_epoch{epoch}.pth"))
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
@@ -241,7 +243,7 @@ def main(args):
         # Train your model
 
         if args.evaluate:
-            validate_epoch(model, val_loader, criterion, args, 0)
+            return validate_epoch(model, val_loader, criterion, args, 0)
             sys.exit(0)
 
         model, metrics = train(model, train_loader, val_loader, criterion, Optim, args)
@@ -275,6 +277,7 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint", type=str, default="", help="path to the model checkpoint")
     parser.add_argument("--debug",  "-d", action="store_true", help="evaluate the model")
     parser.add_argument("--seed", type=int, default=20, help="random seed")
+    parser.add_argument("--optim_file", type=str, help="path to JSON configuration file")
 
     # quant hyperparameters
     parser.add_argument("--shift_bit", type=int, default=32, help="shift bit")

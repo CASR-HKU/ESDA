@@ -86,7 +86,7 @@ def train_epoch(model, train_loader, criterion, optimizer, args, epoch=0):
         total_sample_p_error_all += bs_times_seqlen
 
         train_loader_desc.set_description(
-            'Train: {epoch} | loss: {loss:.4f} | tp10: {tp10:.2f} | tp5: {tp5:.2f} | dist: {dist:.4f}'.
+            'Train: {epoch} | loss: {loss:.4f} | tp10: {tp10:.4f} | tp5: {tp5:.4f} | dist: {dist:.4f}'.
             format(epoch=epoch, loss=total_loss/total_samples_all,
                    tp10=total_p_corr_all[f'p10_all']/total_samples_all,
                    tp5=total_p_corr_all[f'p5_all'] / total_samples_all,
@@ -147,7 +147,7 @@ def validate_epoch(model, val_loader, criterion, args, epoch=0):
             total_sample_p_error_all += bs_times_seqlen
 
             val_loader_desc.set_description(
-                'Valid: {epoch} | loss: {loss:.4f} | tp10: {tp10:.2f} | tp5: {tp5:.2f} | dist: {dist:.4f}'.
+                'Valid: {epoch} | loss: {loss:.4f} | tp10: {tp10:.4f} | tp5: {tp5:.4f} | dist: {dist:.4f}'.
                 format(epoch=epoch, loss=total_loss / total_samples_all,
                        tp10=total_p_corr_all[f'p10_all'] / total_samples_all,
                        tp5=total_p_corr_all[f'p5_all'] / total_samples_all,

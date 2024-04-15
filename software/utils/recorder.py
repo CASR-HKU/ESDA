@@ -22,7 +22,7 @@ class MetricRecorder:
                 self.metrics_best[name] = metric_dict[name]
         if self.log_file:
             self.log_file.write(f"{epoch},")
-            self.log_file.write(",".join([str(round(metric_dict[name], 2)) for name in self.metric_names]))
+            self.log_file.write(",".join([str(round(metric_dict[name], 4)) for name in self.metric_names]))
             self.log_file.write("\n")
 
     def better(self, current, prev, direction):

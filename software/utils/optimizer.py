@@ -11,7 +11,8 @@ class Optimizer:
         else:
             self.parse_cfg(args.optim_file)
             self.build_optim(params_to_update, lr)
-            self.build_scheduler()
+            if self.use_scheduler:
+                self.build_scheduler()
 
     def build_optim(self, params_to_update, lr):
         if self.optim_cfg["type"] == 'rmsprop':

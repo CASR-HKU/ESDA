@@ -396,7 +396,7 @@ class MobileNetSubmanifold(nn.Module):
             }
             struct["layers"].append(conv_json)
             json.dump(struct, json_file, indent=4)
-            sys.exit(0)
+            # sys.exit(0)
 
 
         x = x.F.view(batch_size, seq_len, -1)
