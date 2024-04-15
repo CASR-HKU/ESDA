@@ -9,3 +9,4 @@
 software/int_inference/
 .vscode
 projs*
+*.DS_Store
