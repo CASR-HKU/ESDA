@@ -118,7 +118,8 @@ def main(args):
     else:
         raise ValueError("Please provide a JSON configuration file.")
 
-    os.makedirs("/".join(args.mlflow_path.split('/')[:-1]), exist_ok=True)
+    if not args.evaluate:
+        os.makedirs("/".join(args.mlflow_path.split('/')[:-1]), exist_ok=True)
     exp_record = ExpRecorder(os.path.join("/".join(args.mlflow_path.split('/')[:-1]), "exp_results.csv"))
 
     # Set up MLflow logging
