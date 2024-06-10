@@ -97,7 +97,6 @@ python main.py -e --config_file=weights/Table2/SEE-B/cfg.json --checkpoint=weigh
 python main.py -e --config_file=weights/Table2/SEE-C/cfg.json --checkpoint=weights/Table2/SEE-C/model_best_p10_acc.pth --shift_bit 16 --bias_bit 16
 python main.py -e --config_file=weights/Table2/SEE-D/cfg.json --checkpoint=weights/Table2/SEE-D/model_best_p10_acc.pth --shift_bit 16 --bias_bit 16
 python main.py -e --config_file=weights/Table2/MobileNetV2/cfg.json --checkpoint=weights/Table2/MobileNetV2/model_best_p10_acc.pth --shift_bit 16 --bias_bit 16
-
 ```
 
 
@@ -110,8 +109,13 @@ cd software
 python main.py --config_file=weights/Table2/MobileNetV2/cfg.json -s exp/float32
 python main.py --config_file=weights/Table2/MobileNetV2/cfg.json -s exp/int8 --shift_bit 16 --bias_bit 16 --load [path to float32 model]                  
 ```
-, where the [path to float32 model] is the float32 model is saved in `exp/float32` folder you want to finetune. 
+, where the **[path to float32 model]** is the float32 model is saved in `exp/float32` folder you want to finetune. 
 The final int8 model will be saved in `exp/int8` folder.
 
 ## Integer Inference
 
+After obtaining int8 model, before hardware synthesis, you need to generate the integer model. Assuming you are currently in the `software` folder, you can run the following command:
+
+```bash
+python int_inference.py --config_file=weights/Table2/MobileNetV2/cfg.json --checkpoint=exp/int8/model_best_p10_acc.pth --shift_bit 16 --bias_bit 16
+```
