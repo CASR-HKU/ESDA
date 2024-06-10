@@ -106,8 +106,8 @@ For example, if you want to retrain MobileNetV2, assuming you are currently in t
 
 ```bash
 cd software
-python main.py --config_file=weights/Table2/MobileNetV2/cfg.json -s exp/float32
-python main.py --config_file=weights/Table2/MobileNetV2/cfg.json -s exp/int8 --shift_bit 16 --bias_bit 16 --load [path to float32 model]                  
+python main.py --config_file=configs/float32/MobileNetV2.json -s exp/float32/MobileNetV2
+python main.py --config_file=configs/int8/MobileNetV2.json -s exp/int8/MobileNetV2 --shift_bit 16 --bias_bit 16 --load [path to float32 model]                  
 ```
 , where the **[path to float32 model]** is the float32 model is saved in `exp/float32` folder you want to finetune. 
 The final int8 model will be saved in `exp/int8` folder.
@@ -117,5 +117,8 @@ The final int8 model will be saved in `exp/int8` folder.
 After obtaining int8 model, before hardware synthesis, you need to generate the integer model. Assuming you are currently in the `software` folder, you can run the following command:
 
 ```bash
-python int_inference.py --config_file=weights/Table2/MobileNetV2/cfg.json --checkpoint=exp/int8/model_best_p10_acc.pth --shift_bit 16 --bias_bit 16
+python int_inference.py --config_file=configs/int8/MobileNetV2.json --checkpoint=[path to int8 model] --shift_bit 16 --bias_bit 16 --int_folder int/MobileNetV2
 ```
+The **path to int8 model** is the quantized model trained in the previous step. The generated int8 model will be saved in `int/MobileNetV2` folder.
+
+After the steps above, you can refer to [optimization](../optimization/README.md) to conduct the following steps.
