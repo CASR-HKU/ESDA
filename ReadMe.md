@@ -18,7 +18,7 @@ The project mainly consists of three parts
 
 If you are going to repoduce our **Artifact** on FPGA'24, Please refer to [evaluation.md](evaluation.md)
 
-*Latest News* 🔥
+# *Latest News* 🔥
 
 - [2024/06] We participate in the we also participate in the [Eye-tracking challenge](https://www.kaggle.com/competitions/event-based-eye-tracking-ais2024). 
 The source code for the challenge is in `eye_tracking` branch. 
