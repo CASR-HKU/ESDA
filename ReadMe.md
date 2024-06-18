@@ -18,6 +18,14 @@ The project mainly consists of three parts
 
 If you are going to repoduce our **Artifact** on FPGA'24, Please refer to [evaluation.md](evaluation.md)
 
+*Latest News* 🔥
+
+- [2024/06] We participate in the we also participate in the [Eye-tracking challenge](https://www.kaggle.com/competitions/event-based-eye-tracking-ais2024). 
+The source code for the challenge is in `eye_tracking` branch. 
+More details can be found in the 'eye_tracking' branch by 
+```bash
+git checkout eye_tracking
+```
 
 ## Installation of the environment/tools
 
@@ -74,7 +82,7 @@ python setup.py install
 
 ## Dataset 
 
-We use five datasets for the project: 
+We use five datasets for the project: [README (1).md](..%2F..%2F..%2FDownloads%2FREADME%20%281%29.md)
 [DvsGesture](https://research.ibm.com/interactive/dvsgesture/), 
 [RoShamBo17](http://sensors.ini.uzh.ch/databases.html), 
 [ASL-DVS](https://github.com/PIX2NVS/NVS2Graph), 
@@ -89,12 +97,7 @@ The model training source code lies in `software` folder. After obtained a train
 
 
 ## Eye-tracking challenge
-Apart from the FPGA'24 artifact, we also participate in the [Eye-tracking challenge](https://www.kaggle.com/competitions/event-based-eye-tracking-ais2024). 
-The source code for the challenge is in `eye_tracking` branch. 
-More details can be found in the 'eye_tracking' branch by 
-```bash
-git checkout eye_tracking
-```
+Apart from the FPGA'24 artifact, 
 
 ## Acknowledgement
 ESDA is inspired by and relies on many exisitng open-source libraries, including [Asynet](https://github.com/uzh-rpg/rpg_asynet), [MinkowskiEngine](https://github.com/NVIDIA/MinkowskiEngine), [HAWQ](https://github.com/Zhen-Dong/HAWQ), [AGNA](https://github.com/CASR-HKU/AGNA-FCCM2023), [DPCAS](https://github.com/CASR-HKU/DPACS) and etc. 
