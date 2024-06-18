@@ -12,7 +12,7 @@ python eventnet.py --model_path <path-of-models-root-folder> --eventNet_path <pa
 Example command and file structure
 ```bash
 #In the root directory
-python eventnet.py --model_path ../eventNet/model --eventNet_path ../hardware/HWConfig --model_name DVS_1890_shift16 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path ../hardware/HWConfig --model_name MobileNetV2 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
 ```
 
 ```
