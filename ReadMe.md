@@ -13,6 +13,33 @@ The project mainly consists of three parts
 - Hardware synthesis, implementation and evaluation
 
 
+## Results
+
+Our implementation can achieve <0.6ms latency while reaching Top-5 in the 
+[Eye Tracking Challenge](https://www.kaggle.com/c/event-based-eye-tracking-ais2024/leaderboard) on Kaggle.
+
+### Speed up over XAVIER Jetson NX
+<div align="center">
+    <a href="./">
+        <img src="figures/speedup.jpg" width="79%"/>
+    </a>
+</div>
+
+### Tradeoff between p10 accuracy and latency
+<div align="center">
+    <a href="./">
+        <img src="figures/p10_latency.jpg" width="79%"/>
+    </a>
+</div>
+
+### Tradeoff between Mean Euclidean Distance and latency
+<div align="center">
+    <a href="./">
+        <img src="figures/distance_latency.jpg" width="79%"/>
+    </a>
+</div>
+
+
 ## Installation of the environment/tools
 
 ### Vivado
