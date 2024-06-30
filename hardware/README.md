@@ -10,13 +10,10 @@ We use ZCU102 board with [PYNQ](http://www.pynq.io/board.html) overlay in our de
 
 ```bash
 cd hardware
-# For roshambo dataset
-python gen_prj.py gen_full --cfg_name <cfg-name> --cfg_path <path-to-DES-folder> --tpl_dir template_e2e_roshambo --dst_path <path-to-destination>
-# For other datasets
 python gen_prj.py gen_full --cfg_name <cfg-name> --cfg_path <path-to-DES-folder> --tpl_dir template_e2e --dst_path <path-to-destination>
 ```
 
-For example, you can generate the config files in the eventNet/DSE folder
+For example, after running the codes in the optimization folder, you will get the following file structure:
 
 ```
 EDSA
@@ -26,7 +23,7 @@ EDSA
 ├── eventNet
 │   ├── model
 │   ├── DSE
-│   │   ├── DVS_1890_shift16-zcu102_80res
+│   │   ├── MobileNetV2
 │   │   │   ├── en-config.json
 │   │   │   ├── en-gpkit.model
 │   │   │   ├── en-gpkit.sol
@@ -43,7 +40,7 @@ Build the hardware project by using:
 # Make sure you are in the root directory
 
 cd hardware
-python gen_prj.py gen_full --cfg_name DVS_1890_shift16-zcu102_80res --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
+python gen_prj.py gen_full --cfg_name MobileNetV2 --cfg_path ../eventNet/DSE --tpl_dir template_e2e --dst_path ../eventNet/HW
 ```
 The hardware project will be saved in the **eventNet/HW/** folder.
 
@@ -81,7 +78,7 @@ EDSA
 │   ├── model
 │   ├── DSE
 │   ├── HW
-│   │   ├── DVS_1890_shift16-zcu102_80res
+│   │   ├── MobileNetV2
 │   │   │   ├── full
 │   │   │   │   ├── prj
 │   │   │   │   │   ├── hls.tcl
@@ -97,7 +94,7 @@ EDSA
 
 ```bash
 # Make sure you are in the root directory
-cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+cd eventNet/HW/MobileNetV2/full
 make gen
 ```
 
@@ -114,11 +111,12 @@ cd <Path-to-the-generated-project-folder>
 make ip_all
 ```
 
-The results and logs will be stored in the **prj** folder inside the hardware project root. For example, to extract the ip of **DVS_1890** model, you should:
+The results and logs will be stored in the **prj** folder inside the hardware project root. For example, 
+to extract the ip of **MobileNetV2** model, you should:
 
 ```bash
 # Make sure you are in the root directory
-cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+cd eventNet/HW/MobileNetV2/full
 make ip_all
 ```
 
@@ -154,7 +152,7 @@ The below command will connect our ZCU102 server and run performance evaluation.
 
 ```bash
 # Make sure you are in the root directory
-cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+cd eventNet/HW/MobileNetV2/full
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
 ```
 
@@ -169,7 +167,7 @@ python3 evaluate.py -1 -d hw/DVS_1890/
 
 ```bash
 # Make sure you are in the root directory
-cd eventNet/HW/DVS_1890_shift16-zcu102_80res/full
+cd eventNet/HW/MobileNetV2/full
 make e2e_inference
 ```
 
