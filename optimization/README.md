@@ -12,7 +12,7 @@ python eventnet.py --model_path <path-of-models-root-folder> --eventNet_path <pa
 Example command and file structure
 ```bash
 #In the root directory
-python eventnet.py --model_path ../eventNet/model --eventNet_path ../hardware/HWConfig --model_name MobileNetV2 --eventNet_name zcu102_60res --results_path ../eventNet/DSE
+python eventnet.py --model_path ../eventNet/model --eventNet_path ../hardware/HWConfig --model_name MobileNetV2 --eventNet_name zcu102_80res --results_path ../eventNet/DSE
 ```
 
 ```
@@ -21,10 +21,12 @@ EDSA
 ├── hardware
 ├── optimization
 ├── eventNet/model
-│   ├── DVS_1890_shift16
+│   ├── MobileNetV2
 │   │   ├── model.json
 │   │   ├── input_Features.npy
 │   │   ├── input_Coordinates.npy
 │   │   ├── output_logit.npy
+│   │   ├── ....
 ```
 
+After the steps above, you can refer to [hardware](../hardware/README.md) to conduct the following steps.

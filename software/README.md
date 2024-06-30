@@ -65,14 +65,6 @@ The **path to int8 model** is the quantized model trained in the previous step. 
 ```
 EDSA
 ├── software
-│   ├── data
-│   │   ├── ASLDVS
-│   │   ├── dvs_gesture_clip
-│   │   ├── NCal
-│   │   ├── NCal_processed
-│   │   ├── NMNIST
-│   │   ├── NMNIST_processed
-│   │   ├── Roshambo/dataset_nullhop
 ├── hardware
 ├── optimization
 ├── eventNet
