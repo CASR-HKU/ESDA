@@ -120,7 +120,7 @@ def main(args):
 
     if not args.evaluate:
         os.makedirs("/".join(args.mlflow_path.split('/')[:-1]), exist_ok=True)
-    exp_record = ExpRecorder(os.path.join("/".join(args.mlflow_path.split('/')[:-1]), "exp_results.csv"))
+    # exp_record = ExpRecorder(os.path.join("/".join(args.mlflow_path.split('/')[:-1]), "exp_results.csv"))
 
     # Set up MLflow logging
     mlflow.set_tracking_uri(args.mlflow_path)
@@ -248,7 +248,7 @@ def main(args):
             sys.exit(0)
 
         model, metrics = train(model, train_loader, val_loader, criterion, Optim, args)
-        exp_record.update(args, [0, params], metrics)
+        # exp_record.update(args, [0, params], metrics)
 
         # Save your model for the last epoch
         torch.save(model.state_dict(), os.path.join(mlflow.get_artifact_uri(), f"model_last_epoch{args.num_epochs}.pth"))

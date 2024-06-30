@@ -148,6 +148,9 @@ You can find the output bistream inside the **eventNet/HW/DVS_1890_shift16-zcu10
 
 The below command will connect our ZCU102 server and run performance evaluation. 
 If you have a different board or setting, you can refer to `board` folder to see how we run design. 
+There are two approaches to evaluate the performance of the hardware design.
+
+### Evaluate through server connecting to the board
 
 #### 1. Evaluate latency and power
 
@@ -155,13 +158,6 @@ If you have a different board or setting, you can refer to `board` folder to see
 # Make sure you are in the root directory
 cd eventNet/HW/MobileNetV2/full
 make evaluate_hw EVAL_TARGET="e2e ARG_NUM_RUN='-1 --enable_pm'"
-```
-
-(Or let them directly run on the board?)
-```bash
-# Make sure you are in the root directory
-cd $ESDA_HOME/hardware/board
-python3 evaluate.py -1 -d hw/DVS_1890/
 ```
 
 #### 2. End-to-end evaluation
@@ -172,9 +168,38 @@ cd eventNet/HW/MobileNetV2/full
 make e2e_inference
 ```
 
-(Or let them directly run on the board?)
+
+### Evaluate directly on the board
+
+To achieve it, you should follow these steps to set up the environment:
+(1) Clone the codes in `hardware/board` folder to your board.
+(2) Send the bitstream folder to the board.
+Please notice that you should be the root of the board to run the following commands.
+
 ```bash
 # Make sure you are in the root directory
 cd $ESDA_HOME/hardware/board
-python3 hw_e2e.py 1 -d hw/DVS_1890/
+# Evaluate latency and power
+python3 evaluate.py -1 -d <bitstream-path>
+# End-to-end evaluation
+python3 hw_e2e.py 1 -d <bitstream-path>
+```
+
+For example, if you want to evaluate the MobileNetV2 model, 
+and the bitstreams are in the `$ESDA_HOME/eventNet/archived_hw/MobileNetV2/hw` folder similar to 
+```
+$ESDA_HOME/eventNet/archived_hw/MobileNetV2/hw
+├── top.bit
+├── top.hwh
+```
+ 
+you can run the following commands:
+
+```bash
+# Make sure you are in the root directory
+cd $ESDA_HOME/hardware/board
+# Evaluate latency and power
+python3 evaluate.py -1 -d <$ESDA_HOME/eventNet/archived_hw/MobileNetV2/hw>
+# End-to-end evaluation
+python3 hw_e2e.py 1 -d <$ESDA_HOME/eventNet/archived_hw/MobileNetV2/hw>
 ```

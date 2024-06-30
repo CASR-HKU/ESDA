@@ -10,3 +10,4 @@ tonic
 numpy==1.21.0
 gpkit 
 pyscipopt
+mlflow
