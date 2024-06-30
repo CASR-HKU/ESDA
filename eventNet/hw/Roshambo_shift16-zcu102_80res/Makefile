@@ -1,1 +1,0 @@
-include /vol/datastore/yuhao/event_spconv_auto_test/auto_test.mk

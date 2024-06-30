@@ -146,7 +146,8 @@ You can find the output bistream inside the **eventNet/HW/DVS_1890_shift16-zcu10
 
 ## Hardware performance evaluation
 
-The below command will connect our ZCU102 server and run performance evaluation. If you have a different board or setting, you can refer to `board` folder to see how we run design. 
+The below command will connect our ZCU102 server and run performance evaluation. 
+If you have a different board or setting, you can refer to `board` folder to see how we run design. 
 
 #### 1. Evaluate latency and power
 
