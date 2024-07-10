@@ -124,7 +124,7 @@ def main(args):
 
     # Set up MLflow logging
     mlflow.set_tracking_uri(args.mlflow_path)
-    mlflow.set_experiment(experiment_name=args.experiment_name)
+    mlflow.set_experiment(experiment_name="exp")
 
     # Start MLflow run
     with mlflow.start_run(run_name=args.run_name):
@@ -259,7 +259,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # training management arguments     
     parser.add_argument("--mlflow_path", type=str, help="path to MLflow tracking server")
-    parser.add_argument("--experiment_name", type=str, help="name of the experiment")
+    parser.add_argument("--experiment_name", type=str, default="log", help="name of the experiment")
     parser.add_argument("--run_name", type=str, help="name of the run")
     parser.add_argument("--device", type=str, default="cuda:0", help="device to train the model")
     parser.add_argument("--load", type=str, default="")
