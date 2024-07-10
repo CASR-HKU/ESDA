@@ -124,7 +124,7 @@ def main(args):
 
     # Set up MLflow logging
     mlflow.set_tracking_uri(args.mlflow_path)
-    mlflow.set_experiment(experiment_name="exp")
+    mlflow.create_experiment("exp")
 
     # Start MLflow run
     with mlflow.start_run(run_name=args.run_name):
@@ -180,14 +180,14 @@ def main(args):
 
         # Then we define the raw event recording and label dataset, the raw events spatial coordinates are also downsampled
         train_data_orig = ThreeETplus_Eyetracking(save_to=args.data_dir, split="train", \
-                        transform=transforms.Downsample(spatial_factor=factor), 
+                        transform=transforms.Downsample(spatial_factor=factor),
                         target_transform=label_transform)
         val_data_orig = ThreeETplus_Eyetracking(save_to=args.data_dir, split="val", \
                         transform=transforms.Downsample(spatial_factor=factor),
                         target_transform=label_transform)
 
-        # Then we slice the event recordings into sub-sequences. 
-        # The time-window is determined by the sequence length (train_length, val_length) 
+        # Then we slice the event recordings into sub-sequences.
+        # The time-window is determined by the sequence length (train_length, val_length)
         # and the temporal subsample factor.
         slicing_time_window = args.train_length*int(10000/temp_subsample_factor) #microseconds
         train_stride_time = int(10000/temp_subsample_factor*args.train_stride) #microseconds
@@ -198,8 +198,8 @@ def main(args):
         val_slicer=SliceByTimeEventsTargets(slicing_time_window, overlap=slicing_time_window-train_stride_time, \
                         seq_length=args.val_length, seq_stride=args.val_stride, include_incomplete=False)
 
-        # After slicing the raw event recordings into sub-sequences, 
-        # we make each subsequences into your favorite event representation, 
+        # After slicing the raw event recordings into sub-sequences,
+        # we make each subsequences into your favorite event representation,
         # in this case event voxel-grid
 
         post_slicer_transform, cached_item = generate_post_transform(args)
